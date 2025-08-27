@@ -1,0 +1,429 @@
+---
+title: "暴露空間模式(Box Models)暴露風險評估"
+encoding: "UTF-8"
+---
+
+<style type="text/css">
+  body { font-family: "Microsoft JhengHei", Arial, sans-serif; }
+  .container { display: flex; width: 100%; }
+  .input-panel { width: 60%; padding: 15px; }
+  .result-panel { width: 40%; padding: 15px; }
+  .form-group { margin-bottom: 10px; }
+  label { display: inline-block; width: 180px; }
+  input[type="number"], select { width: 120px; }
+  .section { margin-top: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px; }
+  .section-title { font-weight: bold; margin-bottom: 10px; }
+  table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+  table, th, td { border: 1px solid #ccc; padding: 5px; }
+  .risk-level-1 { background-color: #90EE90; } /* 低風險 */
+  .risk-level-2 { background-color: #FFFFE0; } /* 中低風險 */
+  .risk-level-3 { background-color: #FFB6C1; } /* 中高風險 */
+  .risk-level-4 { background-color: #FF0000; color: white; } /* 高風險 */
+  .plot-container { margin-top: 20px; }
+  .recommendation { margin-top: 15px; padding: 10px; background-color: #f0f0f0; border-radius: 5px; }
+</style>
+
+<div class="container">
+  <div class="input-panel">
+    <h2>暴露空間模式(Box Models)暴露風險評估</h2>
+    
+    <form id="exposureForm">
+      <div class="section">
+        <div class="section-title">基本參數</div>
+        <div class="form-group">
+          <label for="CA_room_0">CA,room,0 (mg/m³):</label>
+          <input type="number" id="CA_room_0" value="0" step="0.001">
+        </div>
+        <div class="form-group">
+          <label for="CA_in">CA,in (mg/m³):</label>
+          <input type="number" id="CA_in" value="0" step="0.001">
+        </div>
+        <div class="form-group">
+          <label for="GA">GA (mg/min):</label>
+          <input type="number" id="GA" value="10" step="0.001">
+        </div>
+        <div class="form-group">
+          <label for="Q">Q (m³/min):</label>
+          <input type="number" id="Q" value="5" step="0.001">
+        </div>
+        <div class="form-group">
+          <label for="V">V (m³):</label>
+          <input type="number" id="V" value="50" step="0.001">
+        </div>
+        <div class="form-group">
+          <label for="t">t (min):</label>
+          <input type="number" id="t" value="60" step="1">
+        </div>
+        <div class="form-group">
+          <label for="MW">分子量 (g/mol):</label>
+          <input type="number" id="MW" value="100" step="0.001">
+        </div>
+      </div>
+      
+      <div class="section">
+        <div class="section-title">環境條件 (非NTP條件時填寫)</div>
+        <div class="form-group">
+          <label for="P">大氣壓力 (mmHg):</label>
+          <input type="number" id="P" value="760" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="T">絕對溫度 (K):</label>
+          <input type="number" id="T" value="298" step="0.1">
+        </div>
+      </div>
+      
+      <div class="section">
+        <div class="section-title">暴露限值</div>
+        <div class="form-group">
+          <label for="TWA_value">TWA (8小時):</label>
+          <input type="number" id="TWA_value" value="100" step="0.001">
+          <select id="TWA_unit">
+            <option value="mg_m3">mg/m³</option>
+            <option value="ppm">ppm</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="STEL_value">STEL (15分鐘):</label>
+          <input type="number" id="STEL_value" value="150" step="0.001">
+          <select id="STEL_unit">
+            <option value="mg_m3">mg/m³</option>
+            <option value="ppm">ppm</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="IDLH_value">IDLH:</label>
+          <input type="number" id="IDLH_value" value="500" step="0.001">
+          <select id="IDLH_unit">
+            <option value="mg_m3">mg/m³</option>
+            <option value="ppm">ppm</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="OEL_value">OEL:</label>
+          <input type="number" id="OEL_value" value="80" step="0.001">
+          <select id="OEL_unit">
+            <option value="mg_m3">mg/m³</option>
+            <option value="ppm">ppm</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="section">
+        <div class="section-title">計算功能選擇</div>
+        <div class="form-group">
+          <input type="radio" id="func1" name="function" value="1" checked>
+          <label for="func1" style="width: auto;">功能1：時間濃度(經過時間t的空間濃度)</label>
+        </div>
+        <div class="form-group">
+          <input type="radio" id="func2" name="function" value="2">
+          <label for="func2" style="width: auto;">功能2：穩態濃度(空間濃度穩定平衡)</label>
+        </div>
+        <div class="form-group">
+          <input type="radio" id="func3" name="function" value="3">
+          <label for="func3" style="width: auto;">功能3：衰減濃度(化學品停止逸散)</label>
+        </div>
+        <div class="form-group">
+          <input type="radio" id="func4" name="function" value="4">
+          <label for="func4" style="width: auto;">功能4：平均暴露濃度(時間濃度加權)</label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <button type="button" onclick="calculate()">計算</button>
+        <button type="button" onclick="window.print()">列印</button>
+      </div>
+    </form>
+    
+    <div class="plot-container">
+      <div id="concentrationPlot"></div>
+    </div>
+  </div>
+  
+  <div class="result-panel">
+    <h3>計算結果</h3>
+    <div id="results"></div>
+    
+    <h3>風險分級</h3>
+    <div id="riskAssessment"></div>
+    
+    <h3>建議控制措施</h3>
+    <div id="recommendations"></div>
+    
+    <h3>暴露空間模式示意圖</h3>
+    <div style="text-align: center;">
+      <img src="docs\images\box.png" alt="暴露空間模式示意圖" style="max-width: 30%;">
+      <p>圖3：暴露空間模式</p>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  // 氣體常數 (mmHg * m³ / (mol * K))
+  const R = 62.3637;
+  
+  function calculate() {
+    // 獲取輸入值
+    const CA_room_0 = parseFloat(document.getElementById("CA_room_0").value);
+    const CA_in = parseFloat(document.getElementById("CA_in").value);
+    const GA = parseFloat(document.getElementById("GA").value);
+    const Q = parseFloat(document.getElementById("Q").value);
+    const V = parseFloat(document.getElementById("V").value);
+    const t = parseInt(document.getElementById("t").value);
+    const MW = parseFloat(document.getElementById("MW").value);
+    const P = parseFloat(document.getElementById("P").value);
+    const T = parseFloat(document.getElementById("T").value);
+    
+    // 獲取暴露限值
+    const TWA_value = parseFloat(document.getElementById("TWA_value").value);
+    const TWA_unit = document.getElementById("TWA_unit").value;
+    const STEL_value = parseFloat(document.getElementById("STEL_value").value);
+    const STEL_unit = document.getElementById("STEL_unit").value;
+    const IDLH_value = parseFloat(document.getElementById("IDLH_value").value);
+    const IDLH_unit = document.getElementById("IDLH_unit").value;
+    const OEL_value = parseFloat(document.getElementById("OEL_value").value);
+    const OEL_unit = document.getElementById("OEL_unit").value;
+    
+    // 獲取選擇的功能
+    const selectedFunction = document.querySelector('input[name="function"]:checked').value;
+    
+    // 計算濃度
+    let concentration, avgConcentration;
+    let concentrations = [];
+    let times = [];
+    
+    // 計算每分鐘濃度
+    for (let i = 0; i <= t; i++) {
+      let currentConc;
+      
+      if (selectedFunction == "1") {
+        // 功能1：時間濃度
+        currentConc = CA_in + (GA/Q) + (CA_room_0 - CA_in - (GA/Q)) * Math.exp(-(Q/V)*i);
+      } else if (selectedFunction == "2") {
+        // 功能2：穩態濃度
+        currentConc = CA_in + (GA/Q);
+      } else if (selectedFunction == "3") {
+        // 功能3：衰減濃度
+        currentConc = CA_room_0 * Math.exp(-(Q/V)*i);
+      } else if (selectedFunction == "4") {
+        // 功能4：平均暴露濃度
+        // 先計算時間濃度，然後取平均
+        let timeConc = CA_in + (GA/Q) + (CA_room_0 - CA_in - (GA/Q)) * Math.exp(-(Q/V)*i);
+        concentrations.push(timeConc);
+        times.push(i);
+        continue;
+      }
+      
+      concentrations.push(currentConc);
+      times.push(i);
+    }
+    
+    // 如果是功能4，計算平均濃度
+    if (selectedFunction == "4") {
+      let sum = concentrations.reduce((a, b) => a + b, 0);
+      avgConcentration = sum / concentrations.length;
+      concentration = avgConcentration;
+    } else {
+      concentration = concentrations[concentrations.length - 1];
+      avgConcentration = concentration;
+    }
+    
+    // 溫度壓力修正
+    let concentration_corrected = concentration * (MW * P) / (R * T);
+    
+    // 單位轉換
+    let TWA_limit = (TWA_unit === "ppm") ? convertMgM3ToPpm(TWA_value, MW) : TWA_value;
+    let STEL_limit = (STEL_unit === "ppm") ? convertMgM3ToPpm(STEL_value, MW) : STEL_value;
+    let IDLH_limit = (IDLH_unit === "ppm") ? convertMgM3ToPpm(IDLH_value, MW) : IDLH_value;
+    let OEL_limit = (OEL_unit === "ppm") ? convertMgM3ToPpm(OEL_value, MW) : OEL_value;
+    
+    // 計算暴露濃度
+    let TWA_exposure = (t * concentration) / 480;
+    let STEL_exposure = (t * concentration) / 15;
+    
+    // 顯示結果
+    displayResults(concentration, concentration_corrected, TWA_exposure, STEL_exposure, 
+                   TWA_limit, STEL_limit, IDLH_limit, OEL_limit, concentrations, times);
+    
+    // 繪製濃度趨勢圖
+    plotConcentrationTrend(concentrations, times);
+    
+    // 風險評估
+    performRiskAssessment(concentration, TWA_exposure, STEL_exposure, 
+                         TWA_limit, STEL_limit, IDLH_limit, OEL_limit);
+  }
+  
+  function convertMgM3ToPpm(mg_m3, MW) {
+    // 轉換公式: ppm = (mg/m³) * (24.45 / MW)
+    return mg_m3 * (24.45 / MW);
+  }
+  
+  function convertPpmToMgM3(ppm, MW) {
+    // 轉換公式: mg/m³ = ppm * (MW / 24.45)
+    return ppm * (MW / 24.45);
+  }
+  
+  function displayResults(conc, conc_corrected, TWA_exp, STEL_exp, TWA_lim, STEL_lim, IDLH_lim, OEL_lim, concentrations, times) {
+    let resultsHTML = `
+      <table>
+        <tr><th>參數</th><th>數值</th><th>單位</th></tr>
+        <tr><td>計算濃度</td><td>${conc.toFixed(4)}</td><td>mg/m³</td></tr>
+        <tr><td>溫度壓力修正濃度</td><td>${conc_corrected.toFixed(4)}</td><td>mg/m³</td></tr>
+        <tr><td>TWA暴露濃度</td><td>${TWA_exp.toFixed(4)}</td><td>mg/m³</td></tr>
+        <tr><td>STEL暴露濃度</td><td>${STEL_exp.toFixed(4)}</td><td>mg/m³</td></tr>
+        <tr><td>TWA限值</td><td>${TWA_lim.toFixed(4)}</td><td>mg/m³</td></tr>
+        <tr><td>STEL限值</td><td>${STEL_lim.toFixed(4)}</td><td>mg/m³</td></tr>
+        <tr><td>IDLH限值</td><td>${IDLH_lim.toFixed(4)}</td><td>mg/m³</td></tr>
+        <tr><td>OEL限值</td><td>${OEL_lim.toFixed(4)}</td><td>mg/m³</td></tr>
+      </table>
+    `;
+    
+    document.getElementById("results").innerHTML = resultsHTML;
+  }
+  
+  function performRiskAssessment(conc, TWA_exp, STEL_exp, TWA_lim, STEL_lim, IDLH_lim, OEL_lim) {
+    let riskHTML = "<table><tr><th>風險類型</th><th>比較</th><th>風險等級</th><th>說明</th></tr>";
+    
+    // 短期暴露風險評估
+    let shortTermRisk = "";
+    let shortTermLevel = 0;
+    
+    if (conc >= IDLH_lim) {
+      shortTermRisk = "超過IDLH";
+      shortTermLevel = 4;
+    } else if (STEL_exp >= STEL_lim) {
+      shortTermRisk = "超過STEL";
+      shortTermLevel = 4;
+    } else {
+      shortTermRisk = "未超過短期暴露限值";
+      shortTermLevel = 1;
+    }
+    
+    riskHTML += `<tr class="risk-level-${shortTermLevel}">
+      <td>短期暴露風險</td>
+      <td>${conc.toFixed(4)} vs ${IDLH_lim.toFixed(4)} (IDLH)<br>
+          ${STEL_exp.toFixed(4)} vs ${STEL_lim.toFixed(4)} (STEL)</td>
+      <td>${shortTermLevel}</td>
+      <td>${shortTermRisk}</td>
+    </tr>`;
+    
+    // 長期暴露風險評估
+    let longTermRisk = "";
+    let longTermLevel = 0;
+    
+    if (TWA_exp < TWA_lim * 0.1) {
+      longTermRisk = "低於1/10 TWA";
+      longTermLevel = 1;
+    } else if (TWA_exp < TWA_lim * 0.5) {
+      longTermRisk = "低於1/2 TWA";
+      longTermLevel = 2;
+    } else if (TWA_exp < TWA_lim) {
+      longTermRisk = "低於TWA";
+      longTermLevel = 3;
+    } else {
+      longTermRisk = "超過TWA";
+      longTermLevel = 4;
+    }
+    
+    riskHTML += `<tr class="risk-level-${longTermLevel}">
+      <td>長期暴露風險</td>
+      <td>${TWA_exp.toFixed(4)} vs ${TWA_lim.toFixed(4)} (TWA)</td>
+      <td>${longTermLevel}</td>
+      <td>${longTermRisk}</td>
+    </tr>`;
+    
+    // OEL風險評估
+    let OELRisk = "";
+    let OELLevel = 0;
+    
+    if (conc < OEL_lim * 0.1) {
+      OELRisk = "低於1/10 OEL";
+      OELLevel = 1;
+    } else if (conc < OEL_lim * 0.5) {
+      OELRisk = "低於1/2 OEL";
+      OELLevel = 2;
+    } else if (conc < OEL_lim) {
+      OELRisk = "低於OEL";
+      OELLevel = 3;
+    } else {
+      OELRisk = "超過OEL";
+      OELLevel = 4;
+    }
+    
+    riskHTML += `<tr class="risk-level-${OELLevel}">
+      <td>OEL風險</td>
+      <td>${conc.toFixed(4)} vs ${OEL_lim.toFixed(4)} (OEL)</td>
+      <td>${OELLevel}</td>
+      <td>${OELRisk}</td>
+    </tr>`;
+    
+    riskHTML += "</table>";
+    
+    document.getElementById("riskAssessment").innerHTML = riskHTML;
+    
+    // 建議控制措施
+    let recommendations = "<div class='recommendation'>";
+    
+    if (shortTermLevel === 4) {
+      recommendations += "<p><strong>立即危害控制措施：</strong></p>";
+      recommendations += "<ul>";
+      recommendations += "<li>立即停止作業並撤離人員</li>";
+      recommendations += "<li>使用自給式呼吸器(SCBA)</li>";
+      recommendations += "<li>加強局部排氣裝置</li>";
+      recommendations += "<li>考慮工程控制措施(密閉化、自動化)</li>";
+      recommendations += "</ul>";
+    }
+    
+    if (longTermLevel === 4 || OELLevel === 4) {
+      recommendations += "<p><strong>長期暴露控制措施：</strong></p>";
+      recommendations += "<ul>";
+      recommendations += "<li>改善通風系統，增加換氣率</li>";
+      recommendations += "<li>使用適當的呼吸防護具</li>";
+      recommendations += "<li>實施作業環境監測</li>";
+      recommendations += "<li>進行健康管理與教育訓練</li>";
+      recommendations += "<li>考慮替代較安全物質</li>";
+      recommendations += "</ul>";
+    } else if (longTermLevel === 3 || OELLevel === 3) {
+      recommendations += "<p><strong>中等風險控制措施：</strong></p>";
+      recommendations += "<ul>";
+      recommendations += "<li>定期維護通風系統</li>";
+      recommendations += "<li>提供適當個人防護裝備</li>";
+      recommendations += "<li>實施定期環境監測</li>";
+      recommendations += "<li>加強作業人員教育訓練</li>";
+      recommendations += "</ul>";
+    } else {
+      recommendations += "<p>當前暴露風險較低，建議維持現有控制措施並定期監測。</p>";
+    }
+    
+    recommendations += "</div>";
+    
+    document.getElementById("recommendations").innerHTML = recommendations;
+  }
+  
+  function plotConcentrationTrend(concentrations, times) {
+    // 使用Plotly繪製濃度趨勢圖
+    let data = [{
+      x: times,
+      y: concentrations,
+      type: 'scatter',
+      mode: 'lines+markers',
+      marker: {color: 'blue'},
+      line: {color: 'blue'}
+    }];
+    
+    let layout = {
+      title: '濃度隨時間變化趨勢',
+      xaxis: {
+        title: '時間 (分鐘)',
+        showgrid: true
+      },
+      yaxis: {
+        title: '濃度 (mg/m³)',
+        showgrid: true
+      }
+    };
+    
+    Plotly.newPlot('concentrationPlot', data, layout);
+  }
+</script>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>

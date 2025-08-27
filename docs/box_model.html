@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<style type="text/css">
+.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+}
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.sng {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.def {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+    <meta charset="UTF-8">
+    <title>化學品暴露風險評估工具</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .input-section {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 10px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .input-group label {
+            width: 200px;
+            font-weight: bold;
+        }
+        .input-group input, .input-group select {
+            width: 150px;
+            margin-right: 15px;
+        }
+        .button-group {
+            margin: 15px 0;
+        }
+        button {
+            padding: 8px 15px;
+            margin-right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result-section {
+            margin-top: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .risk-level-1 { background-color: #90EE90; }
+        .risk-level-2 { background-color: #FFFFE0; }
+        .risk-level-3 { background-color: #FFD580; }
+        .risk-level-4 { background-color: #FFB6C1; }
+        .chart-container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>化學品暴露風險評估工具</h1>
+        
+        <div class="input-section">
+            <h2>輸入參數</h2>
+            
+            <div class="input-group">
+                <label>化學品A 之室內初始濃度 CA,room,0 (mg/m³):</label>
+                <input type="number" id="CA_room0" value="0" step="0.001">
+                
+                <label>隨供氣系統進入之化學品A 濃度 CA,in (mg/m³):</label>
+                <input type="number" id="CA_in" value="0" step="0.001">
+            </div>
+            
+            <div class="input-group">
+                <label>化學品A 之散布速率 GA (mg/min):</label>
+                <input type="number" id="GA" value="10" step="0.001">
+                
+                <label>空間通風速率 Q (m³/min):</label>
+                <input type="number" id="Q" value="5" step="0.001">
+            </div>
+            
+            <div class="input-group">
+                <label>室內空氣體積 V (m³):</label>
+                <input type="number" id="V" value="50" step="0.001">
+                
+                <label>作業開始後時間 t (min):</label>
+                <input type="number" id="t" value="60" step="1">
+            </div>
+            
+            <h3>環境條件（非NTP條件時填寫）</h3>
+            <div class="input-group">
+                <label>溫度 (°C):</label>
+                <input type="number" id="temp" value="25" step="0.1">
+                
+                <label>壓力 (kPa):</label>
+                <input type="number" id="pressure" value="101.325" step="0.001">
+            </div>
+            
+            <h3>暴露限值</h3>
+            <div class="input-group">
+                <label>TWA-8小時 (mg/m³ 或 ppm):</label>
+                <input type="number" id="TWA" value="100" step="0.001">
+                <select id="TWA_unit">
+                    <option value="mg/m3">mg/m³</option>
+                    <option value="ppm">ppm</option>
+                </select>
+                
+                <label>分子量 (用於ppm轉換):</label>
+                <input type="number" id="molecular_weight" value="0" step="0.001">
+            </div>
+            
+            <div class="input-group">
+                <label>STEL-15分鐘 (mg/m³ 或 ppm):</label>
+                <input type="number" id="STEL" value="150" step="0.001">
+                <select id="STEL_unit">
+                    <option value="mg/m3">mg/m³</option>
+                    <option value="ppm">ppm</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>IDLH (mg/m³ 或 ppm):</label>
+                <input type="number" id="IDLH" value="500" step="0.001">
+                <select id="IDLH_unit">
+                    <option value="mg/m3">mg/m³</option>
+                    <option value="ppm">ppm</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>其他OEL (mg/m³ 或 ppm):</label>
+                <input type="number" id="OEL" value="0" step="0.001">
+                <select id="OEL_unit">
+                    <option value="mg/m3">mg/m³</option>
+                    <option value="ppm">ppm</option>
+                </select>
+            </div>
+            
+            <div class="button-group">
+                <button onclick="calculateConcentration(1)">計算時間濃度</button>
+                <button onclick="calculateConcentration(2)">計算穩態濃度</button>
+                <button onclick="calculateConcentration(3)">計算衰減濃度</button>
+                <button onclick="calculateConcentration(4)">計算平均暴露濃度</button>
+                <button onclick="window.print()">列印報告</button>
+            </div>
+        </div>
+        
+        <div id="result-section" class="result-section hidden">
+            <h2>計算結果</h2>
+            <div id="calculation-result"></div>
+            
+            <h2>風險評估結果</h2>
+            <div id="risk-assessment"></div>
+            
+            <h2>濃度時間趨勢圖</h2>
+            <div class="chart-container">
+                <canvas id="concentrationChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 單位轉換函數
+        function convertUnits(value, unit, molecularWeight, temp, pressure) {
+            if (unit === "ppm" && molecularWeight > 0) {
+                // 將ppm轉換為mg/m³
+                // 標準條件: 0°C, 101.325 kPa
+                const standardTemp = 273.15; // 0°C in Kelvin
+                const standardPressure = 101.325; // kPa
+                
+                // 使用者提供的條件
+                const userTempK = parseFloat(temp) + 273.15;
+                const userPressure = parseFloat(pressure);
+                
+                // 轉換公式: mg/m³ = (ppm × 分子量 × 壓力 × 標準溫度) / (氣體常數 × 溫度 × 標準壓力)
+                // 簡化公式: mg/m³ = ppm × (分子量/24.45) × (壓力/標準壓力) × (標準溫度/溫度)
+                const conversionFactor = (molecularWeight / 24.45) * (userPressure / standardPressure) * (standardTemp / userTempK);
+                return value * conversionFactor;
+            }
+            return value;
+        }
+
+        // 計算濃度函數
+        function calculateConcentration(mode) {
+            // 獲取輸入值
+            const CA_room0 = parseFloat(document.getElementById('CA_room0').value);
+            const CA_in = parseFloat(document.getElementById('CA_in').value);
+            const GA = parseFloat(document.getElementById('GA').value);
+            const Q = parseFloat(document.getElementById('Q').value);
+            const V = parseFloat(document.getElementById('V').value);
+            const t = parseFloat(document.getElementById('t').value);
+            const temp = parseFloat(document.getElementById('temp').value);
+            const pressure = parseFloat(document.getElementById('pressure').value);
+            const molecularWeight = parseFloat(document.getElementById('molecular_weight').value);
+            
+            let resultText = "";
+            let concentration = 0;
+            let timeData = [];
+            let concentrationData = [];
+            
+            // 根據選擇的模式計算濃度
+            if (mode === 1) {
+                // 時間濃度計算
+                resultText = "<h3>時間濃度計算結果</h3>";
+                resultText += `<p>計算公式: C(t) = C<sub>in</sub> + (G/Q) + [C<sub>0</sub> - C<sub>in</sub> - (G/Q)] × e<sup>(-Q×t/V)</sup></p>`;
+                
+                const term1 = CA_in + (GA / Q);
+                const term2 = CA_room0 - CA_in - (GA / Q);
+                const exponent = - (Q * t) / V;
+                
+                concentration = term1 + term2 * Math.exp(exponent);
+                resultText += `<p>在時間 t = ${t} 分鐘後的濃度: ${concentration.toFixed(4)} mg/m³</p>`;
+                
+                // 生成時間趨勢數據
+                for (let i = 0; i <= t; i++) {
+                    const currentConcentration = term1 + term2 * Math.exp(- (Q * i) / V);
+                    timeData.push(i);
+                    concentrationData.push(currentConcentration);
+                }
+            } 
+            else if (mode === 2) {
+                // 穩態濃度計算
+                resultText = "<h3>穩態濃度計算結果</h3>";
+                resultText += `<p>計算公式: C<sub>ss</sub> = C<sub>in</sub> + (G/Q)</p>`;
+                
+                concentration = CA_in + (GA / Q);
+                resultText += `<p>穩態濃度: ${concentration.toFixed(4)} mg/m³</p>`;
+                
+                // 生成時間趨勢數據
+                for (let i = 0; i <= t; i++) {
+                    timeData.push(i);
+                    concentrationData.push(concentration);
+                }
+            } 
+            else if (mode === 3) {
+                // 衰減濃度計算
+                resultText = "<h3>衰減濃度計算結果</h3>";
+                resultText += `<p>計算公式: C(t) = C<sub>0</sub> × e<sup>(-Q×t/V)</sup></p>`;
+                
+                concentration = CA_room0 * Math.exp(- (Q * t) / V);
+                resultText += `<p>在時間 t = ${t} 分鐘後的濃度: ${concentration.toFixed(4)} mg/m³</p>`;
+                
+                // 生成時間趨勢數據
+                for (let i = 0; i <= t; i++) {
+                    const currentConcentration = CA_room0 * Math.exp(- (Q * i) / V);
+                    timeData.push(i);
+                    concentrationData.push(currentConcentration);
+                }
+            } 
+            else if (mode === 4) {
+                // 平均暴露濃度計算
+                resultText = "<h3>平均暴露濃度計算結果</h3>";
+                resultText += `<p>計算公式: TWA = (暴露時間 × 空間濃度) / 480分鐘</p>`;
+                
+                const term1 = CA_in + (GA / Q);
+                const term2 = CA_room0 - CA_in - (GA / Q);
+                const exponent = - (Q * t) / V;
+                
+                const instantConcentration = term1 + term2 * Math.exp(exponent);
+                concentration = (t * instantConcentration) / 480;
+                
+                resultText += `<p>8小時時間加權平均濃度(TWA): ${concentration.toFixed(4)} mg/m³</p>`;
+                
+                // 生成時間趨勢數據
+                for (let i = 0; i <= t; i++) {
+                    const currentConcentration = term1 + term2 * Math.exp(- (Q * i) / V);
+                    timeData.push(i);
+                    concentrationData.push(currentConcentration);
+                }
+            }
+            
+            // 顯示計算結果
+            document.getElementById('calculation-result').innerHTML = resultText;
+            
+            // 進行風險評估
+            performRiskAssessment(concentration, t);
+            
+            // 繪製濃度時間趨勢圖
+            drawConcentrationChart(timeData, concentrationData);
+            
+            // 顯示結果區域
+            document.getElementById('result-section').classList.remove('hidden');
+        }
+        
+        // 風險評估函數
+        function performRiskAssessment(concentration, exposureTime) {
+            // 獲取暴露限值
+            const TWA_value = parseFloat(document.getElementById('TWA').value);
+            const TWA_unit = document.getElementById('TWA_unit').value;
+            const STEL_value = parseFloat(document.getElementById('STEL').value);
+            const STEL_unit = document.getElementById('STEL_unit').value;
+            const IDLH_value = parseFloat(document.getElementById('IDLH').value);
+            const IDLH_unit = document.getElementById('IDLH_unit').value;
+            const molecularWeight = parseFloat(document.getElementById('molecular_weight').value);
+            const temp = parseFloat(document.getElementById('temp').value);
+            const pressure = parseFloat(document.getElementById('pressure').value);
+            
+            // 單位轉換
+            const TWA_mg = convertUnits(TWA_value, TWA_unit, molecularWeight, temp, pressure);
+            const STEL_mg = convertUnits(STEL_value, STEL_unit, molecularWeight, temp, pressure);
+            const IDLH_mg = convertUnits(IDLH_value, IDLH_unit, molecularWeight, temp, pressure);
+            
+            // 計算STEL暴露
+            const STEL_exposure = (exposureTime * concentration) / 15;
+            
+            let riskHTML = "<table>";
+            riskHTML += "<tr><th>評估項目</th><th>計算值</th><th>限值</th><th>比較結果</th><th>風險等級</th></tr>";
+            
+            // IDLH評估
+            let idlhRiskLevel = "";
+            let idlhComparison = "";
+            if (IDLH_value > 0) {
+                if (concentration >= IDLH_mg) {
+                    idlhRiskLevel = "4";
+                    idlhComparison = "超過IDLH";
+                } else {
+                    idlhRiskLevel = "低於IDLH";
+                    idlhComparison = "安全";
+                }
+                riskHTML += `<tr><td>IDLH評估</td><td>${concentration.toFixed(4)} mg/m³</td><td>${IDLH_mg.toFixed(4)} mg/m³</td><td>${idlhComparison}</td><td class="risk-level-${idlhRiskLevel}">${idlhRiskLevel}</td></tr>`;
+            }
+            
+            // STEL評估
+            let stelRiskLevel = "";
+            let stelComparison = "";
+            if (STEL_value > 0) {
+                if (STEL_exposure >= STEL_mg) {
+                    stelRiskLevel = "4";
+                    stelComparison = "超過STEL";
+                } else {
+                    stelRiskLevel = "低於STEL";
+                    stelComparison = "安全";
+                }
+                riskHTML += `<tr><td>STEL評估 (15分鐘加權)</td><td>${STEL_exposure.toFixed(4)} mg/m³</td><td>${STEL_mg.toFixed(4)} mg/m³</td><td>${stelComparison}</td><td class="risk-level-${stelRiskLevel}">${stelRiskLevel}</td></tr>`;
+            }
+            
+            // TWA評估
+            let twaRiskLevel = "";
+            let twaComparison = "";
+            let managementLevel = "";
+            if (TWA_value > 0) {
+                const TWA_exposure = (exposureTime * concentration) / 480;
+                
+                if (TWA_exposure >= TWA_mg) {
+                    twaRiskLevel = "4";
+                    twaComparison = "超過TWA";
+                    managementLevel = "等級4: >1/2 TWA";
+                } else if (TWA_exposure >= TWA_mg * 0.5) {
+                    twaRiskLevel = "3";
+                    twaComparison = "低於TWA但高於1/2 TWA";
+                    managementLevel = "等級3: <1 TWA但>1/2 TWA";
+                } else if (TWA_exposure >= TWA_mg * 0.1) {
+                    twaRiskLevel = "2";
+                    twaComparison = "低於1/2 TWA但高於1/10 TWA";
+                    managementLevel = "等級2: <1/2 TWA但>1/10 TWA";
+                } else {
+                    twaRiskLevel = "1";
+                    twaComparison = "低於1/10 TWA";
+                    managementLevel = "等級1: <1/10 TWA";
+                }
+                riskHTML += `<tr><td>TWA評估 (8小時加權)</td><td>${TWA_exposure.toFixed(4)} mg/m³</td><td>${TWA_mg.toFixed(4)} mg/m³</td><td>${twaComparison}</td><td class="risk-level-${twaRiskLevel}">${twaRiskLevel} (${managementLevel})</td></tr>`;
+            }
+            
+            riskHTML += "</table>";
+            
+            // 添加控制建議
+            riskHTML += "<h3>風險控制建議</h3><ul>";
+            
+            if (idlhRiskLevel === "4" || stelRiskLevel === "4") {
+                riskHTML += "<li>立即危害生命健康！必須立即停止作業並撤離人員</li>";
+                riskHTML += "<li>需要工程控制（如局部排氣裝置）和個人防護裝備（如呼吸防護具）</li>";
+            } else if (twaRiskLevel === "4") {
+                riskHTML += "<li>超過暴露限值，需要採取控制措施</li>";
+                riskHTML += "<li>建議改進通風系統或減少暴露時間</li>";
+                riskHTML += "<li>考慮使用個人防護裝備</li>";
+            } else if (twaRiskLevel === "3") {
+                riskHTML += "<li>接近暴露限值，需要定期監測</li>";
+                riskHTML += "<li>考慮改進工程控制措施</li>";
+            } else if (twaRiskLevel === "2") {
+                riskHTML += "<li>暴露水平可接受，但仍需定期監測</li>";
+                riskHTML += "<li>保持良好的工作習慣和現場整潔</li>";
+            } else {
+                riskHTML += "<li>暴露水平很低，風險可忽略</li>";
+                riskHTML += "<li>維持現有控制措施</li>";
+            }
+            
+            riskHTML += "</ul>";
+            
+            document.getElementById('risk-assessment').innerHTML = riskHTML;
+        }
+        
+        // 繪製濃度時間趨勢圖
+        function drawConcentrationChart(timeData, concentrationData) {
+            const ctx = document.getElementById('concentrationChart').getContext('2d');
+            
+            // 如果已有圖表存在，則銷毀它
+            if (window.concentrationChartInstance) {
+                window.concentrationChartInstance.destroy();
+            }
+            
+            window.concentrationChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timeData,
+                    datasets: [{
+                        label: '濃度 (mg/m³)',
+                        data: concentrationData,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '時間 (分鐘)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '濃度 (mg/m³)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
