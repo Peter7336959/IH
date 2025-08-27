@@ -1,0 +1,447 @@
+{
+    "sources": [
+        {
+            "DOI": "10.1093/comjnl/27.2.97",
+            "ISSN": "0010-4620",
+            "URL": "https://doi.org/10.1093/comjnl/27.2.97",
+            "author": [
+                {
+                    "family": "Knuth",
+                    "given": "Donald E."
+                }
+            ],
+            "container-title": "Comput. J.",
+            "id": "knuth84",
+            "issue": "2",
+            "issued": {
+                "date-parts": [
+                    [
+                        1984,
+                        5
+                    ]
+                ]
+            },
+            "page": "97-111",
+            "publisher": "Oxford University Press, Inc.",
+            "publisher-place": "USA",
+            "title": "Literate programming",
+            "type": "article-journal",
+            "volume": "27"
+        },
+        {
+            "author": [
+                {
+                    "family": "Mulhausen,",
+                    "given": "John"
+                },
+                {
+                    "family": "Joseph Damiano,"
+                },
+                {
+                    "family": "Elizabeth L. Pullen"
+                }
+            ],
+            "collection-title": "CH7",
+            "container-title": "A strategy for assessing and managing occupational exposures",
+            "id": "mulhausen2006",
+            "issued": {
+                "date-parts": [
+                    [
+                        2006
+                    ]
+                ]
+            },
+            "title": "Further information gathering",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "Mulhausen",
+                    "given": "J"
+                },
+                {
+                    "family": "Damiano",
+                    "given": "J"
+                },
+                {
+                    "family": "Pullen",
+                    "given": "EL"
+                }
+            ],
+            "collection-title": "CH3",
+            "container-title": "A Strategy for Assessing and Managing Occupational Exposures",
+            "id": "mulhausen2006a",
+            "issued": {
+                "date-parts": [
+                    [
+                        2006
+                    ]
+                ]
+            },
+            "page": "2134",
+            "title": "Basic characterization and information gathering",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "Mulhausen",
+                    "given": "J"
+                },
+                {
+                    "family": "Damiano",
+                    "given": "J"
+                },
+                {
+                    "family": "Jahn",
+                    "given": "SD"
+                },
+                {
+                    "family": "Bullock",
+                    "given": "WH"
+                },
+                {
+                    "family": "Ignacio",
+                    "given": "JS"
+                }
+            ],
+            "collection-title": "CH2",
+            "container-title": "A Strategy for Assessing and Managing Occupational Exposures. 4th ed. Falls Church: AIHA",
+            "id": "mulhausen2015",
+            "issued": {
+                "date-parts": [
+                    [
+                        2015
+                    ]
+                ]
+            },
+            "page": "149",
+            "title": "Establishing the exposure assessment strategy",
+            "type": "article-journal"
+        },
+        {
+            "URL": "https://www.hse.gov.uk/pubns/books/hsg245.htm",
+            "author": [
+                {
+                    "family": "HSE"
+                }
+            ],
+            "id": "hse2004",
+            "issued": {
+                "date-parts": [
+                    [
+                        2004
+                    ]
+                ]
+            },
+            "title": "Investigating accidents and incidents",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "Mulhausen",
+                    "given": "J"
+                },
+                {
+                    "family": "Damiano",
+                    "given": "J"
+                },
+                {
+                    "family": "Pullen",
+                    "given": "EL"
+                }
+            ],
+            "collection-title": "CH3",
+            "container-title": "A Strategy for Assessing and Managing Occupational Exposures",
+            "id": "mulhausen2006b",
+            "issued": {
+                "date-parts": [
+                    [
+                        2006
+                    ]
+                ]
+            },
+            "page": "2134",
+            "title": "Basic characterization and information gathering",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "Mulhausen",
+                    "given": "John"
+                },
+                {
+                    "family": "Damiano",
+                    "given": "Joseph"
+                },
+                {
+                    "family": "Pullen",
+                    "given": "Elizabeth L"
+                }
+            ],
+            "collection-title": "CH5",
+            "container-title": "A strategy for assessing and managing occupational exposures",
+            "id": "mulhausen2006c",
+            "issued": {
+                "date-parts": [
+                    [
+                        2006
+                    ]
+                ]
+            },
+            "page": "7895",
+            "title": "Defining and judging exposure profiles",
+            "type": "article-journal",
+            "volume": "(CH5)"
+        },
+        {
+            "author": [
+                {
+                    "family": "Mulhausen",
+                    "given": "J"
+                },
+                {
+                    "family": "Damiano",
+                    "given": "J"
+                },
+                {
+                    "family": "Pullen",
+                    "given": "EL"
+                }
+            ],
+            "collection-title": "CH3",
+            "container-title": "A Strategy for Assessing and Managing Occupational Exposures",
+            "id": "mulhausen2006d",
+            "issued": {
+                "date-parts": [
+                    [
+                        2006
+                    ]
+                ]
+            },
+            "page": "2134",
+            "title": "Basic characterization and information gathering",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "Mulhausen",
+                    "given": "JR"
+                },
+                {
+                    "family": "Damiano",
+                    "given": "J"
+                }
+            ],
+            "collection-title": "CH8",
+            "container-title": "A strategy for assessing and managing occupational exposures",
+            "id": "mulhausen2006e",
+            "issued": {
+                "date-parts": [
+                    [
+                        2006
+                    ]
+                ]
+            },
+            "note": "Publisher: AIHA Press Farifax (VA)",
+            "page": "117-150",
+            "title": "Quantitative exposure data: Interpretation, decision making, and statistical tools",
+            "title-short": "Quantitative exposure data",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "Mulhausen",
+                    "given": "JR"
+                },
+                {
+                    "family": "Damiano",
+                    "given": "J"
+                }
+            ],
+            "collection-title": "CH8",
+            "container-title": "A strategy for assessing and managing occupational exposures",
+            "id": "mulhausen2006f",
+            "issued": {
+                "date-parts": [
+                    [
+                        2006
+                    ]
+                ]
+            },
+            "note": "Publisher: AIHA Press Farifax (VA)",
+            "page": "117-150",
+            "title": "Quantitative exposure data: Interpretation, decision making, and statistical tools",
+            "title-short": "Quantitative exposure data",
+            "type": "article-journal"
+        },
+        {
+            "URL": "https://www.osha.gov.tw/48110/48713/48735/60219/",
+            "author": [
+                {
+                    "family": "職安署"
+                }
+            ],
+            "id": "zhíanshu2020",
+            "issued": {
+                "date-parts": [
+                    [
+                        2020,
+                        4,
+                        24
+                    ]
+                ]
+            },
+            "language": "chinese",
+            "title": "作業環境監測指引",
+            "type": "article-journal"
+        },
+        {
+            "URL": "https://www.osha.gov.tw/48110/48713/48735/60219/",
+            "author": [
+                {
+                    "family": "職安署"
+                }
+            ],
+            "id": "職安署2020",
+            "issued": {
+                "date-parts": [
+                    [
+                        2020,
+                        4,
+                        24
+                    ]
+                ]
+            },
+            "language": "chinese",
+            "title": "作業環境監測指引",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "Silverstein",
+                    "given": "Bernard D."
+                },
+                {
+                    "family": "Ripple",
+                    "given": "Susan"
+                },
+                {
+                    "family": "Heidel",
+                    "given": "Donna S."
+                }
+            ],
+            "collection-title": "CH25",
+            "container-title": "A strategy for assessing and managing occupational exposures",
+            "id": "silverstein2015",
+            "issued": {
+                "date-parts": [
+                    [
+                        2015
+                    ]
+                ]
+            },
+            "title": "Occupational exposure and control banding",
+            "type": "article-journal"
+        },
+        {
+            "author": [
+                {
+                    "family": "Logan",
+                    "given": "PW"
+                },
+                {
+                    "family": "Ramachandran",
+                    "given": "G"
+                }
+            ],
+            "collection-title": "CH22",
+            "container-title": "A Strategy for Assessing and Managing Occupational Exposure",
+            "id": "logan2006",
+            "issued": {
+                "date-parts": [
+                    [
+                        2006
+                    ]
+                ]
+            },
+            "note": "Publisher: AIHA Fairfax, Va.",
+            "page": "239244",
+            "title": "Bayesian decision analysis for industrial hygiene",
+            "type": "article-journal"
+        },
+        {
+            "DOI": "10.6311/ISHM.201809_(351).0006",
+            "author": [
+                {
+                    "family": "蘇雅鈞"
+                }
+            ],
+            "container-title": "工業安全衛生",
+            "id": "蘇雅君2018",
+            "issue": "351",
+            "issued": {
+                "date-parts": [
+                    [
+                        2018,
+                        9
+                    ]
+                ]
+            },
+            "language": "繁體中文",
+            "note": "Publisher: 社團法人中華民國工業安全衛生協會",
+            "page": "46-59",
+            "title": "危害性化學品暴露評估與風險管理－半定量評估技術",
+            "type": "article-journal"
+        },
+        {
+            "URL": "https://ccb.osha.gov.tw/content/masterpage/Index.aspx",
+            "author": [
+                {
+                    "family": "職安署"
+                }
+            ],
+            "id": "職安署2025",
+            "issued": {
+                "date-parts": [
+                    [
+                        2025
+                    ]
+                ]
+            },
+            "language": "chinese",
+            "title": "化學品評估級分及管理",
+            "type": ""
+        },
+        {
+            "URL": "https://ccb.osha.gov.tw/content/masterpage/Index.aspx",
+            "author": [
+                {
+                    "family": "職安署"
+                }
+            ],
+            "id": "職安署2017",
+            "issued": {
+                "date-parts": [
+                    [
+                        2017,
+                        6,
+                        30
+                    ]
+                ]
+            },
+            "language": "chinese",
+            "title": "化學品分級管理運用手冊",
+            "type": "article-journal"
+        }
+    ],
+    "project_biblios": [
+        "references.bib"
+    ]
+}

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<style type="text/css">
+.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+}
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.sng {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.def {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暴露風險評估計算器</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .form-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .btn-print {
+            background-color: #27ae60;
+        }
+        .btn-print:hover {
+            background-color: #219653;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        .risk-level {
+            font-weight: bold;
+            padding: 5px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .risk-1 { background-color: #27ae60; color: white; }
+        .risk-2 { background-color: #f39c12; color: white; }
+        .risk-3 { background-color: #e67e22; color: white; }
+        .risk-4 { background-color: #e74c3c; color: white; }
+        .chart-container {
+            margin-top: 30px;
+            height: 400px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .recommendations {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 4px;
+        }
+        .recommendations ul {
+            padding-left: 20px;
+        }
+        .recommendations li {
+            margin-bottom: 8px;
+        }
+        .compact-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .compact-table th, .compact-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .compact-table th {
+            background-color: #f2f2f2;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .comparison-table th {
+            background-color: #f2f2f2;
+        }
+        .exceeded {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .within-limit {
+            color: #27ae60;
+        }
+        .button-group {
+            margin: 20px 0;
+            display: flex;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .container, .container * {
+                visibility: visible;
+            }
+            .container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .chart-container {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>飽和蒸氣壓模式暴露風險評估計算器</h1>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('calculator')">計算器</div>
+            <div class="tab" onclick="switchTab('instructions')">說明</div>
+        </div>
+        
+        <div id="calculator-tab" class="tab-content active">
+            <div class="form-section">
+                <div>
+                    <h3>基本參數</h3>
+                    <div class="form-group">
+                        <label for="vpa">飽和蒸氣壓VPA (mmHg):</label>
+                        <input type="number" id="vpa" step="0.01" value="10">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mw">分子量MW (g/mol):</label>
+                        <input type="number" id="mw" step="0.01" value="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="temp">溫度 (°C):</label>
+                        <input type="number" id="temp" value="25">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="pressure">壓力P (mmHg):</label>
+                        <input type="number" id="pressure" value="760">
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>暴露參數</h3>
+                    <div class="form-group">
+                        <label for="exposure_time">暴露時間 (分鐘):</label>
+                        <input type="number" id="exposure_time" value="480">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="twa">TWA 8小時值 (ppm或mg/m³):</label>
+                        <input type="number" id="twa" step="0.01" value="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="stel">STEL 15分鐘值 (ppm或mg/m³):</label>
+                        <input type="number" id="stel" step="0.01" value="150">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="idlh">IDLH 值 (ppm或mg/m³):</label>
+                        <input type="number" id="idlh" step="0.01" value="500">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="exposure_unit">暴露限值單位:</label>
+                        <select id="exposure_unit">
+                            <option value="ppm">ppm</option>
+                            <option value="mg_m3">mg/m³</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button onclick="calculate()">計算</button>
+                <button onclick="printReport()" class="btn-print no-print">列印報表</button>
+                <button onclick="exportToPDF()" class="btn-print no-print">匯出PDF</button>
+            </div>
+            
+            <div id="results" class="results" style="display: none;">
+                <h3>計算結果</h3>
+                <div id="concentration_results"></div>
+                
+                <h3>暴露限值比較</h3>
+                <table class="comparison-table" id="limit_comparison">
+                    <thead>
+                        <tr>
+                            <th>限值類型</th>
+                            <th>計算值</th>
+                            <th>限值</th>
+                            <th>比較結果</th>
+                            <th>風險等級</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 將由JavaScript動態生成 -->
+                    </tbody>
+                </table>
+                
+                <div id="risk_results"></div>
+                <div id="recommendations" class="recommendations"></div>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="concentrationChart"></canvas>
+            </div>
+        </div>
+        
+        <div id="instructions-tab" class="tab-content">
+            <h3>公式說明:</h3>
+            <p>1. 化學品A的空間濃度(ppm): CA = (VPA / P) * 10^6</p>
+            <p>2. ppm轉換為mg/m³: 濃度(mg/m³) = CA * MW / 24.45</p>
+            <p>3. 溫度壓力修正(若非NTP條件): 濃度(mg/m³) = CA * (MW * P) / (R * T)</p>
+            <p>其中:</p>
+            <ul>
+                <li>VPA: 化學物質A的蒸氣壓 (mmHg)</li>
+                <li>P: 大氣壓力 (mmHg)</li>
+                <li>MW: 分子量 (g/mol)</li>
+                <li>T: 絕對溫度 (K) = 攝氏溫度 + 273.15</li>
+                <li>R: 理想氣體常數 = 62.3637 L·mmHg/(mol·K)</li>
+            </ul>
+            
+            <h3>暴露限值說明:</h3>
+            <table class="compact-table">
+                <tr>
+                    <th>限值類型</th>
+                    <th>說明</th>
+                    <th>標準時間</th>
+                </tr>
+                <tr>
+                    <td>TWA</td>
+                    <td>8小時時間加權平均濃度</td>
+                    <td>480分鐘</td>
+                </tr>
+                <tr>
+                    <td>STEL</td>
+                    <td>15分鐘短期暴露限值</td>
+                    <td>15分鐘</td>
+                </tr>
+                <tr>
+                    <td>IDLH</td>
+                    <td>立即危害生命或健康濃度</td>
+                    <td>立即</td>
+                </tr>
+            </table>
+            
+            <h3>風險分級標準:</h3>
+            <table class="compact-table">
+                <tr>
+                    <th>風險等級</th>
+                    <th>說明</th>
+                    <th>標準</th>
+                </tr>
+                <tr>
+                    <td>等級1</td>
+                    <td>低風險</td>
+                    <td>低於TWA的1/10</td>
+                </tr>
+                <tr>
+                    <td>等級2</td>
+                    <td>中等風險</td>
+                    <td>低於TWA的1/2</td>
+                </tr>
+                <tr>
+                    <td>等級3</td>
+                    <td>高風險</td>
+                    <td>低於TWA</td>
+                </tr>
+                <tr>
+                    <td>等級4</td>
+                    <td>極高風險</td>
+                    <td>超過TWA或STEL或IDLH</td>
+                </tr>
+            </table>
+            
+            <h3>使用步驟:</h3>
+            <p>1. 在輸入參數區域填寫相應的數值</p>
+            <p>2. 點擊'計算'按鈕獲取結果</p>
+            <p>3. 查看濃度計算結果和風險評估</p>
+        </div>
+    </div>
+
+    <script>
+        // 全局變量存儲計算結果
+        let calculationResults = {};
+        
+        // 切換標籤頁
+        function switchTab(tabName) {
+            // 隱藏所有標籤內容
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 取消所有標籤的活動狀態
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 顯示選中的標籤內容
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // 設置選中的標籤為活動狀態
+            event.currentTarget.classList.add('active');
+        }
+        
+        // 初始化圖表
+        let concentrationChart = null;
+        
+        // 計算函數
+        function calculate() {
+            // 獲取輸入值
+            const vpa = parseFloat(document.getElementById('vpa').value);
+            const mw = parseFloat(document.getElementById('mw').value);
+            const temp = parseFloat(document.getElementById('temp').value);
+            const pressure = parseFloat(document.getElementById('pressure').value);
+            const exposureTime = parseFloat(document.getElementById('exposure_time').value);
+            const twaLimit = parseFloat(document.getElementById('twa').value);
+            const stelLimit = parseFloat(document.getElementById('stel').value);
+            const idlhLimit = parseFloat(document.getElementById('idlh').value);
+            const exposureUnit = document.getElementById('exposure_unit').value;
+            
+            // 轉換為絕對溫度
+            const temp_k = temp + 273.15;
+            
+            // 修正計算公式：CA = (VPA / P) * 10^6
+            const ca_ppm = (vpa / pressure) * Math.pow(10, 6);
+            
+            // 計算標準條件下的mg/m³濃度
+            const ca_mg_m3_std = ca_ppm * mw / 24.45;
+            
+            // 計算溫度壓力修正後的mg/m³濃度
+            // 使用R = 62.3637 L·mmHg/(mol·K)
+            const r_const = 62.3637;
+            const ca_mg_m3_corrected = ca_ppm * (mw * pressure) / (r_const * temp_k);
+            
+            // 計算TWA和STEL暴露濃度
+            let calculatedTWA, calculatedSTEL;
+            
+            if (exposureUnit === "ppm") {
+                calculatedTWA = (exposureTime * ca_ppm) / 480;
+                calculatedSTEL = (exposureTime * ca_ppm) / 15;
+            } else {
+                calculatedTWA = (exposureTime * ca_mg_m3_corrected) / 480;
+                calculatedSTEL = (exposureTime * ca_mg_m3_corrected) / 15;
+            }
+            
+            // 保存計算結果到全局變量
+            calculationResults = {
+                vpa, mw, temp, pressure, exposureTime,
+                twaLimit, stelLimit, idlhLimit, exposureUnit,
+                ca_ppm, ca_mg_m3_std, ca_mg_m3_corrected,
+                calculatedTWA, calculatedSTEL,
+                temp_k
+            };
+            
+            // 顯示濃度結果
+            document.getElementById('concentration_results').innerHTML = `
+                <p><strong>空間濃度(ppm):</strong> ${ca_ppm.toFixed(2)} ppm</p>
+                <p><strong>標準條件下濃度:</strong> ${ca_mg_m3_std.toFixed(2)} mg/m³</p>
+                <p><strong>修正後濃度:</strong> ${ca_mg_m3_corrected.toFixed(2)} mg/m³</p>
+                <p><strong>計算TWA值:</strong> ${calculatedTWA.toFixed(2)} ${exposureUnit}</p>
+                <p><strong>計算STEL值:</strong> ${calculatedSTEL.toFixed(2)} ${exposureUnit}</p>
+            `;
+            
+            // 風險評估 - 分別對IDLH、STEL、TWA進行比較
+            let concentrationForComparison = (exposureUnit === "ppm") ? ca_ppm : ca_mg_m3_corrected;
+            
+            // 計算各限值的比較結果
+            const idlhComparison = concentrationForComparison >= idlhLimit;
+            const stelComparison = calculatedSTEL >= stelLimit;
+            const twaComparison = calculatedTWA >= twaLimit;
+            const halfTwaComparison = calculatedTWA >= (twaLimit / 2);
+            const tenthTwaComparison = calculatedTWA >= (twaLimit / 10);
+            
+            // 生成比較表格
+            let comparisonHTML = "";
+            
+            // IDLH比較
+            comparisonHTML += `<tr>
+                <td>IDLH</td>
+                <td>${concentrationForComparison.toFixed(2)} ${exposureUnit}</td>
+                <td>${idlhLimit} ${exposureUnit}</td>
+                <td class="${idlhComparison ? 'exceeded' : 'within-limit'}">${idlhComparison ? '超過限值' : '符合限值'}</td>
+                <td class="${idlhComparison ? 'risk-4' : ''}">${idlhComparison ? '等級4' : '-'}</td>
+            </tr>`;
+            
+            // STEL比較
+            comparisonHTML += `<tr>
+                <td>STEL</td>
+                <td>${calculatedSTEL.toFixed(2)} ${exposureUnit}</td>
+                <td>${stelLimit} ${exposureUnit}</td>
+                <td class="${stelComparison ? 'exceeded' : 'within-limit'}">${stelComparison ? '超過限值' : '符合限值'}</td>
+                <td class="${stelComparison ? 'risk-4' : ''}">${stelComparison ? '等級4' : '-'}</td>
+            </tr>`;
+            
+            // TWA比較
+            comparisonHTML += `<tr>
+                <td>TWA</td>
+                <td>${calculatedTWA.toFixed(2)} ${exposureUnit}</td>
+                <td>${twaLimit} ${exposureUnit}</td>
+                <td class="${twaComparison ? 'exceeded' : 'within-limit'}">${twaComparison ? '超過限值' : '符合限值'}</td>
+                <td class="${twaComparison ? 'risk-4' : (halfTwaComparison ? 'risk-3' : (tenthTwaComparison ? 'risk-2' : 'risk-1'))}">
+                    ${twaComparison ? '等級4' : (halfTwaComparison ? '等級3' : (tenthTwaComparison ? '等級2' : '等級1'))}
+                </td>
+            </tr>`;
+            
+            document.querySelector("#limit_comparison tbody").innerHTML = comparisonHTML;
+            
+            // 確定整體風險等級
+            let overallRiskLevel = 1;
+            let riskDescription = "";
+            let recommendations = [];
+            
+            if (idlhComparison) {
+                overallRiskLevel = 4;
+                riskDescription = "極高風險：超過IDLH值，立即危害生命或健康";
+                recommendations = [
+                    "立即停止作業並撤離區域",
+                    "使用自給式呼吸器(SCBA)或最高級別防護",
+                    "實施工程控制：密閉化、局部排氣",
+                    "僅限受過專門訓練的人員操作"
+                ];
+            } else if (stelComparison) {
+                overallRiskLevel = 4;
+                riskDescription = "極高風險：超過STEL限值";
+                recommendations = [
+                    "減少暴露時間或增加休息時間",
+                    "使用適當的呼吸防護裝備",
+                    "改善通風條件",
+                    "實施暴露監測"
+                ];
+            } else if (twaComparison) {
+                overallRiskLevel = 4;
+                riskDescription = "極高風險：超過TWA限值";
+                recommendations = [
+                    "減少每日暴露時間",
+                    "使用工程控制措施（通風系統）",
+                    "使用個人防護裝備",
+                    "實施健康監測計劃"
+                ];
+            } else if (halfTwaComparison) {
+                overallRiskLevel = 3;
+                riskDescription = "高風險：超過1/2 TWA限值";
+                recommendations = [
+                    "考慮減少暴露時間",
+                    "確保良好的通風條件",
+                    "提供適當的個人防護裝備",
+                    "實施定期環境監測"
+                ];
+            } else if (tenthTwaComparison) {
+                overallRiskLevel = 2;
+                riskDescription = "中等風險：低於1/2 TWA但高於1/10 TWA";
+                recommendations = [
+                    "維持現有控制措施",
+                    "定期檢查通風系統效能",
+                    "提供相關危害通識教育訓練",
+                    "建立暴露紀錄"
+                ];
+            } else {
+                overallRiskLevel = 1;
+                riskDescription = "低風險：低於1/10 TWA限值";
+                recommendations = [
+                    "維持良好作業習慣",
+                    "定期進行安全檢查",
+                    "確保新進人員接受適當訓練",
+                    "持續監控作業環境"
+                ];
+            }
+            
+            // 保存風險評估結果
+            calculationResults.overallRiskLevel = overallRiskLevel;
+            calculationResults.riskDescription = riskDescription;
+            calculationResults.recommendations = recommendations;
+            
+            // 顯示風險評估結果
+            document.getElementById('risk_results').innerHTML = `
+                <h3>整體風險評估</h3>
+                <div class="risk-level risk-${overallRiskLevel}">
+                    <p><strong>風險等級: ${overallRiskLevel}</strong> - ${riskDescription}</p>
+                </div>
+            `;
+            
+            // 顯示建議控制措施
+            let recommendationsHTML = "<h3>建議控制措施:</h3><ul>";
+            recommendations.forEach(rec => {
+                recommendationsHTML += `<li>${rec}</li>`;
+            });
+            recommendationsHTML += "</ul>";
+            
+            document.getElementById('recommendations').innerHTML = recommendationsHTML;
+            
+            // 顯示結果區域
+            document.getElementById('results').style.display = 'block';
+            
+            // 更新圖表
+            updateChart(ca_mg_m3_std, ca_mg_m3_corrected, exposureUnit, twaLimit, stelLimit, idlhLimit, mw, calculatedTWA, calculatedSTEL, concentrationForComparison);
+        }
+        
+        // 更新圖表
+        function updateChart(stdConc, correctedConc, exposureUnit, twaLimit, stelLimit, idlhLimit, mw, calculatedTWA, calculatedSTEL, concentrationForComparison) {
+            const ctx = document.getElementById('concentrationChart').getContext('2d');
+            
+            // 計算暴露限值對應的mg/m³值
+            let twaMgM3, stelMgM3, idlhMgM3;
+            let calculatedTWAMgM3, calculatedSTELMgM3, concentrationForComparisonMgM3;
+            
+            if (exposureUnit === "ppm") {
+                twaMgM3 = twaLimit * mw / 24.45;
+                stelMgM3 = stelLimit * mw / 24.45;
+                idlhMgM3 = idlhLimit * mw / 24.45;
+                calculatedTWAMgM3 = calculatedTWA * mw / 24.45;
+                calculatedSTELMgM3 = calculatedSTEL * mw / 24.45;
+                concentrationForComparisonMgM3 = concentrationForComparison * mw / 24.45;
+            } else {
+                twaMgM3 = twaLimit;
+                stelMgM3 = stelLimit;
+                idlhMgM3 = idlhLimit;
+                calculatedTWAMgM3 = calculatedTWA;
+                calculatedSTELMgM3 = calculatedSTEL;
+                concentrationForComparisonMgM3 = concentrationForComparison;
+            }
+            
+            // 如果圖表已存在，銷毀它
+            if (concentrationChart) {
+                concentrationChart.destroy();
+            }
+            
+            // 創建新圖表 - 改為長條圖，顯示所有計算值
+            concentrationChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['空間濃度(ppm)', '標準條件濃度', '修正後濃度', '計算TWA值', '計算STEL值', 'IDLH比較值', 'TWA限值', 'STEL限值', 'IDLH限值'],
+                    datasets: [{
+                        label: '濃度值 (mg/m³)',
+                        data: [
+                            stdConc, // 空間濃度轉換為mg/m³
+                            stdConc, // 標準條件濃度
+                            correctedConc, // 修正後濃度
+                            calculatedTWAMgM3, // 計算TWA值
+                            calculatedSTELMgM3, // 計算STEL值
+                            concentrationForComparisonMgM3, // IDLH比較值
+                            twaMgM3, // TWA限值
+                            stelMgM3, // STEL限值
+                            idlhMgM3 // IDLH限值
+                        ],
+                        backgroundColor: [
+                            '#3498db', '#2ecc71', '#9b59b6', 
+                            '#e67e22', '#f1c40f', '#e74c3c',
+                            '#95a5a6', '#95a5a6', '#95a5a6'
+                        ],
+                        borderColor: [
+                            '#2980b9', '#27ae60', '#8e44ad',
+                            '#d35400', '#f39c12', '#c0392b',
+                            '#7f8c8d', '#7f8c8d', '#7f8c8d'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '濃度 (mg/m³)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '濃度與暴露限值比較'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y.toFixed(2)} mg/m³`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 列印報表
+        function printReport() {
+            window.print();
+        }
+        
+        // 匯出PDF
+        function exportToPDF() {
+            // 使用html2canvas將內容轉換為圖片
+            html2canvas(document.querySelector('.container')).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                
+                // 使用jsPDF創建PDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('暴露風險評估報告.pdf');
+            });
+        }
+    </script>
+</body>
+</html>

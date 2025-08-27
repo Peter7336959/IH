@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飽和蒸氣壓模式暴露濃度計算器</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6ecjVJ8UPtyqcgrGETiNCiEzPR5afG8CMSdsw//43HP79NYgSD9AGZMRK" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="number"], input[type="radio"] {
+            margin-right: 5px;
+        }
+        input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 8px 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #results {
+            margin-top: 25px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f0f8ff;
+        }
+        .formula {
+            color: #555;
+            font-size: 0.9em;
+            margin: 5px 0 10px 0;
+        }
+        .result-item h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: #004085;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>飽和蒸氣壓模式暴露濃度計算器</h1>
+
+        <div class="input-group">
+            <label for="va">化學品A的體積 ($$V_A$$, 單位 L):</label>
+            <input type="number" id="va" value="1">
+        </div>
+
+        <div class="input-group">
+            <label for="vt">系統總體積 ($$V_T$$, 單位 L):</label>
+            <input type="number" id="vt" value="1000">
+        </div>
+
+        <div class="input-group">
+            <label for="patm">系統壓力 ($$P_{atm}$$, 單位 atm):</label>
+            <input type="number" id="patm" value="1">
+        </div>
+
+        <div class="input-group">
+            <label for="mw">化學品分子量 (MW, 單位 g/mol):</label>
+            <input type="number" id="mw" value="78.11">
+        </div>
+
+        <hr>
+
+        <h3>濃度單位轉換條件</h3>
+        <div class="input-group">
+            <input type="radio" id="ntp" name="condition" value="ntp" checked onchange="toggleCustomConditions()">
+            <label for="ntp" style="display: inline;">標準溫壓 (NTP: 25°C, 1 atm)</label>
+        </div>
+        <div class="input-group">
+            <input type="radio" id="custom" name="condition" value="custom" onchange="toggleCustomConditions()">
+            <label for="custom" style="display: inline;">自訂溫壓</label>
+        </div>
+
+        <div id="custom-conditions" style="display:none; padding-left: 20px; border-left: 3px solid #007bff; margin-top:10px;">
+            <div class="input-group">
+                <label for="temp_c">自訂溫度 (T, 單位 °C):</label>
+                <input type="number" id="temp_c" value="25">
+            </div>
+            <div class="input-group">
+                <label for="pressure_atm">自訂壓力 (P, 單位 atm):</label>
+                <input type="number" id="pressure_atm" value="1">
+            </div>
+        </div>
+
+        <button onclick="calculate()">執行計算</button>
+
+        <div id="results">
+            <h2>計算結果</h2>
+            <p>請輸入參數後，點擊「執行計算」按鈕。</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleCustomConditions() {
+            const customConditionsDiv = document.getElementById('custom-conditions');
+            if (document.getElementById('custom').checked) {
+                customConditionsDiv.style.display = 'block';
+            } else {
+                customConditionsDiv.style.display = 'none';
+            }
+        }
+
+        function calculate() {
+            // 獲取輸入值
+            const va = parseFloat(document.getElementById('va').value);
+            const vt = parseFloat(document.getElementById('vt').value);
+            const patm = parseFloat(document.getElementById('patm').value);
+            const mw = parseFloat(document.getElementById('mw').value);
+            const condition = document.querySelector('input[name="condition"]:checked').value;
+
+            // 檢查輸入是否有效
+            if (isNaN(va) || isNaN(vt) || isNaN(patm) || isNaN(mw) || vt === 0) {
+                document.getElementById('results').innerHTML = `<h2>計算結果</h2><p style="color:red;">請確保所有輸入均為有效的數值，且系統總體積不為零。</p>`;
+                return;
+            }
+            
+            // --- 1. 計算飽和蒸氣壓 (VP_A) ---
+            const vp_a = (va / vt) * patm;
+
+            // --- 2. 計算空間濃度 (C_A) in ppm ---
+            const c_a_ppm = vp_a * 1e6;
+
+            // --- 3. 濃度單位轉換 (ppm to mg/m³) ---
+            let c_a_mg_m3;
+            let conditionText;
+            let conversionFormula;
+
+            if (condition === 'ntp') {
+                c_a_mg_m3 = c_a_ppm * (mw / 24.45);
+                conditionText = '在標準溫壓 (NTP: 25°C, 1 atm) 條件下';
+                conversionFormula = '$$ C_{\\text{mg/m}^3} = C_{\\text{ppm}} \\times \\frac{\\text{MW}}{24.45} $$';
+            } else {
+                const temp_c = parseFloat(document.getElementById('temp_c').value);
+                const pressure_atm = parseFloat(document.getElementById('pressure_atm').value);
+
+                if (isNaN(temp_c) || isNaN(pressure_atm)) {
+                    document.getElementById('results').innerHTML = `<h2>計算結果</h2><p style="color:red;">請輸入有效的自訂溫度和壓力。</p>`;
+                    return;
+                }
+
+                const R = 0.0821; // 理想氣體常數 L·atm/(mol·K)
+                const temp_k = temp_c + 273.15; // 攝氏轉克耳文
+
+                // 公式: C_A * (MW * P) / (R * T)
+                // 此處的 C_A 是體積濃度比例 (ppm / 1e6)
+                // 單位: (L/L) * (g/mol) * atm / (L*atm/mol*K) / K = g/L
+                // 結果 g/L * 1e6 = mg/m³
+                if (R * temp_k === 0) {
+                     document.getElementById('results').innerHTML = `<h2>計算結果</h2><p style="color:red;">溫度不可為絕對零度。</p>`;
+                    return;
+                }
+                c_a_mg_m3 = (c_a_ppm / 1e6) * (mw * pressure_atm) / (R * temp_k) * 1e6;
+                conditionText = `在自訂條件 (${temp_c}°C, ${pressure_atm} atm) 下`;
+                conversionFormula = '$$ C_{\\text{mg/m}^3} = \\frac{C_{\\text{ppm}}}{10^6} \\times \\frac{\\text{MW} \\times P}{R \\times T} \\times 10^6 $$';
+            }
+
+            // --- 4. 顯示結果 ---
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <h2>計算結果</h2>
+                <div class="result-item">
+                    <h3>化學品A的飽和蒸氣壓 ($$VP_A$$)</h3>
+                    <div class="formula">$$ VP_A = \\frac{V_A}{V_T} \\times P_{\\text{atm}} $$</div>
+                    <h4>${vp_a.toPrecision(6)} atm</h4>
+                </div>
+                <hr>
+                <div class="result-item">
+                    <h3>化學品A的空間濃度 ($$C_A$$)</h3>
+                    <div class="formula">$$ C_A = VP_A \\times 10^6 $$</div>
+                    <h4>${c_a_ppm.toLocaleString(undefined, {maximumFractionDigits: 2})} ppm</h4>
+                </div>
+                <hr>
+                <div class="result-item">
+                    <h3>濃度轉換 (mg/m³)</h3>
+                    <p>${conditionText}</p>
+                    <div class="formula">${conversionFormula}</div>
+                    <h4>${c_a_mg_m3.toLocaleString(undefined, {maximumFractionDigits: 2})} mg/m³</h4>
+                </div>
+            `;
+            
+            // 重新渲染新加入的 LaTeX 公式
+            renderMathInElement(resultsDiv);
+        }
+
+        // 頁面載入時手動觸發一次，確保初始介面正確
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleCustomConditions();
+        });
+    </script>
+</body>
+</html>

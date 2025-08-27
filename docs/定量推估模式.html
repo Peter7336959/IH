@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>五、定量推估模式 – OH-相似暴露族群之先期暴露風險評估技術手冊</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./先期暴露風險評估技術選用.html" rel="next">
+<link href="./先期暴露風險評估技術.html" rel="prev">
+<link href="./logo.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-a185852c63625fd9ffbdc57047c9a77e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-f0b74a63d70e354ff2f049fb72269aa7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./先期暴露風險評估技術.html">陸、先期暴露風險評估技術</a></li><li class="breadcrumb-item"><a href="./定量推估模式.html"><span class="chapter-title">五、定量推估模式</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">OH-相似暴露族群之先期暴露風險評估技術手冊</a> 
+        <div class="sidebar-tools-main">
+    <a href="./OH-相似暴露族群之先期暴露風險評估技術手冊.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">目錄</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">壹、 前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./目的.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">貳、目的</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./定義.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">參、定義</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./適用對象.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">肆、適用對象</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./先期暴露風險評估程序.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">伍、先期暴露風險評估程序</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./先期暴露風險評估技術.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">陸、先期暴露風險評估技術</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./定量推估模式.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">五、定量推估模式</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./先期暴露風險評估技術選用.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">先期暴露風險評估技術選用</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Summary</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><div class="quarto-margin-header"><div class="margin-header-item">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images\logo.png" class="img-fluid figure-img"></p>
+<figcaption>技術手冊</figcaption>
+</figure>
+</div>
+</div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#一.-作業場所無通風模式-zero-ventilation-model" id="toc-一.-作業場所無通風模式-zero-ventilation-model" class="nav-link active" data-scroll-target="#一.-作業場所無通風模式-zero-ventilation-model">(一). 作業場所無通風模式 (Zero Ventilation Model)</a></li>
+  <li><a href="#二.-蒸氣壓模式-vapor-pressure-model" id="toc-二.-蒸氣壓模式-vapor-pressure-model" class="nav-link" data-scroll-target="#二.-蒸氣壓模式-vapor-pressure-model">(二). 蒸氣壓模式 (Vapor Pressure Model)</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./先期暴露風險評估技術.html">陸、先期暴露風險評估技術</a></li><li class="breadcrumb-item"><a href="./定量推估模式.html"><span class="chapter-title">五、定量推估模式</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">五、定量推估模式</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>定量推估模式是運用數學與物理化學原理，對作業場所中的污染物傳輸與分佈進行模擬，從而預測勞工暴露濃度的科學工具。此方法不僅是暴露評估技術的重要分支，更是現代職業衛生管理從「被動應對」邁向「主動預測」的關鍵驅動力。相較於現場監測的「現場量測」，模式推估的核心價值在於其「事前預測」的能力，使其在多種情境下展現出無可取代的優勢。</p>
+<p>本節旨在闡述定量推估模式的理論基礎、應用科學與實務框架。這些模式大多基於質量平衡（Mass Balance）的物理原則，即在一個定義的空間內，「污染物濃度的累積變化」等於「生成量」加上「移入量」減去「移除量」。透過將作業場所的物理參數（如空間體積）、危害物特性（如蒸氣壓、分子量）、通風條件（如換氣率）及操作模式（如逸散率、作業時間）等資訊代入特定的數學公式，即可推估出作業環境中特定時間點或穩態下的危害物濃度。</p>
+<details>
+<p>儘管模式推估的結果屬於理論預測，但在缺乏實際監測數據時，它為初步定量評估提供了重要的科學依據。然而，模式的有效性高度依賴於輸入參數的品質，與使用者對其模型假設的理解。任何模式都是對複雜現實的簡化，其預測的準確性與其複雜度、參數的精確性及情境的適用性息息相關。因此，職業衛生專業人員在使用時，必須從單純的「工具操作者」提升為「模式思考者」，深刻理解「垃圾進，垃圾出（Garbage In, Garbage Out）」的原則，並持續運用專業判斷來評估輸入數據的合理性、選擇最適合的模式，以及詮釋最終結果的實際意義與不確定性。</p>
+<p>一個完整的模式推估工作流程，應包含以下步驟：</p>
+<ol type="1">
+<li>情境定義與參數收集：清晰定義評估目標與邊界條件，並收集所有必要的輸入參數。</li>
+<li>模式選擇：依據評估目的、可用數據與情境複雜度，選擇最合適的推估模式（詳見後續各節）。</li>
+<li>濃度推估：運用模式計算出暴露強度（濃度）。</li>
+<li>暴露實態描述：將推估的濃度與作業時間、頻率結合，計算出時間加權平均濃度（TWA）或短時間暴露濃度（STEL）。</li>
+<li>風險判定：將計算出的暴露值與相關的職業暴露限值（OELs）進行比較，以判定風險等級。</li>
+</ol>
+<p>為協助專業人員應用此技術，國內外皆已發展出相關指引與工具，如職安署的「危害性化-學品定量暴露評估推估模式」專刊(職安署, 2016)，與「勞工作業環境監測及暴露危害管理平台」(職安署, 2025a)，以及AIHA的「Mathematical Models for Estimating Occupational Exposure to Chemicals」專書(Ten Berge et al., 2009)，與IHMOD軟體(AIHA, 2025)等，皆是重要的參考與運用資源。以下各節將依循從簡至繁的原則，系統性地介紹作業場所無通風模式、飽和蒸氣壓模式、暴露空間模式（含完全混合模式）、二暴露區模式、渦流擴散模式及統計推估模式等，闡述其適用情境、數學原理、使用限制及應用範例，以期建構使用者完整的模式應用知識體系。</p>
+</details>
+<section id="一.-作業場所無通風模式-zero-ventilation-model" class="level3">
+<h3 class="anchored" data-anchor-id="一.-作業場所無通風模式-zero-ventilation-model">(一). 作業場所無通風模式 (Zero Ventilation Model)</h3>
+<details>
+<p>1.&nbsp;核心概念與假設</p>
+<p>此模式是定量暴露推估中最為基礎且保守的篩選工具，屬於第一層級（Tier I）模式。其核心概念極為單純，係基於質量平衡原理，在一個最壞情境（Worst-case Scenario）的假設下，估算污染物在密閉空間中的最終平均濃度。其基本假設為：</p>
+<p>(1). 零通風 (Zero Ventilation):完全忽略任何形式的機械通風或自然通風所帶來的稀釋效應。</p>
+<p>(2). 完全逸散與混合 (Complete Release &amp; Mixing):假設容器中的化學物質瞬間、完全地釋放到空氣中，並立即均勻混合於整個定義的空間體積內。</p>
+<p>(3). 無移除機制 (No Removal Sinks):不考慮污染物因表面沉降、化學反應、或被多孔材質吸附等任何形式的移除機制。</p>
+<p>2.&nbsp;適用情境與限制</p>
+<p>此模式的價值在於其極端的保守性，能快速提供一個暴露濃度的「絕對上限」。適用情境與使用限制如下：</p>
+<p>(1).&nbsp;初步風險篩選：作為暴露評估的第一道防線，快速篩選出可忽略的低風險情境。</p>
+<p>(2).&nbsp;最壞情境分析：評估密閉或局限空間內，因化學品意外洩漏（如容器破裂、翻倒）可能造成的最高濃度。</p>
+<p>(3).&nbsp;通風系統啟動前評估：可用於推估污染物在空間內充分混合後，啟動通風系統前的初始濃度。</p>
+<p>(4).&nbsp;高度保守：由於排除了所有移除與稀釋機制，其估算結果通常遠高於實際暴露濃度，不應用於精確的暴露實態判斷。</p>
+<p>(5).&nbsp;忽略時間與空間梯度：模式假設瞬間混合，無法描述污染物濃度隨時間與空間變化的動態過程。在洩漏初期，靠近源頭的濃度可能遠高於模式推估的平均值。</p>
+<p>3.&nbsp;模式數學公式</p>
+<p>其數學公式直接反映了質量平衡的概念：</p>
+<p><span class="math inline">C_A=\frac{M_A}{V}</span></p>
+<p>其中：C<sub>A​</sub>：揮發性化學品A於空氣中的平均濃度 (mg/m³ 或 ppm)； M<sub>A</sub>​：化學品A散布至空氣中的總質量 (mg)；V：無通風室內之空氣體積 (m³)。</p>
+</details>
+<p>4.&nbsp;情境應用</p>
+<p>此模式的應用邏輯非常明確：若在此最保守的推估下，濃度值仍遠低於相關的職業暴露限值（OELs），則職業衛生專業人員可具高度信心地將該SEG的優先序位降低，暫不投入更複雜的評估或監測資源。反之，若推估值接近或超過OELs，則此情境即被標示為潛在的高風險，必須啟動更進一步的行動。</p>
+<details>
+<p>(1).&nbsp;情境一 (特殊緊急事件 - 化學品容器破裂逸散)</p>
+<p>A.&nbsp;情境描述：於一間體積為 2.5 m³ 的藥品儲藏室內，一瓶裝有 6 克環氧乙烷的玻璃瓶因意外掉落而破裂，內容物瞬間全數釋出。需評估事件發生後，進入該空間人員可能面臨的暴露風險。（已知環氧乙烷 PEL-TWA=1 ppm, STEL=2 ppm, IDLH=444 ppm）</p>
+<p>B.&nbsp;暴露濃度推估：職安署建置之勞工作業環境監測及暴露危害管理平臺中，有此作業場所無通風模式可供試算使用，在無通風的作業空間中，推估汙染物逸散至作業場所空氣中之平均濃度值。</p>
+<p>可點擊下方按鈕使用揮發性化學品暴露濃度試算工具：</p>
+<p><a href="docs/MA.html" class="btn btn-primary" target="_blank">無通風推估模式-暴露濃度試算DS1</a></p>
+<p><a href="docs/MA1.html" class="btn btn-primary" target="_blank">無通風推估模式-暴露濃度試算DS2</a></p>
+</details>
+</section>
+<section id="二.-蒸氣壓模式-vapor-pressure-model" class="level3">
+<h3 class="anchored" data-anchor-id="二.-蒸氣壓模式-vapor-pressure-model">(二). 蒸氣壓模式 (Vapor Pressure Model)</h3>
+<details>
+<p>接續最保守的無通風模式，蒸氣壓模式是另一類基礎且重要的第一層級（Tier I）篩選工具。此類模式的評估基礎，從宏觀的空間體積轉向物質本身的微觀物理化學特性 - 蒸氣壓（Vapor Pressure, VP）。蒸氣壓是衡量液體揮發趨勢的內在屬性，它直接決定了在特定溫度下，液體在密閉系統中能達到的最大氣相濃度。</p>
+<p>因此，蒸氣壓模式的核心邏輯，即是利用此一物理極限，來推估多種「最壞情境」下的暴露濃度。與無通風模式假設「所有質量皆逸散」不同，蒸氣壓模式更專注於回答「在氣液平衡的條件下，濃度最高能達到多少？」這個問題。</p>
+<p>此模式家族因其原理的直觀性與參數的易得性（蒸氣壓為化學品SDS中的常見參數），而被廣泛應用於多種暴露情境的初步評估。本節將介紹其在不同應用場景下的主要分支，包含了飽和蒸氣壓模式、液體裝填釋放模式、開放液面蒸發模式、及加壓容器洩漏釋放速率等。透過理解並應用這些模式，職業衛生專業人員能夠針對不同的作業活動，快速地進行量化的初步風險判斷。</p>
+</details>
+<section id="飽和蒸氣壓模式-saturation-vapor-pressure-model" class="level4">
+<h4 class="anchored" data-anchor-id="飽和蒸氣壓模式-saturation-vapor-pressure-model">1.&nbsp;飽和蒸氣壓模式 (Saturation Vapor Pressure Model)</h4>
+<details>
+<p>(1). 核心概念</p>
+<p>此模式是蒸氣壓模式家族中最直接的應用，其原理根植於熱力學的氣液平衡觀念。在一個給定溫度、與外界隔絕的封閉系統中，揮發性液體會持續蒸發，使其蒸氣分子不斷進入上方氣相空間（Headspace）。與此同時，氣相中的蒸氣分子也會凝結返回液相。當蒸發速率與凝結速率相等時，系統便達到了動態平衡，此時氣相中的蒸氣濃度達到最大值，這個濃度即為該溫度下的飽和蒸氣壓濃度。此模式的精髓在於，它計算的是一個物理上的「理論天花板」，代表了在最理想的飽和條件下，可能出現的最高濃度。因此，它也被視為評估最壞暴露情境的有力工具。</p>
+<p>(2). 模式數學公式</p>
+<p>模式的計算涉及將物質的蒸氣壓（通常以壓力單位表示，如 mmHg 或 Pa）轉換為空氣中的濃度（如 ppm 或 mg/m³）。在使用此模式評估暴露濃度的實際應用上，會使用到以下幾個公式(如表 3)。</p>
+<ul>
+<li><p>化學品A的蒸氣壓(飽和)： <span class="math inline">VP_A=\frac{V_A}{V_T}*P_{atm}</span></p></li>
+<li><p>化學品A的空間濃度(ppm)： <span class="math inline">C_A=VP_A*10^6</span></p></li>
+<li><p>ppm轉換mg/m³ (若需要)： <span class="math inline">C_A*(\frac{MW}{24.45})</span></p></li>
+<li><p>溫度壓力修正 (若若非NTP條件)： <span class="math inline">C_A*\frac{(MW*P)}{R*T}</span></p></li>
+</ul>
+<p>其中：<span class="math inline">VP_A</span>：化學物質A的蒸氣壓，<span class="math inline">P_{atm}</span>：大氣壓力。，<span class="math inline">V_A</span>：A的體積。<span class="math inline">V_T</span>：系統空間的總體積。 MW：A的分子量g/mol，標準溫壓(NTP)下，1mol氣體的體積= 24.45 L。 實際溫度T（<span class="math inline">^oK</span>）和壓力P（atm） 來修正轉換係數。 R: 理想氣體常數 = 0.0821 L·atm/(mol· <span class="math inline">^oK</span>)</p>
+<p>(3).&nbsp;應用限制與專業考量</p>
+<p>飽和蒸氣壓模式的應用價值與其限制是一體兩面，使用者必須清晰地認識到以下特性：</p>
+<p>A.&nbsp;極端的保守性：此模式計算出的濃度明確代表了「最壞中的最壞情況」，它假設了一個完全封閉、無任何通風稀釋、且有足夠時間與液體達成完全飽和的理想狀態。在絕大多數的真實作業環境中，這些條件在日常工作環境中不太容易同時滿足。</p>
+<p>B.&nbsp;初步篩選的利器：正因為其極端的保守性，此模式成為一個絕佳的初步風險篩選工具。如果在此高估情境下，推估的飽和濃度仍然顯著低於職業暴露限值（OELs），那麼職業衛生師便可以具備高度信心，初步判定該暴露情境為可接受的低風險。</p>
+<p>C.&nbsp;觸發進階評估的警訊：反之，如果飽和蒸氣壓模式的推估結果超過或接近OEL，這便是一個強烈的警訊，意味著潛在風險不容忽視，必須採用更精確、更複雜的模式（如考慮通風的完全混合模式或二區模式）進行更深入的評估，以獲得更貼近現實的暴露預測。</p>
+<p>D.&nbsp;「十倍法則」的實務參考：根據經驗法則，即所謂的「十倍法則」（rule-of-ten）(吳亭儀 &amp; 陳友剛, 2019)，在通風不良或密閉空間中，實際的暴露濃度通常僅為理論飽和濃度的1%到10%。這個法則雖非精確科學，但為專業人員在詮釋極端保守的推估結果時，提供了一個更貼近現實的參考框架。</p>
+</details>
+<p>(4).&nbsp;情境應用</p>
+<p>A.&nbsp;情境1 &nbsp;(大面積揮發性化學品)</p>
+<ul>
+<li><p>情境描述：某農產品倉庫的維護人員，正考慮使用液態尼古丁（nicotine）作為大面積噴灑的殺蟲劑。作業人員在操作過程中，將可能近距離接觸尼古丁容器的開口。需評估其直接吸入容器開口上方氣體的潛在風險。（已知尼古丁蒸氣壓 0.08 mmHg，分子量 162.2 g/mol，我國PEL 0.5 mg/m³，NIOSH IDLH 5 mg/m³）</p></li>
+<li><p>暴露濃度推估(如表 4)</p></li>
+</ul>
+<p><a href="docs/SA.html" class="btn btn-primary" target="_blank">飽和蒸汽壓模式-暴露濃度試算GM1</a></p>
+<p><a href="docs/SA1.html" class="btn btn-primary" target="_blank">飽和蒸汽壓模式-暴露濃度試算DS2</a></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./先期暴露風險評估技術.html" class="pagination-link" aria-label="陸、先期暴露風險評估技術">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">陸、先期暴露風險評估技術</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./先期暴露風險評估技術選用.html" class="pagination-link" aria-label="先期暴露風險評估技術選用">
+        <span class="nav-page-text"><span class="chapter-title">先期暴露風險評估技術選用</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>prepared by Peter Ho. 114.08.25</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://peter7336959.github.io/EA/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://peter7336959.github.io/test2/index.html">
+      <i class="bi bi-safety" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

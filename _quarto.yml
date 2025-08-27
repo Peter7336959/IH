@@ -1,0 +1,66 @@
+project:
+  type: book
+  output-dir: docs
+
+toc: true
+number-sections: false
+number-depth: 1
+
+book:
+  title: "OH-相似暴露族群之先期暴露風險評估技術手冊"
+  author: "Peter Ho, Perng-Jy Tsai"
+  date: "2025/8/25"
+  page-navigation: true
+  downloads: pdf
+  cover-image: images\cover.png
+  page-footer: 
+    left: "prepared by Peter Ho. 114.08.25" 
+    right: 
+      - icon: github
+        href: https://peter7336959.github.io/EA/
+      - icon: safety 
+        href: https://peter7336959.github.io/test2/index.html
+  favicon: logo.png
+  keyword: "暴露評估, 暴露風險, 直讀式儀器, 臨時作業, 模式推估"
+
+
+  sidebar:
+    style: docked
+    background: light
+  
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - 目的.qmd
+    - 定義.qmd
+    - 適用對象.qmd
+    - 先期暴露風險評估程序.qmd
+    - part: 先期暴露風險評估技術.qmd
+      chapters: 
+        - 定量推估模式.qmd
+    - 先期暴露風險評估技術選用.qmd
+    - summary.qmd
+    - references.qmd
+
+
+format:
+  html:
+    theme:
+      - litera #Lumen #cosmo
+    font-size: 12px
+    html-math-method: katex
+  pdf:
+    documentclass: report
+    margin-left: 30mm
+    margin-right: 30mm
+    number-depth: 1
+
+editor: visual
+
+bibliography: references.bib
+highlight-style: pygments
+
+body-header: | 
+  This page brought to you by <https://example.com>
+margin-header: |
+  ![技術手冊](images\logo.png)

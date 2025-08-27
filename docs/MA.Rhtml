@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>揮發性化學品濃度計算器</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .units {
+            margin-left: 5px;
+            color: #7f8c8d;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #calculate {
+            background-color: #2ecc71;
+            color: white;
+        }
+        #calculate:hover {
+            background-color: #27ae60;
+        }
+        #reset {
+            background-color: #e74c3c;
+            color: white;
+        }
+        #reset:hover {
+            background-color: #c0392b;
+        }
+        #convert {
+            background-color: #3498db;
+            color: white;
+        }
+        #convert:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border-left: 5px solid #3498db;
+        }
+        .result h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .formula {
+            text-align: center;
+            margin: 25px 0;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        .note {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .concentration-warning {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .conversion-result {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+            display: none;
+        }
+        .input-hint {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>推估模式：作業場所無通風模式</h1>
+        
+        <div class="formula">
+            CA = MA / V
+        </div>
+        
+        <div class="form-group">
+            <label for="mass">化學品A散布至空氣中的總質量 (MA) <span class="units">(mg)</span></label>
+            <input type="number" id="mass" min="0" step="any" placeholder="輸入質量">
+        </div>
+        
+        <div class="form-group">
+            <label for="volume">無通風室內之空氣體積 (V) <span class="units">(m³)</span></label>
+            <input type="number" id="volume" min="0" step="any" placeholder="輸入體積">
+        </div>
+        
+        <div class="form-group">
+            <label for="molecular-weight">化學品分子量 <span class="units">(g/mol, 選填 - 用於ppm轉換)</span></label>
+            <input type="number" id="molecular-weight" min="0" step="any" placeholder="輸入分子量">
+            <div class="input-hint">僅在需要將mg/m³轉換為ppm時需要填寫</div>
+        </div>
+        
+        <div class="button-group">
+            <button id="calculate">計算濃度 (mg/m³)</button>
+            <button id="convert">轉換為 ppm</button>
+            <button id="reset">重置</button>
+        </div>
+        
+        <div id="result" class="result">
+            <h3>計算結果</h3>
+            <p>揮發性化學品A於空氣中的平均濃度 (CA): <span id="concentration">--</span></p>
+            <p id="warning"></p>
+            
+            <div id="conversion-result" class="conversion-result">
+                <h3>單位轉換結果</h3>
+                <p>濃度單位轉換: <span id="conversion-value">--</span></p>
+            </div>
+        </div>
+        
+        <div class="note">
+            <p><strong>使用說明:</strong></p>
+            <ul>
+                <li>輸入化學品A的總質量(MA)和空氣體積(V)，點擊"計算濃度"按鈕計算mg/m³</li>
+                <li>輸入分子量後，點擊"轉換為ppm"按鈕進行單位轉換</li>
+                <li>mg/m³轉ppm公式: ppm = (mg/m³) × (24.45 / 分子量)</li>
+                <li>ppm轉mg/m³公式: mg/m³ = ppm × (分子量 / 24.45)</li>
+            </ul>
+            <p><strong>單位說明:</strong> MA單位為毫克(mg)，V單位為立方米(m³)，CA單位為毫克/立方米(mg/m³)。</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculate');
+            const convertBtn = document.getElementById('convert');
+            const resetBtn = document.getElementById('reset');
+            const massInput = document.getElementById('mass');
+            const volumeInput = document.getElementById('volume');
+            const molecularWeightInput = document.getElementById('molecular-weight');
+            const resultDiv = document.getElementById('result');
+            const concentrationSpan = document.getElementById('concentration');
+            const warningPara = document.getElementById('warning');
+            const conversionResultDiv = document.getElementById('conversion-result');
+            const conversionValueSpan = document.getElementById('conversion-value');
+            
+            let currentConcentration = 0; // 儲存當前計算的濃度值
+            
+            // 計算按鈕點擊事件
+            calculateBtn.addEventListener('click', function() {
+                const mass = parseFloat(massInput.value);
+                const volume = parseFloat(volumeInput.value);
+                
+                // 驗證輸入
+                if (isNaN(mass) || isNaN(volume) || volume <= 0) {
+                    alert('請輸入有效的數值！確保質量和大於0的體積。');
+                    return;
+                }
+                
+                // 執行計算 CA = MA / V
+                currentConcentration = mass / volume;
+                
+                // 顯示結果
+                concentrationSpan.textContent = `${currentConcentration.toFixed(4)} mg/m³`;
+                
+                // 安全警告
+                if (currentConcentration > 100) {
+                    warningPara.textContent = '警告：濃度過高！請勿進入該空間並立即採取通風措施。';
+                    warningPara.className = 'concentration-warning';
+                } else if (currentConcentration > 50) {
+                    warningPara.textContent = '注意：濃度偏高。建議加強通風後再進入。';
+                    warningPara.className = 'concentration-warning';
+                } else {
+                    warningPara.textContent = '濃度在相對安全範圍內，但仍需保持適當通風。';
+                    warningPara.className = '';
+                }
+                
+                resultDiv.style.display = 'block';
+                conversionResultDiv.style.display = 'none';
+            });
+            
+            // 單位轉換按鈕點擊事件
+            convertBtn.addEventListener('click', function() {
+                const molecularWeight = parseFloat(molecularWeightInput.value);
+                
+                if (isNaN(currentConcentration) || currentConcentration <= 0) {
+                    alert('請先計算濃度值！');
+                    return;
+                }
+                
+                if (isNaN(molecularWeight) || molecularWeight <= 0) {
+                    alert('請輸入有效的分子量以進行單位轉換！');
+                    return;
+                }
+                
+                // 執行單位轉換: ppm = (mg/m³) × (24.45 / 分子量)
+                const ppmValue = currentConcentration * (24.45 / molecularWeight);
+                
+                // 顯示轉換結果
+                conversionValueSpan.textContent = `${ppmValue.toFixed(4)} ppm (分子量: ${molecularWeight} g/mol)`;
+                conversionResultDiv.style.display = 'block';
+            });
+            
+            // 重置按鈕點擊事件
+            resetBtn.addEventListener('click', function() {
+                massInput.value = '';
+                volumeInput.value = '';
+                molecularWeightInput.value = '';
+                resultDiv.style.display = 'none';
+                currentConcentration = 0;
+            });
+        });
+    </script>
+</body>
+</html>
