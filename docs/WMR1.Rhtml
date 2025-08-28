@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>WMR模式暴露濃度與風險評估計算器</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: "Microsoft JhengHei", sans-serif; margin: 20px; }
+    .container { display: flex; }
+    .input-panel { width: 65%; padding-right: 20px; }
+    .output-panel { width: 35%; }
+    .input-group { margin-bottom: 10px; }
+    label { display: inline-block; width: 180px; }
+    input, select { width: 120px; }
+    table { border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid black; padding: 5px; text-align: center; }
+    .hidden { display: none; }
+    #plotContainer { margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<h1>WMR模式暴露濃度與風險評估計算器</h1>
+
+<div class="container">
+  <div class="input-panel">
+    <div class="input-group">
+      <label for="modelSelect">選擇計算模式：</label>
+      <select id="modelSelect" onchange="toggleInputs()">
+        <option value="cyclic">週期性運轉時間濃度 (Cyclic Processes)</option>
+        <option value="backpressure">考慮背壓時間濃度 (Back Pressure)</option>
+        <option value="exponential">排放指數遞減時間濃度 (Exponential Decay)</option>
+      </select>
+    </div>
+
+    <div id="commonInputs">
+      <h3>基本參數</h3>
+      <div class="input-group">
+        <label for="V">房間體積 V (m³)：</label>
+        <input type="number" id="V" value="25">
+      </div>
+      <div class="input-group">
+        <label for="Q">通風量 Q (m³/min)：</label>
+        <input type="number" id="Q" value="1">
+      </div>
+      <div class="input-group">
+        <label for="C0">初始濃度 C₀ (mg/m³)：</label>
+        <input type="number" id="C0" value="0">
+      </div>
+      <div class="input-group">
+        <label for="Cin">進氣濃度 C_in (mg/m³)：</label>
+        <input type="number" id="Cin" value="0">
+      </div>
+      <div class="input-group">
+        <label for="G0">初始排放率 G₀ (mg/min)：</label>
+        <input type="number" id="G0" value="27">
+      </div>
+      <div class="input-group">
+        <label for="T0">初始溫度 T₀ (°C)：</label>
+        <input type="number" id="T0" value="23">
+      </div>
+      <div class="input-group">
+        <label for="dTdt">每分鐘升溫速率 dT/dt (°C/min)：</label>
+        <input type="number" id="dTdt" value="0.0167" step="0.001">
+      </div>
+      <div class="input-group">
+        <label for="t_total">總模擬時間 t (min)：</label>
+        <input type="number" id="t_total" value="480">
+      </div>
+    </div>
+
+    <div id="cyclicInputs" class="hidden">
+      <h3>週期性參數</h3>
+      <div class="input-group">
+        <label for="ton">運轉時間 (min)：</label>
+        <input type="number" id="ton" value="40">
+      </div>
+      <div class="input-group">
+        <label for="toff">停止時間 (min)：</label>
+        <input type="number" id="toff" value="20">
+      </div>
+    </div>
+
+    <div id="backpressureInputs" class="hidden">
+      <h3>背壓參數</h3>
+      <div class="input-group">
+        <label for="A">蒸發面積 A (m²)：</label>
+        <input type="number" id="A" value="100">
+      </div>
+      <div class="input-group">
+        <label for="MW">分子量 MW (g/mol)：</label>
+        <input type="number" id="MW" value="92">
+      </div>
+      <div class="input-group">
+        <label for="Pv">飽和蒸氣壓 P_v (mmHg)：</label>
+        <input type="number" id="Pv" value="20">
+      </div>
+      <div class="input-group">
+        <label for="Kt">質量傳遞係數 K_t (m/min)：</label>
+        <input type="number" id="Kt" value="0.267" step="0.001">
+      </div>
+    </div>
+
+    <div id="exponentialInputs" class="hidden">
+      <h3>指數遞減參數</h3>
+      <div class="input-group">
+        <label for="alpha">衰減常數 α (1/min)：</label>
+        <input type="number" id="alpha" value="0.15" step="0.01">
+      </div>
+      <div class="input-group">
+        <label for="M0">初始質量 M₀ (mg)：</label>
+        <input type="number" id="M0" value="38900">
+      </div>
+    </div>
+
+    <h3>暴露限值設定</h3>
+    <div class="input-group">
+      <label for="TWA_unit">TWA 單位：</label>
+      <select id="TWA_unit">
+        <option value="mg/m3">mg/m³</option>
+        <option value="ppm">ppm</option>
+      </select>
+      <input type="number" id="TWA_value" value="100" placeholder="TWA 值">
+    </div>
+    <div class="input-group">
+      <label for="STEL_unit">STEL 單位：</label>
+      <select id="STEL_unit">
+        <option value="mg/m3">mg/m³</option>
+        <option value="ppm">ppm</option>
+      </select>
+      <input type="number" id="STEL_value" value="150" placeholder="STEL 值">
+    </div>
+    <div class="input-group">
+      <label for="IDLH_unit">IDLH 單位：</label>
+      <select id="IDLH_unit">
+        <option value="mg/m3">mg/m³</option>
+        <option value="ppm">ppm</option>
+      </select>
+      <input type="number" id="IDLH_value" value="500" placeholder="IDLH 值">
+    </div>
+    <div class="input-group">
+      <label for="OEL_unit">OEL 單位：</label>
+      <select id="OEL_unit">
+        <option value="mg/m3">mg/m³</option>
+        <option value="ppm">ppm</option>
+      </select>
+      <input type="number" id="OEL_value" value="100" placeholder="OEL 值">
+    </div>
+
+    <button onclick="calculate()">計算</button>
+    <button onclick="window.print()">列印報告</button>
+  </div>
+
+  <div class="output-panel">
+    <img src="images/BOX.png" alt="暴露空間模式示意圖" style="max-width: 100%;">
+    <div id="results"></div>
+    <div id="plotContainer">
+      <canvas id="concentrationChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleInputs() {
+  const model = document.getElementById("modelSelect").value;
+  document.getElementById("cyclicInputs").classList.add("hidden");
+  document.getElementById("backpressureInputs").classList.add("hidden");
+  document.getElementById("exponentialInputs").classList.add("hidden");
+  if (model === "cyclic") document.getElementById("cyclicInputs").classList.remove("hidden");
+  if (model === "backpressure") document.getElementById("backpressureInputs").classList.remove("hidden");
+  if (model === "exponential") document.getElementById("exponentialInputs").classList.remove("hidden");
+}
+
+function calculate() {
+  const model = document.getElementById("modelSelect").value;
+  const V = parseFloat(document.getElementById("V").value);
+  const Q = parseFloat(document.getElementById("Q").value);
+  const C0 = parseFloat(document.getElementById("C0").value);
+  const Cin = parseFloat(document.getElementById("Cin").value);
+  const G0 = parseFloat(document.getElementById("G0").value);
+  const T0 = parseFloat(document.getElementById("T0").value);
+  const dTdt = parseFloat(document.getElementById("dTdt").value);
+  const t_total = parseInt(document.getElementById("t_total").value);
+
+  let concentrations = [];
+  let times = [];
+
+  if (model === "cyclic") {
+    const ton = parseInt(document.getElementById("ton").value);
+    const toff = parseInt(document.getElementById("toff").value);
+    concentrations = calculateCyclic(V, Q, C0, Cin, G0, T0, dTdt, ton, toff, t_total);
+  } else if (model === "backpressure") {
+    const A = parseFloat(document.getElementById("A").value);
+    const MW = parseFloat(document.getElementById("MW").value);
+    const Pv = parseFloat(document.getElementById("Pv").value);
+    const Kt = parseFloat(document.getElementById("Kt").value);
+    concentrations = calculateBackpressure(V, Q, C0, Cin, G0, T0, dTdt, A, MW, Pv, Kt, t_total);
+  } else if (model === "exponential") {
+    const alpha = parseFloat(document.getElementById("alpha").value);
+    const M0 = parseFloat(document.getElementById("M0").value);
+    concentrations = calculateExponential(V, Q, C0, Cin, G0, T0, dTdt, alpha, M0, t_total);
+  }
+
+  times = Array.from({length: t_total}, (_, i) => i + 1);
+  plotConcentration(times, concentrations);
+  assessRisk(concentrations);
+}
+
+function calculateCyclic(V, Q, C0, Cin, G0, T0, dTdt, ton, toff, t_total) {
+  let C = C0;
+  let concentrations = [];
+  for (let t = 1; t <= t_total; t++) {
+    const T = T0 + dTdt * t;
+    const G = G0 * Math.exp(0.05 * (T - T0)); // 假設溫度修正
+    const isOn = (t % (ton + toff)) <= ton && (t % (ton + toff)) !== 0;
+    const G_eff = isOn ? G : 0;
+    const dCdt = (Q * (Cin - C) + G_eff) / V;
+    C += dCdt;
+    concentrations.push(C);
+  }
+  return concentrations;
+}
+
+function calculateBackpressure(V, Q, C0, Cin, G0, T0, dTdt, A, MW, Pv, Kt, t_total) {
+  let C = C0;
+  let concentrations = [];
+  const R = 8.205e-5;
+  const Pv_atm = Pv / 760;
+  for (let t = 1; t <= t_total; t++) {
+    const T = T0 + dTdt * t;
+    const T_K = T + 273.15;
+    const Pvb = (C * T_K * 8.2e-5) / MW;
+    const G = 1000 * Kt * MW * A * (Pv_atm - Pvb) / (R * T_K);
+    const dCdt = (Q * (Cin - C) + G) / V;
+    C += dCdt;
+    concentrations.push(C);
+  }
+  return concentrations;
+}
+
+function calculateExponential(V, Q, C0, Cin, G0, T0, dTdt, alpha, M0, t_total) {
+  let C = C0;
+  let concentrations = [];
+  for (let t = 1; t <= t_total; t++) {
+    const T = T0 + dTdt * t;
+    const G = alpha * M0 * Math.exp(-alpha * t);
+    const dCdt = (Q * (Cin - C) + G) / V;
+    C += dCdt;
+    concentrations.push(C);
+  }
+  return concentrations;
+}
+
+function plotConcentration(times, concentrations) {
+  const ctx = document.getElementById('concentrationChart').getContext('2d');
+  if (window.concentrationChart) window.concentrationChart.destroy();
+  window.concentrationChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: times,
+      datasets: [{
+        label: '濃度 (mg/m³)',
+        data: concentrations,
+        borderColor: 'blue',
+        fill: false
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: { title: { display: true, text: '時間 (分鐘)' } },
+        y: { title: { display: true, text: '濃度 (mg/m³)' } }
+      }
+    }
+  });
+}
+
+function assessRisk(concentrations) {
+  const TWA_value = parseFloat(document.getElementById("TWA_value").value);
+  const STEL_value = parseFloat(document.getElementById("STEL_value").value);
+  const IDLH_value = parseFloat(document.getElementById("IDLH_value").value);
+  const OEL_value = parseFloat(document.getElementById("OEL_value").value);
+
+  const TWA_unit = document.getElementById("TWA_unit").value;
+  const STEL_unit = document.getElementById("STEL_unit").value;
+  const IDLH_unit = document.getElementById("IDLH_unit").value;
+  const OEL_unit = document.getElementById("OEL_unit").value;
+
+  // 假設全部轉換為 mg/m³（需依實際化學品調整）
+  const TWA_limit = TWA_unit === "ppm" ? TWA_value * 4 : TWA_value; // 假設轉換係數
+  const STEL_limit = STEL_unit === "ppm" ? STEL_value * 4 : STEL_value;
+  const IDLH_limit = IDLH_unit === "ppm" ? IDLH_value * 4 : IDLH_value;
+  const OEL_limit = OEL_unit === "ppm" ? OEL_value * 4 : OEL_value;
+
+  // 計算 TWA（8小時平均）
+  const TWA_exp = concentrations.slice(0, 480).reduce((sum, c) => sum + c, 0) / 480;
+
+  // 計算 STEL（15分鐘滑動平均最大值）
+  let STEL_exp = 0;
+  for (let i = 0; i <= concentrations.length - 15; i++) {
+    const avg = concentrations.slice(i, i + 15).reduce((a, b) => a + b, 0) / 15;
+    if (avg > STEL_exp) STEL_exp = avg;
+  }
+
+  // 風險分級
+  let riskIDLH = "等級 1：安全";
+  if (concentrations.some(c => c >= IDLH_limit)) riskIDLH = "等級 4：超過IDLH，立即危害生命";
+
+  let riskSTEL = "等級 1：安全";
+  if (STEL_exp >= STEL_limit) riskSTEL = "等級 4：超過STEL，短期暴露風險高";
+
+  let riskTWA = "等級 1：低於1/10 TWA";
+  if (TWA_exp >= OEL_limit) riskTWA = "等級 4：超過OEL/TWA";
+  else if (TWA_exp >= OEL_limit / 2) riskTWA = "等級 3：低於OEL但高於1/2";
+  else if (TWA_exp >= OEL_limit / 10) riskTWA = "等級 2：低於1/2 OEL但高於1/10";
+  else riskTWA = "等級 1：低於1/10 OEL";
+
+  // 輸出結果
+  document.getElementById("results").innerHTML = `
+    <h3>暴露評估結果</h3>
+    <p>TWA (8小時平均): ${TWA_exp.toFixed(2)} mg/m³</p>
+    <p>STEL (15分鐘最大平均): ${STEL_exp.toFixed(2)} mg/m³</p>
+    <h4>風險分級</h4>
+    <table>
+      <tr><th>指標</th><th>風險等級</th></tr>
+      <tr><td>IDLH</td><td>${riskIDLH}</td></tr>
+      <tr><td>STEL</td><td>${riskSTEL}</td></tr>
+      <tr><td>TWA/OEL</td><td>${riskTWA}</td></tr>
+    </table>
+    <h4>建議控制措施</h4>
+    <ul>
+      <li>加強局部排氣</li>
+      <li>佩戴呼吸防護具</li>
+      <li>減少暴露時間</li>
+      <li>定期環境監測</li>
+    </ul>
+  `;
+}
+</script>
+
+</body>
+</html>
