@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>完全混合模式暴露浓度计算与风险评估</title>
+    <title>完全混合模式暴露濃度計算與風險評估</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -96,24 +96,24 @@
 <body>
 
 <div class="main-content">
-    <h1>完全混合模式暴露浓度计算与风险评估</h1>
+    <h1>完全混合模式暴露濃度計算與風險評估</h1>
     
     <div class="form-section">
-        <h2>基本参数设定</h2>
+        <h2>基本參數設定</h2>
         <div class="input-group">
-            <label for="room_volume">房间体积 V (m³):</label>
+            <label for="room_volume">房間體積 V (m³):</label>
             <input type="number" id="room_volume" value="50" step="0.1">
         </div>
         <div class="input-group">
-            <label for="ventilation_rate">通风率 Q (m³/min):</label>
+            <label for="ventilation_rate">通風率 Q (m³/min):</label>
             <input type="number" id="ventilation_rate" value="5" step="0.1">
         </div>
         <div class="input-group">
-            <label for="simulation_time">模拟时间 (分钟):</label>
+            <label for="simulation_time">模擬時間 (分鐘):</label>
             <input type="number" id="simulation_time" value="480" step="1">
         </div>
         <div class="input-group">
-            <label for="temperature">温度 T (°C):</label>
+            <label for="temperature">溫度 T (°C):</label>
             <input type="number" id="temperature" value="25" step="0.1">
         </div>
         <div class="input-group">
@@ -123,9 +123,9 @@
     </div>
     
     <div class="form-section">
-        <h2>暴露限值设定</h2>
+        <h2>暴露限值設定</h2>
         <div class="input-group">
-            <label for="tw_limit">TWA (8小时) 限值:</label>
+            <label for="tw_limit">TWA (8小時) 限值:</label>
             <input type="number" id="tw_limit" value="100" step="0.1">
             <select id="tw_unit">
                 <option value="mg_m3">mg/m³</option>
@@ -133,7 +133,7 @@
             </select>
         </div>
         <div class="input-group">
-            <label for="stel_limit">STEL (15分钟) 限值:</label>
+            <label for="stel_limit">STEL (15分鐘) 限值:</label>
             <input type="number" id="stel_limit" value="150" step="0.1">
             <select id="stel_unit">
                 <option value="mg_m3">mg/m³</option>
@@ -159,120 +159,109 @@
     </div>
     
     <div class="form-section">
-        <h2>计算功能选择</h2>
+        <h2>計算功能選擇</h2>
         <select id="calculation_mode" onchange="showFormula()">
-            <option value="periodic">功能1：周期性运转时间浓度</option>
-            <option value="backpressure">功能2：考虑背压时间浓度</option>
-            <option value="exponential">功能3：排放指数递减时间浓度</option>
+            <option value="periodic">功能1：週期性運轉時間濃度</option>
+            <option value="backpressure">功能2：考慮背壓時間濃度</option>
+            <option value="exponential">功能3：排放指數遞減時間濃度</option>
         </select>
         
         <div id="formula_display" style="margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
-            <p>选择计算模式后显示公式</p>
+            <p>選擇計算模式後顯示公式</p>
         </div>
         
         <div id="periodic_params" class="mode-params" style="display: none; margin-top: 15px;">
-            <h3>周期性运转参数</h3>
+            <h3>週期性運轉參數</h3>
             <div class="input-group">
                 <label for="emission_rate">排放率 G (mg/min):</label>
                 <input type="number" id="emission_rate" value="1000" step="1">
             </div>
             <div class="input-group">
-                <label for="cycle_on">运转时间 (分钟):</label>
+                <label for="cycle_on">運轉時間 (分鐘):</label>
                 <input type="number" id="cycle_on" value="30" step="1">
             </div>
             <div class="input-group">
-                <label for="cycle_off">停止时间 (分钟):</label>
+                <label for="cycle_off">停止時間 (分鐘):</label>
                 <input type="number" id="cycle_off" value="30" step="1">
             </div>
         </div>
         
         <div id="backpressure_params" class="mode-params" style="display: none; margin-top: 15px;">
-            <h3>背压效应参数</h3>
+            <h3>背壓效應參數</h3>
             <div class="input-group">
-                <label for="area">蒸发面积 A (m²):</label>
+                <label for="area">蒸發面積 A (m²):</label>
                 <input type="number" id="area" value="2" step="0.1">
             </div>
             <div class="input-group">
-                <label for="saturation_vapor_pressure">饱和蒸气压 Pv (Pa):</label>
+                <label for="saturation_vapor_pressure">飽和蒸氣壓 Pv (Pa):</label>
                 <input type="number" id="saturation_vapor_pressure" value="2000" step="1">
             </div>
             <div class="input-group">
-                <label for="initial_concentration">初始浓度 C0 (mg/m³):</label>
+                <label for="initial_concentration">初始濃度 C0 (mg/m³):</label>
                 <input type="number" id="initial_concentration" value="0" step="0.1">
             </div>
         </div>
         
         <div id="exponential_params" class="mode-params" style="display: none; margin-top: 15px;">
-            <h3>指数递减参数</h3>
+            <h3>指數遞減參數</h3>
             <div class="input-group">
                 <label for="initial_emission">初始排放率 G0 (mg/min):</label>
                 <input type="number" id="initial_emission" value="1000" step="1">
             </div>
             <div class="input-group">
-                <label for="surface_volume_ratio">表面积体积比 SA/VOL:</label>
+                <label for="surface_volume_ratio">表面積體積比 SA/VOL:</label>
                 <input type="number" id="surface_volume_ratio" value="0.1" step="0.01">
             </div>
             <div class="input-group">
-                <label for="initial_mass">初始质量 M0 (mg):</label>
+                <label for="initial_mass">初始質量 M0 (mg):</label>
                 <input type="number" id="initial_mass" value="5000" step="1">
             </div>
         </div>
         
-        <button onclick="calculate()">计算</button>
-        <button id="print" onclick="window.print()">列印报告</button>
+        <button onclick="calculate()">計算</button>
+        <button id="print" onclick="window.print()">列印報告</button>
     </div>
     
     <div id="results" style="display: none;">
-        <h2>计算结果</h2>
+        <h2>計算結果</h2>
         <div id="concentration_plot">
             <canvas id="chart"></canvas>
         </div>
         
-        <h3>暴露风险评估</h3>
+        <h3>暴露風險評估</h3>
         <table id="risk_table">
             <tr>
-                <th>暴露指标</th>
+                <th>暴露指標</th>
                 <th>限值</th>
-                <th>计算值</th>
-                <th>风险等级</th>
-                <th>说明</th>
+                <th>計算值</th>
+                <th>風險等級</th>
+                <th>說明</th>
             </tr>
         </table>
         
-        <h3>建议控制措施</h3>
+        <h3>建議控制措施</h3>
         <div id="control_measures"></div>
     </div>
 </div>
 
 <div class="sidebar">
-    <h2>暴露空间模式示意图</h2>
-    <div style="background-color: #e8f4f8; padding: 20px; border-radius: 8px; text-align: center;">
-        <div style="border: 2px solid #3498db; width: 200px; height: 150px; margin: 0 auto; position: relative;">
-            <div style="position: absolute; top: 10px; left: 10px; font-size: 12px;">通风入口</div>
-            <div style="position: absolute; bottom: 10px; right: 10px; font-size: 12px;">通风出口</div>
-            <div style="position: absolute; bottom: 40px; left: 80px; width: 40px; height: 40px; background-color: #e74c3c; border-radius: 50%;"></div>
-            <div style="position: absolute; bottom: 45px; left: 85px; color: white; font-size: 12px;">排放源</div>
-        </div>
-        <p style="margin-top: 15px; font-size: 14px;">
-            完全混合模式假设室内空气瞬间完全混合，<br>
-            浓度在整个空间内均匀分布。
-        </p>
-    </div>
+    <h2>暴露空間模式示意圖</h2>
+    <img src="images/BOX.png" alt="暴露空間模式示意圖" style="max-width: 100%;">
     
     <div style="margin-top: 20px; padding: 15px; background-color: #fff4e6; border-radius: 8px;">
-        <h3>风险等级说明</h3>
-        <p><span style="background-color: #90EE90; padding: 2px 5px;">等级 1</span>: 低风险</p>
-        <p><span style="background-color: #FFFFE0; padding: 2px 5px;">等级 2</span>: 中等风险</p>
-        <p><span style="background-color: #FFD580; padding: 2px 5px;">等级 3</span>: 高风险</p>
-        <p><span style="background-color: #FF6347; padding: 2px 5px;">等级 4</span>: 极高风险</p>
+        <h3>風險等級說明</h3>
+        <p><span style="background-color: #90EE90; padding: 2px 5px;">等級 1</span>: 低風險</p>
+        <p><span style="background-color: #FFFFE0; padding: 2px 5px;">等級 2</span>: 中等風險</p>
+        <p><span style="background-color: #FFD580; padding: 2px 5px;">等級 3</span>: 高風險</p>
+        <p><span style="background-color: #FF6347; padding: 2px 5px;">等級 4</span>: 極高風險</p>
     </div>
 </div>
 
 <script>
-// 全局变量用于存储图表对象
+// 全域變數用於儲存圖表物件
 let concentrationChart = null;
 
-// 显示所选模式的公式和参数
+// 顯示所選模式的公式和參數
 function showFormula() {
     var mode = document.getElementById("calculation_mode").value;
     document.querySelectorAll(".mode-params").forEach(function(el) {
@@ -281,20 +270,20 @@ function showFormula() {
     
     if (mode === "periodic") {
         document.getElementById("formula_display").innerHTML = 
-            "<p><strong>周期性运转公式：</strong></p>" +
-            "<p>排放阶段: C(t) = G (1 - e^{-Q/V * t})</p>" +
-            "<p>衰减阶段: C(t) = C0 · e^{-Q/V * t}</p>";
+            "<p><strong>週期性運轉公式：</strong></p>" +
+            "<p>排放階段: C(t) = G (1 - e^{-Q/V * t})</p>" +
+            "<p>衰減階段: C(t) = C0 · e^{-Q/V * t}</p>";
         document.getElementById("periodic_params").style.display = "block";
     } else if (mode === "backpressure") {
         document.getElementById("formula_display").innerHTML = 
-            "<p><strong>背压效应公式：</strong></p>" +
+            "<p><strong>背壓效應公式：</strong></p>" +
             "<p>G = 1000 ⋅ Kt ⋅ MW ⋅ A ⋅ (Pv − PvB) / (R ⋅ TL)</p>" +
             "<p>Kt = 0.5 ⋅ (18.0/MW)^{1/3}</p>" +
             "<p>PvB = C ⋅ Tair ⋅ 8.2 × 10^{-5} / MW</p>";
         document.getElementById("backpressure_params").style.display = "block";
     } else if (mode === "exponential") {
         document.getElementById("formula_display").innerHTML = 
-            "<p><strong>指数递减公式：</strong></p>" +
+            "<p><strong>指數遞減公式：</strong></p>" +
             "<p>G(t) = G0 × exp(−αt)</p>" +
             "<p>α = 0.000524Pv + 0.0108 ⋅ SA/VOL</p>" +
             "<p>C(t) = [αM0/(αV - Q)] [exp(-Q/V t) − exp(−αt)]</p>";
@@ -302,34 +291,34 @@ function showFormula() {
     }
 }
 
-// 温度修正排放率函数
+// 溫度修正排放率函數
 function temperatureAdjustedEmission(baseEmission, temperature) {
     // 使用Clausius-Clapeyron方程估算
     return baseEmission * Math.exp(4660 * (1/294.3 - 1/(temperature + 273.15)));
 }
 
-// 主计算函数
+// 主計算函數
 function calculate() {
-    // 获取基本参数
+    // 獲取基本參數
     var V = parseFloat(document.getElementById("room_volume").value);
     var Q = parseFloat(document.getElementById("ventilation_rate").value);
     var simTime = parseInt(document.getElementById("simulation_time").value);
     var T = parseFloat(document.getElementById("temperature").value);
     var MW = parseFloat(document.getElementById("molecular_weight").value);
     
-    // 获取模式特定参数
+    // 獲取模式特定參數
     var mode = document.getElementById("calculation_mode").value;
     var concentrations = [];
     var times = [];
     
-    // 根据选择的模式计算浓度
+    // 根據選擇的模式計算濃度
     if (mode === "periodic") {
         var G = parseFloat(document.getElementById("emission_rate").value);
         var cycleOn = parseInt(document.getElementById("cycle_on").value);
         var cycleOff = parseInt(document.getElementById("cycle_off").value);
         var cycleTotal = cycleOn + cycleOff;
         
-        // 温度修正排放率
+        // 溫度修正排放率
         G = temperatureAdjustedEmission(G, T);
         
         var C = 0;
@@ -338,10 +327,10 @@ function calculate() {
             if (cyclePosition === 0) cyclePosition = cycleTotal;
             
             if (cyclePosition <= cycleOn) {
-                // 排放阶段
+                // 排放階段
                 C = G * (1 - Math.exp(-Q/V * 1)) + C * Math.exp(-Q/V * 1);
             } else {
-                // 衰减阶段
+                // 衰減階段
                 C = C * Math.exp(-Q/V * 1);
             }
             concentrations.push(C);
@@ -352,22 +341,22 @@ function calculate() {
         var Pv = parseFloat(document.getElementById("saturation_vapor_pressure").value);
         var C0 = parseFloat(document.getElementById("initial_concentration").value);
         
-        // 计算质量传递系数
+        // 計算質量傳遞係數
         var Kt = 0.5 * Math.pow(18.0/MW, 1/3);
-        var R = 8.314; // 气体常数
+        var R = 8.314; // 氣體常數
         
         var C = C0;
         for (var t = 1; t <= simTime; t++) {
-            // 计算背压
+            // 計算背壓
             var PvB = C * (T + 273.15) * 8.2e-5 / MW;
             
-            // 计算排放率
+            // 計算排放率
             var G = 1000 * Kt * MW * A * (Pv - PvB) / (R * (T + 273.15));
             
-            // 温度修正排放率
+            // 溫度修正排放率
             G = temperatureAdjustedEmission(G, T);
             
-            // 计算浓度
+            // 計算濃度
             C = G * (1 - Math.exp(-Q/V * 1)) + C * Math.exp(-Q/V * 1);
             concentrations.push(C);
             times.push(t);
@@ -378,22 +367,22 @@ function calculate() {
         var M0 = parseFloat(document.getElementById("initial_mass").value);
         var Pv = parseFloat(document.getElementById("saturation_vapor_pressure").value);
         
-        // 温度修正初始排放率
+        // 溫度修正初始排放率
         G0 = temperatureAdjustedEmission(G0, T);
         
-        // 计算蒸发速率常数
+        // 計算蒸發速率常數
         var alpha = 0.000524 * Pv + 0.0108 * SA_VOL;
         
         var C = 0;
         for (var t = 1; t <= simTime; t++) {
-            // 计算排放率
+            // 計算排放率
             var Gt = G0 * Math.exp(-alpha * t);
             
-            // 计算浓度
+            // 計算濃度
             if (alpha * V !== Q) {
                 C = (alpha * M0 / (alpha * V - Q)) * (Math.exp(-Q/V * t) - Math.exp(-alpha * t));
             } else {
-                // 避免除以零的特殊情况
+                // 避免除以零的特殊情況
                 C = (alpha * M0 * t / V) * Math.exp(-alpha * t);
             }
             concentrations.push(C);
@@ -401,26 +390,26 @@ function calculate() {
         }
     }
     
-    // 计算暴露指标
+    // 計算暴露指標
     var TWA = calculateTWA(concentrations, simTime);
     var STEL = calculateSTEL(concentrations);
     
-    // 获取限值
+    // 獲取限值
     var TWLimit = parseFloat(document.getElementById("tw_limit").value);
     var STELLimit = parseFloat(document.getElementById("stel_limit").value);
     var IDLHLimit = parseFloat(document.getElementById("idlh_limit").value);
     var OELLimit = parseFloat(document.getElementById("oel_limit").value);
     
-    // 评估风险
+    // 評估風險
     var riskAssessment = assessRisk(TWA, STEL, concentrations, TWLimit, STELLimit, IDLHLimit, OELLimit);
     
-    // 显示结果
+    // 顯示結果
     displayResults(times, concentrations, riskAssessment);
     
     document.getElementById("results").style.display = "block";
 }
 
-// 计算TWA
+// 計算TWA
 function calculateTWA(concentrations, simTime) {
     var total = 0;
     var count = Math.min(480, concentrations.length);
@@ -430,7 +419,7 @@ function calculateTWA(concentrations, simTime) {
     return total / count;
 }
 
-// 计算STEL
+// 計算STEL
 function calculateSTEL(concentrations) {
     var maxSTEL = 0;
     for (var i = 0; i <= concentrations.length - 15; i++) {
@@ -444,7 +433,7 @@ function calculateSTEL(concentrations) {
     return maxSTEL;
 }
 
-// 风险评估
+// 風險評估
 function assessRisk(TWA, STEL, concentrations, TWLimit, STELLimit, IDLHLimit, OELLimit) {
     var riskLevels = {
         idlh: 0,
@@ -462,38 +451,38 @@ function assessRisk(TWA, STEL, concentrations, TWLimit, STELLimit, IDLHLimit, OE
     
     var controlMeasures = "";
     
-    // 检查IDLH
+    // 檢查IDLH
     var maxConcentration = Math.max(...concentrations);
     if (maxConcentration >= IDLHLimit) {
         riskLevels.idlh = 4;
-        descriptions.idlh = "超过IDLH限值，有立即生命危险";
-        controlMeasures += "• 立即撤离暴露区域<br>• 使用自给式呼吸器<br>• 加强局部排气通风<br>";
+        descriptions.idlh = "超過IDLH限值，有立即生命危險";
+        controlMeasures += "• 立即撤離暴露區域<br>• 使用自給式呼吸器<br>• 加強局部排氣通風<br>";
     } else {
         riskLevels.idlh = 1;
-        descriptions.idlh = "低于IDLH限值";
+        descriptions.idlh = "低於IDLH限值";
     }
     
-    // 检查STEL
+    // 檢查STEL
     if (STEL >= STELLimit) {
         riskLevels.stel = 4;
-        descriptions.stel = "超过STEL限值，有健康危险";
-        controlMeasures += "• 减少短期暴露时间<br>• 增加通风率<br>• 使用呼吸防护装备<br>";
+        descriptions.stel = "超過STEL限值，有健康危險";
+        controlMeasures += "• 減少短期暴露時間<br>• 增加通風率<br>• 使用呼吸防護裝備<br>";
     } else if (STEL >= STELLimit / 2) {
         riskLevels.stel = 3;
         descriptions.stel = "接近STEL限值，需注意";
     } else {
         riskLevels.stel = 1;
-        descriptions.stel = "低于STEL限值";
+        descriptions.stel = "低於STEL限值";
     }
     
-    // 检查TWA
+    // 檢查TWA
     if (TWA >= TWLimit) {
         riskLevels.twa = 4;
-        descriptions.twa = "超过TWA限值，长期暴露有健康风险";
-        controlMeasures += "• 减少每日暴露时间<br>• 改善整体通风<br>• 定期健康检查<br>";
+        descriptions.twa = "超過TWA限值，長期暴露有健康風險";
+        controlMeasures += "• 減少每日暴露時間<br>• 改善整體通風<br>• 定期健康檢查<br>";
     } else if (TWA >= TWLimit / 2) {
         riskLevels.twa = 3;
-        descriptions.twa = "中等暴露水平，需监测";
+        descriptions.twa = "中等暴露水平，需監測";
     } else if (TWA >= TWLimit / 10) {
         riskLevels.twa = 2;
         descriptions.twa = "低暴露水平";
@@ -502,24 +491,24 @@ function assessRisk(TWA, STEL, concentrations, TWLimit, STELLimit, IDLHLimit, OE
         descriptions.twa = "非常低暴露水平";
     }
     
-    // 检查OEL
+    // 檢查OEL
     if (TWA >= OELLimit) {
         riskLevels.oel = 4;
-        descriptions.oel = "超过OEL限值，需采取控制措施";
-        controlMeasures += "• 工程控制措施优先<br>• 行政管理控制<br>• 个人防护装备<br>";
+        descriptions.oel = "超過OEL限值，需採取控制措施";
+        controlMeasures += "• 工程控制措施優先<br>• 行政管理控制<br>• 個人防護裝備<br>";
     } else if (TWA >= OELLimit / 2) {
         riskLevels.oel = 3;
         descriptions.oel = "接近OEL限值，需注意";
     } else if (TWA >= OELLimit / 10) {
         riskLevels.oel = 2;
-        descriptions.oel = "低于OEL限值一半";
+        descriptions.oel = "低於OEL限值一半";
     } else {
         riskLevels.oel = 1;
-        descriptions.oel = "远低于OEL限值";
+        descriptions.oel = "遠低於OEL限值";
     }
     
     if (controlMeasures === "") {
-        controlMeasures = "当前暴露水平在可接受范围内，维持现有控制措施即可。";
+        controlMeasures = "當前暴露水平在可接受範圍內，維持現有控制措施即可。";
     }
     
     return {
@@ -532,23 +521,23 @@ function assessRisk(TWA, STEL, concentrations, TWLimit, STELLimit, IDLHLimit, OE
     };
 }
 
-// 显示结果
+// 顯示結果
 function displayResults(times, concentrations, riskAssessment) {
-    // 绘制浓度趋势图
+    // 繪製濃度趨勢圖
     var ctx = document.getElementById('chart').getContext('2d');
     
-    // 如果已有图表，先销毁
+    // 如果已有圖表，先銷毀
     if (concentrationChart) {
         concentrationChart.destroy();
     }
     
-    // 创建新图表
+    // 建立新圖表
     concentrationChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: times,
             datasets: [{
-                label: '浓度 (mg/m³)',
+                label: '濃度 (mg/m³)',
                 data: concentrations,
                 borderColor: 'rgb(75, 192, 192)',
                 tension: 0.1,
@@ -561,13 +550,13 @@ function displayResults(times, concentrations, riskAssessment) {
                 x: {
                     title: {
                         display: true,
-                        text: '时间 (分钟)'
+                        text: '時間 (分鐘)'
                     }
                 },
                 y: {
                     title: {
                         display: true,
-                        text: '浓度 (mg/m³)'
+                        text: '濃度 (mg/m³)'
                     },
                     beginAtZero: true
                 }
@@ -575,9 +564,9 @@ function displayResults(times, concentrations, riskAssessment) {
         }
     });
     
-    // 显示风险评估表格
+    // 顯示風險評估表格
     var riskTable = document.getElementById("risk_table");
-    // 清空表格，保留标题行
+    // 清空表格，保留標題行
     while (riskTable.rows.length > 1) {
         riskTable.deleteRow(1);
     }
@@ -587,12 +576,12 @@ function displayResults(times, concentrations, riskAssessment) {
                document.getElementById("idlh_limit").value + " " + 
                document.getElementById("idlh_unit").value);
     
-    addRiskRow(riskTable, "STEL (15分钟)", riskAssessment.STEL.toFixed(2), 
+    addRiskRow(riskTable, "STEL (15分鐘)", riskAssessment.STEL.toFixed(2), 
                riskAssessment.riskLevels.stel, riskAssessment.descriptions.stel, 
                document.getElementById("stel_limit").value + " " + 
                document.getElementById("stel_unit").value);
     
-    addRiskRow(riskTable, "TWA (8小时)", riskAssessment.TWA.toFixed(2), 
+    addRiskRow(riskTable, "TWA (8小時)", riskAssessment.TWA.toFixed(2), 
                riskAssessment.riskLevels.twa, riskAssessment.descriptions.twa, 
                document.getElementById("tw_limit").value + " " + 
                document.getElementById("tw_unit").value);
@@ -602,11 +591,11 @@ function displayResults(times, concentrations, riskAssessment) {
                document.getElementById("oel_limit").value + " " + 
                document.getElementById("oel_unit").value);
     
-    // 显示控制措施
+    // 顯示控制措施
     document.getElementById("control_measures").innerHTML = riskAssessment.controlMeasures;
 }
 
-// 添加风险行到表格
+// 添加風險行到表格
 function addRiskRow(table, indicator, value, riskLevel, description, limit) {
     var row = table.insertRow();
     var cell1 = row.insertCell(0);
@@ -621,11 +610,11 @@ function addRiskRow(table, indicator, value, riskLevel, description, limit) {
     cell4.innerHTML = riskLevel;
     cell5.innerHTML = description;
     
-    // 根据风险等级添加颜色
+    // 根據風險等級添加顏色
     row.className = "risk-level-" + riskLevel;
 }
 
-// 初始化显示
+// 初始化顯示
 showFormula();
 </script>
 

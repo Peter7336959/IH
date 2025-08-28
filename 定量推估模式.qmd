@@ -288,6 +288,8 @@ l  情境描述：在一間尺寸為 5m × 6m × 2m（體積 V=60 m³）的實�
 
 -   情境描述:某工廠零件塗布機在室溫波動環境下運行，需評估甲苯濃度的動態變化及勞工暴露風險。**已知條件**：**房間參數**：體積 V=25 m3，通風率 Q=1.0 m3/min（換氣次數 2.4 ACH）。**甲苯排放率**隨溫度變化，可依據
 
+[WMR完全混合模式-暴露濃度試算DS](docs/WMR1.html){.btn .btn-primary target="_blank"}
+
 [WMR完全混合模式-暴露濃度試算DS](docs/WMR2.html){.btn .btn-primary target="_blank"}
 
 </details>
