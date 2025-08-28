@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二暴露區模式 (Two-Zone Model) 暴露評估工具</title>
+<!-- 引入 MathJax 來顯示數學公式 -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- 引入 Chart.js 來繪製圖表 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        margin: 20px;
+        background-color: #f4f4f4;
+        color: #333;
+    }
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 {
+        color: #0056b3;
+        border-bottom: 2px solid #0056b3;
+        padding-bottom: 5px;
+    }
+    .input-section, .results-section {
+        margin-bottom: 20px;
+    }
+    .input-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+    .input-group {
+        display: flex;
+        flex-direction: column;
+    }
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    input[type="number"], select {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .unit-input {
+        display: flex;
+        gap: 5px;
+    }
+    .unit-input input {
+        flex: 3;
+    }
+    .unit-input select {
+        flex: 1;
+    }
+    .formula {
+        background-color: #eef;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+        font-size: 0.9em;
+        overflow-x: auto;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background-color: #0056b3;
+        color: white;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    .risk-4 { background-color: #ffadad; font-weight: bold; }
+    .risk-3 { background-color: #ffd6a5; }
+    .risk-2 { background-color: #fdffb6; }
+    .risk-1 { background-color: #caffbf; }
+    .print-button {
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 20px;
+    }
+    .print-button:hover {
+        background-color: #218838;
+    }
+    @media print {
+        .no-print {
+            display: none;
+        }
+        body {
+            margin: 0;
+            background: #fff;
+        }
+        .container {
+            box-shadow: none;
+            border: none;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>二暴露區模式 (Two-Zone Model) 暴露評估工具</h1>
+    <div style="text-align: center;">
+        <img src="https://i.imgur.com/8f5gZ2C.png" alt="暴露空間模式示意圖" style="max-width: 30%;" onerror="this.onerror=null;this.src='https://placehold.co/400x200/cccccc/ffffff?text=示意圖無法載入';">
+    </div>
+
+    <!-- R 程式碼區塊: 處理表單提交與計算 -->
+    <%
+    # 設置頁面編碼為 UTF-8
+    request$content_type("text/html; charset=utf-8")
+
+    # 檢查是否為表單提交
+    is_post <- request$method() == "POST"
+    
+    # 初始化變數
+    G <- VN <- VF <- Q <- beta_val <- t_val <- MW <- 0
+    CN0 <- CF0 <- 0
+    twa_limit <- stel_limit <- idlh_limit <- oel_limit <- NA
+    twa_unit <- stel_unit <- idlh_unit <- oel_unit <- "mg_m3"
+    calc_option <- "time_dependent"
+    results <- NULL
+
+    if (is_post) {
+        # 從表單獲取輸入值
+        params <- request$params()
+        
+        # 將輸入值轉換為數值
+        G <- as.numeric(params$G)
+        VN <- as.numeric(params$VN)
+        VF <- as.numeric(params$VF)
+        Q <- as.numeric(params$Q)
+        beta_val <- as.numeric(params$beta_val)
+        t_val <- as.numeric(params$t_val)
+        MW <- as.numeric(params$MW)
+        CN0 <- as.numeric(params$CN0)
+        CF0 <- as.numeric(params$CF0)
+        
+        twa_limit_val <- as.numeric(params$twa_limit)
+        stel_limit_val <- as.numeric(params$stel_limit)
+        idlh_limit_val <- as.numeric(params$idlh_limit)
+        oel_limit_val <- as.numeric(params$oel_limit)
+        
+        twa_unit <- params$twa_unit
+        stel_unit <- params$stel_unit
+        idlh_unit <- params$idlh_unit
+        oel_unit <- params$oel_unit
+        
+        calc_option <- params$calc_option
+
+        # --- 單位轉換函數 ---
+        # ppm 轉換為 mg/m3
+        ppm_to_mgm3 <- function(ppm, mw) {
+            if (is.na(ppm) || is.na(mw) || mw == 0) return(NA)
+            return(ppm * mw / 24.45)
+        }
+
+        # 根據選擇的單位進行轉換
+        twa_limit <- ifelse(twa_unit == "ppm", ppm_to_mgm3(twa_limit_val, MW), twa_limit_val)
+        stel_limit <- ifelse(stel_unit == "ppm", ppm_to_mgm3(stel_limit_val, MW), stel_limit_val)
+        idlh_limit <- ifelse(idlh_unit == "ppm", ppm_to_mgm3(idlh_limit_val, MW), idlh_limit_val)
+        oel_limit <- ifelse(oel_unit == "ppm", ppm_to_mgm3(oel_limit_val, MW), oel_limit_val)
+        
+        # --- 核心計算函數 ---
+        # 計算 lambda 1 和 lambda 2
+        calc_lambdas <- function(Q, beta_val, VN, VF) {
+            # 確保分母不為零
+            if (VN == 0 || VF == 0) return(list(lambda1 = NA, lambda2 = NA))
+            
+            term1 <- (beta_val * VF + VN * (beta_val + Q)) / (VN * VF)
+            term2_sqrt <- (term1^2) - 4 * (beta_val * Q / (VN * VF))
+            
+            # 檢查開根號項是否為負
+            if (term2_sqrt < 0) return(list(lambda1 = NA, lambda2 = NA))
+            
+            lambda1 <- 0.5 * (-term1 + sqrt(term2_sqrt))
+            lambda2 <- 0.5 * (-term1 - sqrt(term2_sqrt))
+            
+            return(list(lambda1 = lambda1, lambda2 = lambda2))
+        }
+
+        # --- 計算邏輯 ---
+        lambdas <- calc_lambdas(Q, beta_val, VN, VF)
+        lambda1 <- lambdas$lambda1
+        lambda2 <- lambdas$lambda2
+        
+        # 初始化結果列表
+        results <- list()
+        
+        # 檢查 lambda 是否有效
+        if (!is.na(lambda1) && !is.na(lambda2)) {
+            
+            time_points <- 1:t_val
+            CN_t <- numeric(t_val)
+            CF_t <- numeric(t_val)
+            
+            if (calc_option == "time_dependent") {
+                # 功能1: 時間濃度解
+                if (lambda1 != lambda2 && beta_val != 0 && Q != 0 && VN != 0) {
+                    A <- G / Q * (beta_val / (beta_val + Q))
+                    B_num <- beta_val * Q + lambda2 * VN * (beta_val + Q)
+                    B_den <- beta_val * Q * VN * (lambda1 - lambda2)
+                    B <- G * (B_num / B_den)
+                    
+                    C_num <- beta_val * Q + lambda1 * VN * (beta_val + Q)
+                    C_den <- beta_val * Q * VN * (lambda1 - lambda2)
+                    C <- G * (C_num / C_den)
+                    
+                    for(i in time_points) {
+                        CN_t[i] <- A + B * exp(lambda1 * i) - C * exp(lambda2 * i)
+                    }
+
+                    D <- G / Q
+                    for(i in time_points) {
+                        term_B <- G * ((lambda1 * VN + beta_val) / beta_val) * (B_num / B_den) * exp(lambda1 * i)
+                        term_C <- G * ((lambda2 * VN + beta_val) / beta_val) * (C_num / C_den) * exp(lambda2 * i)
+                        CF_t[i] <- D + term_B - term_C
+                    }
+                } else {
+                    CN_t[] <- NA
+                    CF_t[] <- NA
+                }
+                
+                results$CN_final <- CN_t[t_val]
+                results$CF_final <- CF_t[t_val]
+
+            } else if (calc_option == "steady_state") {
+                # 功能2: 穩態濃度
+                if (Q > 0 && beta_val > 0) {
+                    CN_ss <- G / Q + G / beta_val
+                    CF_ss <- G / Q
+                    CN_t[] <- CN_ss
+                    CF_t[] <- CF_ss
+                } else {
+                    CN_ss <- CF_ss <- NA
+                }
+                results$CN_final <- CN_ss
+                results$CF_final <- CF_ss
+
+            } else if (calc_option == "decay") {
+                # 功能3: 濃度衰減
+                if (lambda1 != lambda2 && VN != 0) {
+                    for(i in time_points) {
+                        term1_num <- beta_val * (CF0 - CN0) - lambda2 * VN * CN0
+                        term1_den <- VN * (lambda1 - lambda2)
+                        term1 <- (term1_num / term1_den) * exp(lambda1 * i)
+                        
+                        term2_num <- beta_val * (CN0 - CF0) + lambda1 * VN * CN0
+                        term2_den <- VN * (lambda1 - lambda2)
+                        term2 <- (term2_num / term2_den) * exp(lambda2 * i)
+                        
+                        CN_t[i] <- term1 + term2
+                        
+                        cf_term1_factor <- (lambda1 * VN + beta_val) / beta_val
+                        cf_term2_factor <- (lambda2 * VN + beta_val) / beta_val
+                        
+                        CF_t[i] <- cf_term1_factor * term1 + cf_term2_factor * term2
+                    }
+                } else {
+                    CN_t[] <- NA
+                    CF_t[] <- NA
+                }
+                results$CN_final <- CN_t[t_val]
+                results$CF_final <- CF_t[t_val]
+            }
+            
+            results$time_points <- time_points
+            results$CN_t <- CN_t
+            results$CF_t <- CF_t
+            
+            # --- TWA 和 STEL 計算 ---
+            if(t_val > 0 && !any(is.na(CN_t))) {
+                # TWA 計算 (基於近場濃度)
+                results$twa_calc <- sum(CN_t) / 480
+                
+                # STEL 計算 (基於近場濃度，取最大15分鐘移動平均)
+                if (t_val >= 15) {
+                    rolling_sums <- zoo::rollapply(CN_t, width = 15, FUN = sum, align = "right")
+                    results$stel_calc <- max(rolling_sums / 15)
+                } else {
+                    results$stel_calc <- sum(CN_t) / 15 # 如果時間不足15分鐘，則以現有時間計算
+                }
+            } else {
+                results$twa_calc <- NA
+                results$stel_calc <- NA
+            }
+            
+            # --- 風險分級 ---
+            risk_table <- data.frame(
+                Parameter = character(),
+                Exposure_Limit = character(),
+                Calculated_Value = character(),
+                Risk_Ratio = character(),
+                Risk_Level = character(),
+                stringsAsFactors = FALSE
+            )
+            
+            # 1. IDLH
+            if (!is.na(idlh_limit)) {
+                peak_conc <- if(length(CN_t) > 0) max(CN_t, na.rm = TRUE) else NA
+                risk_ratio <- if (!is.na(peak_conc)) peak_conc / idlh_limit else NA
+                level <- if (!is.na(risk_ratio) && risk_ratio > 1) "4 (立即危害)" else "低於立即危害濃度"
+                risk_table[nrow(risk_table) + 1,] <- c("IDLH (短期)", paste(round(idlh_limit, 2), "mg/m³"), paste(round(peak_conc, 2), "mg/m³ (峰值)"), if(!is.na(risk_ratio)) round(risk_ratio, 2) else "N/A", level)
+            }
+            
+            # 2. STEL
+            if (!is.na(stel_limit)) {
+                risk_ratio <- if (!is.na(results$stel_calc)) results$stel_calc / stel_limit else NA
+                level <- if (!is.na(risk_ratio) && risk_ratio > 1) "4 (有健康危險)" else "可接受"
+                risk_table[nrow(risk_table) + 1,] <- c("STEL (短期)", paste(round(stel_limit, 2), "mg/m³"), paste(round(results$stel_calc, 2), "mg/m³ (15分鐘)"), if(!is.na(risk_ratio)) round(risk_ratio, 2) else "N/A", level)
+            }
+            
+            # 3. TWA
+            if (!is.na(twa_limit)) {
+                risk_ratio <- if (!is.na(results$twa_calc)) results$twa_calc / twa_limit else NA
+                level <- if (is.na(risk_ratio)) "N/A" else if (risk_ratio > 1) "4" else if (risk_ratio > 0.5) "3" else if (risk_ratio > 0.1) "2" else "1"
+                risk_table[nrow(risk_table) + 1,] <- c("TWA (長期)", paste(round(twa_limit, 2), "mg/m³"), paste(round(results$twa_calc, 2), "mg/m³ (8小時)"), if(!is.na(risk_ratio)) round(risk_ratio, 2) else "N/A", level)
+            }
+
+            # 4. OEL (與 TWA 比較)
+            if (!is.na(oel_limit)) {
+                risk_ratio <- if (!is.na(results$twa_calc)) results$twa_calc / oel_limit else NA
+                level <- if (is.na(risk_ratio)) "N/A" else if (risk_ratio > 1) "4" else if (risk_ratio > 0.5) "3" else if (risk_ratio > 0.1) "2" else "1"
+                risk_table[nrow(risk_table) + 1,] <- c("OEL (長期)", paste(round(oel_limit, 2), "mg/m³"), paste(round(results$twa_calc, 2), "mg/m³ (8小時)"), if(!is.na(risk_ratio)) round(risk_ratio, 2) else "N/A", level)
+            }
+            
+            results$risk_table <- risk_table
+            
+            # --- 建議控制措施 ---
+            final_risk_level <- 0
+            if (any(risk_table$Risk_Level %in% c("4 (立即危害)", "4 (有健康危險)"))) {
+                final_risk_level <- 4
+            } else {
+                levels <- as.numeric(risk_table$Risk_Level)
+                if(any(!is.na(levels))) final_risk_level <- max(levels, na.rm=TRUE)
+            }
+            
+            results$control_measures <- switch(as.character(final_risk_level),
+                "1" = "管理等級 1 (低風險): 建議維持良好作業環境，持續進行通風與環境整理。",
+                "2" = "管理等級 2 (中度風險): 建議改善整體換氣裝置，或考慮局部抽氣裝置。",
+                "3" = "管理等級 3 (高風險): 應立即採取有效的工程控制，如安裝密閉系統或局部抽氣裝置，並考慮使用個人防護具。",
+                "4" = "管理等級 4 (極高風險): 立即停止作業！尋求工業衛生專家協助，重新評估作業流程與控制措施，在改善前不可復工。",
+                "0" = "無法評估風險等級，請確認輸入值。",
+                "無法評估風險等級，請確認輸入值。"
+            )
+        } else {
+            results$error <- "輸入參數錯誤，無法計算 λ (lambda) 值 (例如: 根號內為負數或體積為零)。"
+        }
+    }
+    %>
+
+    <form method="POST" action="" class="no-print">
+        <h2>輸入參數</h2>
+        <div class="input-section">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="G">污染源排放速率 (G) (mg/min)</label>
+                    <input type="number" id="G" name="G" value="<%= ifelse(is_post, G, 100) %>" step="any" required>
+                </div>
+                <div class="input-group">
+                    <label for="VN">近場體積 (V<sub>N</sub>) (m³)</label>
+                    <input type="number" id="VN" name="VN" value="<%= ifelse(is_post, VN, 10) %>" step="any" required>
+                </div>
+                <div class="input-group">
+                    <label for="VF">遠場體積 (V<sub>F</sub>) (m³)</label>
+                    <input type="number" id="VF" name="VF" value="<%= ifelse(is_post, VF, 100) %>" step="any" required>
+                </div>
+                <div class="input-group">
+                    <label for="Q">房間通風換氣速率 (Q) (m³/min)</label>
+                    <input type="number" id="Q" name="Q" value="<%= ifelse(is_post, Q, 20) %>" step="any" required>
+                </div>
+                <div class="input-group">
+                    <label for="beta_val">近場與遠場間空氣交換速率 (β) (m³/min)</label>
+                    <input type="number" id="beta_val" name="beta_val" value="<%= ifelse(is_post, beta_val, 10) %>" step="any" required>
+                </div>
+                <div class="input-group">
+                    <label for="t_val">作業/模擬時間 (t) (min)</label>
+                    <input type="number" id="t_val" name="t_val" value="<%= ifelse(is_post, t_val, 480) %>" step="any" required>
+                </div>
+            </div>
+        </div>
+
+        <h2>暴露限值</h2>
+        <div class="input-section">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="MW">化學物質分子量 (MW) (g/mol)</label>
+                    <input type="number" id="MW" name="MW" value="<%= ifelse(is_post, MW, 78.11) %>" step="any" placeholder="用於 ppm 單位轉換">
+                </div>
+                <div class="input-group">
+                    <label for="twa_limit">TWA (8小時日時量平均容許濃度)</label>
+                    <div class="unit-input">
+                        <input type="number" id="twa_limit" name="twa_limit" value="<%= ifelse(is_post, twa_limit_val, 30) %>" step="any">
+                        <select name="twa_unit">
+                            <option value="mg_m3" <%= if(is_post && twa_unit == "mg_m3") "selected" %>>mg/m³</option>
+                            <option value="ppm" <%= if(is_post && twa_unit == "ppm") "selected" %>>ppm</option>
+                        </select>
+                    </div>
+                </div>
+                 <div class="input-group">
+                    <label for="stel_limit">STEL (短時間時量平均容許濃度)</label>
+                    <div class="unit-input">
+                        <input type="number" id="stel_limit" name="stel_limit" value="<%= ifelse(is_post, stel_limit_val, 45) %>" step="any">
+                        <select name="stel_unit">
+                            <option value="mg_m3" <%= if(is_post && stel_unit == "mg_m3") "selected" %>>mg/m³</option>
+                            <option value="ppm" <%= if(is_post && stel_unit == "ppm") "selected" %>>ppm</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="idlh_limit">IDLH (立即危害生命健康濃度)</label>
+                    <div class="unit-input">
+                        <input type="number" id="idlh_limit" name="idlh_limit" value="<%= ifelse(is_post, idlh_limit_val, 1500) %>" step="any">
+                        <select name="idlh_unit">
+                            <option value="mg_m3" <%= if(is_post && idlh_unit == "mg_m3") "selected" %>>mg/m³</option>
+                            <option value="ppm" <%= if(is_post && idlh_unit == "ppm") "selected" %>>ppm</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="oel_limit">其他 OEL (暴露限值)</label>
+                     <div class="unit-input">
+                        <input type="number" id="oel_limit" name="oel_limit" value="<%= ifelse(is_post, oel_limit_val, 30) %>" step="any">
+                        <select name="oel_unit">
+                            <option value="mg_m3" <%= if(is_post && oel_unit == "mg_m3") "selected" %>>mg/m³</option>
+                            <option value="ppm" <%= if(is_post && oel_unit == "ppm") "selected" %>>ppm</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h2>計算功能選擇</h2>
+        <div class="input-section">
+            <input type="radio" id="time_dependent" name="calc_option" value="time_dependent" <%= if(!is_post || calc_option == "time_dependent") "checked" %>>
+            <label for="time_dependent">功能1：時間濃度解 (逸散中)</label>
+            <div class="formula">
+                近場 (公式7-1): \( C_{N}(t) = \frac{G}{(\frac{\beta}{\beta+Q})Q} + G[\frac{\beta Q+\lambda_{2}V_{N}(\beta+Q)}{\beta QV_{N}(\lambda_{1}-\lambda_{2})}]e^{\lambda_{1}t} - G[\frac{\beta Q+\lambda_{1}V_{N}(\beta+Q)}{\beta QV_{N}(\lambda_{1}-\lambda_{2})}]e^{\lambda_{2}t} \) <br>
+                遠場 (公式7-2): \( C_{F}(t) = \frac{G}{Q} + G[\frac{\lambda_{1}V_{N}+\beta}{\beta}][\dots]e^{\lambda_{1}t} - G[\frac{\lambda_{2}V_{N}+\beta}{\beta}][\dots]e^{\lambda_{2}t} \)
+            </div>
+
+            <input type="radio" id="steady_state" name="calc_option" value="steady_state" <%= if(is_post && calc_option == "steady_state") "checked" %>>
+            <label for="steady_state">功能2：穩態濃度</label>
+            <div class="formula">
+                近場 (公式7-3): \( C_{N,SS} = \frac{G}{Q} + \frac{G}{\beta} \) <br>
+                遠場 (公式7-4): \( C_{F,SS} = \frac{G}{Q} \)
+            </div>
+
+            <input type="radio" id="decay" name="calc_option" value="decay" <%= if(is_post && calc_option == "decay") "checked" %>>
+            <label for="decay">功能3：濃度衰減 (污染源停止逸散)</label>
+            <p>請在下方輸入初始濃度：</p>
+            <div class="input-grid" style="grid-template-columns: 1fr 1fr;">
+                 <div class="input-group">
+                    <label for="CN0">近場初始濃度 (C<sub>N0</sub>) (mg/m³)</label>
+                    <input type="number" id="CN0" name="CN0" value="<%= ifelse(is_post, CN0, 10) %>" step="any">
+                </div>
+                <div class="input-group">
+                    <label for="CF0">遠場初始濃度 (C<sub>F0</sub>) (mg/m³)</label>
+                    <input type="number" id="CF0" name="CF0" value="<%= ifelse(is_post, CF0, 1) %>" step="any">
+                </div>
+            </div>
+            <div class="formula">
+                近場 (公式7-5): \( C_{N}(t) = \frac{\beta(C_{F_{0}}-C_{N_{0}})-\lambda_{2}V_{N}C_{N_{0}}}{V_{N}(\lambda_{1}-\lambda_{2})}e^{\lambda_{1}t} + \frac{\beta(C_{N_{0}}-C_{F_{0}})+\lambda_{1}V_{N}C_{N_{0}}}{V_{N}(\lambda_{1}-\lambda_{2})}e^{\lambda_{2}t} \) <br>
+                遠場 (公式7-6): \( C_{F}(t) = \frac{(\lambda_{1}V_{N}+\beta)}{\beta}[\dots]e^{\lambda_{1}t} + \frac{(\lambda_{2}V_{N}+\beta)}{\beta}[\dots]e^{\lambda_{2}t} \)
+            </div>
+        </div>
+
+        <button type="submit">開始計算</button>
+    </form>
+
+    <% if (is_post && !is.null(results)) { %>
+    <div class="results-section">
+        <hr>
+        <h2>計算結果</h2>
+        
+        <% if (!is.null(results$error)) { %>
+            <p style="color: red; font-weight: bold;"><%= results$error %></p>
+        <% } else { %>
+            <h3>濃度計算</h3>
+            <table>
+                <tr>
+                    <th>項目</th>
+                    <th>數值 (mg/m³)</th>
+                </tr>
+                <tr>
+                    <td>近場 <%= ifelse(calc_option == 'steady_state', '穩態濃度', paste('在', t_val, '分鐘時的濃度')) %> (C<sub>N</sub>)</td>
+                    <td><%= round(results$CN_final, 2) %></td>
+                </tr>
+                <tr>
+                    <td>遠場 <%= ifelse(calc_option == 'steady_state', '穩態濃度', paste('在', t_val, '分鐘時的濃度')) %> (C<sub>F</sub>)</td>
+                    <td><%= round(results$CF_final, 2) %></td>
+                </tr>
+                 <tr>
+                    <td>計算之 TWA (8小時日時量平均濃度)</td>
+                    <td><%= round(results$twa_calc, 2) %></td>
+                </tr>
+                <tr>
+                    <td>計算之 STEL (最大15分鐘平均濃度)</td>
+                    <td><%= round(results$stel_calc, 2) %></td>
+                </tr>
+            </table>
+
+            <h3>濃度隨時間變化圖</h3>
+            <canvas id="concentrationChart" width="400" height="200"></canvas>
+
+            <h3>風險評估與管理分級</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>評估項目</th>
+                        <th>暴露限值 (mg/m³)</th>
+                        <th>計算值 (mg/m³)</th>
+                        <th>風險比 (計算值/限值)</th>
+                        <th>風險等級</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(i in 1:nrow(results$risk_table)) { 
+                        row <- results$risk_table[i, ]
+                        level <- row$Risk_Level
+                        class <- ""
+                        if (grepl("4", level)) {
+                            class <- "risk-4"
+                        } else if (grepl("3", level)) {
+                            class <- "risk-3"
+                        } else if (grepl("2", level)) {
+                            class <- "risk-2"
+                        } else if (grepl("1", level)) {
+                            class <- "risk-1"
+                        }
+                    %>
+                    <tr class="<%= class %>">
+                        <td><%= row$Parameter %></td>
+                        <td><%= row$Exposure_Limit %></td>
+                        <td><%= row$Calculated_Value %></td>
+                        <td><%= row$Risk_Ratio %></td>
+                        <td><%= row$Risk_Level %></td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+
+            <h3>建議控制措施</h3>
+            <p style="font-weight: bold; font-size: 1.1em;"><%= results$control_measures %></p>
+            
+            <!-- JavaScript for Chart.js -->
+            <script>
+            const ctx = document.getElementById('concentrationChart').getContext('2d');
+            const concentrationChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [<%= paste(results$time_points, collapse = ",") %>],
+                    datasets: [{
+                        label: '近場濃度 (CN)',
+                        data: [<%= paste(round(results$CN_t, 2), collapse = ",") %>],
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        fill: false,
+                        tension: 0.1
+                    }, {
+                        label: '遠場濃度 (CF)',
+                        data: [<%= paste(round(results$CF_t, 2), collapse = ",") %>],
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        fill: false,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '濃度與時間趨勢圖'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '時間 (分鐘)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '濃度 (mg/m³)'
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            </script>
+        <% } %>
+    </div>
+    <% } %>
+
+    <button onclick="window.print()" class="print-button no-print">列印結果</button>
+</div>
+
+</body>
+</html>
