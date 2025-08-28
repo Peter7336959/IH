@@ -264,7 +264,7 @@ l  情境描述：在一間尺寸為 5m × 6m × 2m（體積 V=60 m³）的實�
 
 </details>
 
-### (四).  完全混合模式 (Well-mixed Room Model, WMR) 
+### (四).  完全混合模式 (Well-mixed Room Model, WMR)
 
 <details>
 
