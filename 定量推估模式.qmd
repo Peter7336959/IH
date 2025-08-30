@@ -262,6 +262,8 @@ l  情境描述：在一間尺寸為 5m × 6m × 2m（體積 V=60 m³）的實�
 
 [暴露空間模式-暴露濃度試算DS2](docs/2-box_model.html){.btn .btn-primary target="_blank"}
 
+[暴露空間模式-暴露濃度試算DS3](docs/CH4_WMB.html){.btn .btn-primary target="_blank"}
+
 </details>
 
 ### (四).  完全混合模式 (Well-mixed Room Model, WMR)
@@ -318,11 +320,11 @@ A. 情境描述：一名勞工坐在工作台旁，手動塗抹含甲苯的黏�
 
 [二暴露區模式-暴露濃度試算GM](docs/2zone1GM.html){.btn .btn-primary target="_blank"}
 
-[二暴露區模式-暴露濃度試算DS](docs/2zone2DS.html){.btn .btn-primary target="_blank"}
+[二暴露區模式-暴露濃度試算DS](docs/2zoneDS.html){.btn .btn-primary target="_blank"}
 
 </details>
 
-### (六). 渦流擴散模式 (Turbulent Eddy Diffusion Model) 
+### (六). 渦流擴散模式 (Turbulent Eddy Diffusion Model)
 
 <details>
 
@@ -336,7 +338,7 @@ A. 情境描述：一名勞工坐在工作台旁，手動塗抹含甲苯的黏�
 
 3\. 應用限制與專業考量
 
-### (七). 統計推估模式 (Statistical Models) 
+### (七). 統計推估模式 (Statistical Models)
 
 <details>
 
@@ -356,8 +358,4 @@ A. 情境描述：一名勞工坐在工作台旁，手動塗抹含甲苯的黏�
 
 ### (八). 暴露推估模式應用-非例行性 (臨時、期間/時間短暫作業)
 
-<details>
-
-非例行性作業(non-routine activity)，泛指在正常生產流程之外的臨時性、偶發性或短時間作業，例如設備維修、歲修保養、管線清理、緊急應變或新產品試產等。這類作業的暴露評估，是職業衛生管理中具挑戰性的環節之一。
-
-</details>
+<details>非例行性作業(non-routine activity)，泛指在正常生產流程之外的臨時性、偶發性或短時間作業，例如設備維修、歲修保養、管線清理、緊急應變或新產品試產等。這類作業的暴露評估，是職業衛生管理中具挑戰性的環節之一。</details>

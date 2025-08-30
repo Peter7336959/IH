@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<style type="text/css">
+.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+}
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.sng {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.def {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二暴露區模式暴露評估系統</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjs@11.8.0/lib/browser/math.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .input-row {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        .input-row label {
+            width: 200px;
+            font-weight: bold;
+        }
+        .input-row input, .input-row select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .button-group {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .result-section {
+            margin: 20px 0;
+        }
+        .result-box {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #b8d8e8;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .risk-table th, .risk-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .risk-table th {
+            background: #2c3e50;
+            color: white;
+        }
+        .risk-table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .chart-container {
+            margin: 20px 0;
+            height: 400px;
+        }
+        .formula-section {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ffeaa7;
+            margin: 20px 0;
+        }
+        .model-image {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .model-image img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .formula {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 16px;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .formula-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="model-image">
+            <img src="docs/images/2zone.png" alt="暴露空間模式示意圖" style="max-width: 30%;">
+        </div>
+
+        <h1>二暴露區模式暴露評估系統</h1>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <h3>基本參數</h3>
+                <div class="input-row">
+                    <label for="G">污染物逸散率 G (mg/min):</label>
+                    <input type="number" id="G" value="1000" step="1">
+                </div>
+                <div class="input-row">
+                    <label for="Q">房間通風率 Q (m³/min):</label>
+                    <input type="number" id="Q" value="20" step="1">
+                </div>
+                <div class="input-row">
+                    <label for="beta">近遠場交換率 β (m³/min):</label>
+                    <input type="number" id="beta" value="6.7" step="0.1">
+                </div>
+                <div class="input-row">
+                    <label for="V_N">近場體積 V_N (m³):</label>
+                    <input type="number" id="V_N" value="0.93" step="0.01">
+                </div>
+                <div class="input-row">
+                    <label for="V_F">遠場體積 V_F (m³):</label>
+                    <input type="number" id="V_F" value="199" step="1">
+                </div>
+                <div class="input-row">
+                    <label for="t_work">作業時間 (分鐘):</label>
+                    <input type="number" id="t_work" value="30" step="1">
+                </div>
+                <div class="input-row">
+                    <label for="t_decay_start">衰減開始時間 (分鐘):</label>
+                    <input type="number" id="t_decay_start" value="30" step="1">
+                </div>
+                <div class="input-row">
+                    <label for="t_total">總模擬時間 (分鐘):</label>
+                    <input type="number" id="t_total" value="60" step="1">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <h3>暴露限值設定</h3>
+                <div class="input-row">
+                    <label for="unit">單位:</label>
+                    <select id="unit">
+                        <option value="mg/m3">mg/m³</option>
+                        <option value="ppm">ppm</option>
+                    </select>
+                </div>
+                <div class="input-row">
+                    <label for="TWA">TWA (8hr) 限值:</label>
+                    <input type="number" id="TWA" value="50" step="1">
+                </div>
+                <div class="input-row">
+                    <label for="STEL">STEL (15min) 限值:</label>
+                    <input type="number" id="STEL" value="100" step="1">
+                </div>
+                <div class="input-row">
+                    <label for="IDLH">IDLH 限值:</label>
+                    <input type="number" id="IDLH" value="500" step="1">
+                </div>
+                <div class="input-row">
+                    <label for="OEL">OEL 限值:</label>
+                    <input type="number" id="OEL" value="50" step="1">
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <h3>功能選擇</h3>
+            <div class="input-row">
+                <label for="func">選擇計算功能:</label>
+                <select id="func">
+                    <option value="time">時間濃度解</option>
+                    <option value="steady">穩態濃度</option>
+                    <option value="decay">濃度衰減</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="calculate()">開始計算</button>
+            <button onclick="window.print()">列印結果</button>
+        </div>
+
+        <div class="result-section">
+            <h2>計算結果</h2>
+            <div class="result-box" id="resultText"></div>
+        </div>
+
+        <div class="result-section">
+            <h2>暴露風險分級</h2>
+            <table class="risk-table" id="riskTable">
+                <thead>
+                    <tr>
+                        <th>類型</th>
+                        <th>限值</th>
+                        <th>計算值</th>
+                        <th>風險等級</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="concentrationChart"></canvas>
+        </div>
+
+        <div class="formula-section">
+            <h3>數學公式</h3>
+            <div id="formulaDisplay">
+                <div class="formula">
+                    <div class="formula-title">λ₁ 和 λ₂ 計算公式：</div>
+                    λ₁,₂ = 0.5[-(β·V_F + V_N(β+Q))/(V_N·V_F) ± √((β·V_F + V_N(β+Q))/(V_N·V_F))² - 4(β·Q)/(V_N·V_F)]
+                </div>
+                
+                <div class="formula">
+                    <div class="formula-title">公式6-3：時間濃度解 - 近場 (C_N(t))</div>
+                    C_N(t) = G/(β·Q/(β+Q)) + G·[β·Q + λ₂·V_N(β+Q)]/(β·Q·V_N(λ₁-λ₂))·e^(λ₁t) - G·[β·Q + λ₁·V_N(β+Q)]/(β·Q·V_N(λ₁-λ₂))·e^(λ₂t)
+                </div>
+                
+                <div class="formula">
+                    <div class="formula-title">公式6-4：時間濃度解 - 遠場 (C_F(t))</div>
+                    C_F(t) = G/Q + G·(λ₁·V_N+β)/β·[β·Q+λ₂·V_N(β+Q)]/(β·Q·V_N(λ₁-λ₂))·e^(λ₁t) - G·(λ₂·V_N+β)/β·[β·Q+λ₁·V_N(β+Q)]/(β·Q·V_N(λ₁-λ₂))·e^(λ₂t)
+                </div>
+                
+                <div class="formula">
+                    <div class="formula-title">公式6-5：穩態濃度 - 近場 (C_N,SS)</div>
+                    C_N,SS = G/Q + G/β
+                </div>
+                
+                <div class="formula">
+                    <div class="formula-title">公式6-6：穩態濃度 - 遠場 (C_F,SS)</div>
+                    C_F,SS = G/Q
+                </div>
+                
+                <div class="formula">
+                    <div class="formula-title">公式6-8：濃度衰減 - 近場 (C_N(t))</div>
+                    C_N(t) = [β(C_F₀-C_N₀)-λ₂·V_N·C_N₀]/(V_N(λ₁-λ₂))·e^(λ₁t) + [β(C_N₀-C_F₀)+λ₁·V_N·C_N₀]/(V_N(λ₁-λ₂))·e^(λ₂t)
+                </div>
+                
+                <div class="formula">
+                    <div class="formula-title">公式6-9：濃度衰減 - 遠場 (C_F(t))</div>
+                    C_F(t) = [(λ₁·V_N+β)[β(C_F₀-C_N₀)-λ₂·V_N·C_N₀]]/(β·V_N(λ₁-λ₂))·e^(λ₁t) + [(λ₂·V_N+β)[β(C_N₀-C_F₀)+λ₁·V_N·C_N₀]]/(β·V_N(λ₁-λ₂))·e^(λ₂t)
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h3>使用公式</h3>
+            <div id="formulaInfo"></div>
+        </div>
+    </div>
+
+    <script>
+        let chart = null;
+
+        // 計算 λ1, λ2
+        function calcLambda(beta, Q, V_N, V_F) {
+            const A = beta * V_F + V_N * (beta + Q);
+            const B = V_N * V_F;
+            const C = 4 * beta * Q / B;
+            const D = Math.pow(A / B, 2) - C;
+            
+            const lambda1 = 0.5 * (-A/B + Math.sqrt(D));
+            const lambda2 = 0.5 * (-A/B - Math.sqrt(D));
+            
+            return { lambda1, lambda2 };
+        }
+
+        // 公式6-3: 時間濃度解 - 近場
+        function calcCNTime(t, G, beta, Q, V_N, V_F, lambda1, lambda2) {
+            const term1 = G / (beta * Q / (beta + Q));
+            const term2 = G * (beta * Q + lambda2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda1 - lambda2)) * Math.exp(lambda1 * t);
+            const term3 = G * (beta * Q + lambda1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda1 - lambda2)) * Math.exp(lambda2 * t);
+            return term1 + term2 - term3;
+        }
+
+        // 公式6-4: 時間濃度解 - 遠場
+        function calcCFTime(t, G, beta, Q, V_N, V_F, lambda1, lambda2) {
+            const term1 = G / Q;
+            const term2 = G * (lambda1 * V_N + beta) / beta * 
+                (beta * Q + lambda2 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda1 - lambda2)) * Math.exp(lambda1 * t);
+            const term3 = G * (lambda2 * V_N + beta) / beta * 
+                (beta * Q + lambda1 * V_N * (beta + Q)) / (beta * Q * V_N * (lambda1 - lambda2)) * Math.exp(lambda2 * t);
+            return term1 + term2 - term3;
+        }
+
+        // 公式6-5: 穩態濃度 - 近場
+        function calcCNSteady(G, beta, Q) {
+            return G / Q + G / beta;
+        }
+
+        // 公式6-6: 穩態濃度 - 遠場
+        function calcCFSteady(G, Q) {
+            return G / Q;
+        }
+
+        // 公式6-8: 濃度衰減 - 近場
+        function calcCNDecay(t, C_N0, C_F0, beta, V_N, lambda1, lambda2) {
+            const term1 = (beta * (C_F0 - C_N0) - lambda2 * V_N * C_N0) / (V_N * (lambda1 - lambda2)) * Math.exp(lambda1 * t);
+            const term2 = (beta * (C_N0 - C_F0) + lambda1 * V_N * C_N0) / (V_N * (lambda1 - lambda2)) * Math.exp(lambda2 * t);
+            return term1 + term2;
+        }
+
+        // 公式6-9: 濃度衰減 - 遠場
+        function calcCFDecay(t, C_N0, C_F0, beta, Q, V_N, V_F, lambda1, lambda2) {
+            const term1 = ((lambda1 * V_N + beta) * (beta * (C_F0 - C_N0) - lambda2 * V_N * C_N0)) / 
+                (beta * V_N * (lambda1 - lambda2)) * Math.exp(lambda1 * t);
+            const term2 = ((lambda2 * V_N + beta) * (beta * (C_N0 - C_F0) + lambda1 * V_N * C_N0)) / 
+                (beta * V_N * (lambda1 - lambda2)) * Math.exp(lambda2 * t);
+            return term1 + term2;
+        }
+
+        // 計算暴露風險
+        function calcRisk(conc_TWA, conc_STEL, TWA_lim, STEL_lim, IDLH_lim, OEL_lim) {
+            const risk_short = conc_STEL > IDLH_lim ? "等級4 (IDLH超標)" :
+                             conc_STEL > STEL_lim ? "等級4 (STEL超標)" : "安全";
+            
+            const risk_long = conc_TWA < OEL_lim * 0.1 ? "等級1" :
+                            conc_TWA < OEL_lim * 0.5 ? "等級2" :
+                            conc_TWA < OEL_lim ? "等級3" : "等級4";
+            
+            return { short: risk_short, long: risk_long };
+        }
+
+        function calculate() {
+            // 獲取輸入值
+            const G = parseFloat(document.getElementById('G').value);
+            const Q = parseFloat(document.getElementById('Q').value);
+            const beta = parseFloat(document.getElementById('beta').value);
+            const V_N = parseFloat(document.getElementById('V_N').value);
+            const V_F = parseFloat(document.getElementById('V_F').value);
+            const t_work = parseFloat(document.getElementById('t_work').value);
+            const t_decay_start = parseFloat(document.getElementById('t_decay_start').value);
+            const t_total = parseFloat(document.getElementById('t_total').value);
+            const func = document.getElementById('func').value;
+            
+            const TWA_lim = parseFloat(document.getElementById('TWA').value);
+            const STEL_lim = parseFloat(document.getElementById('STEL').value);
+            const IDLH_lim = parseFloat(document.getElementById('IDLH').value);
+            const OEL_lim = parseFloat(document.getElementById('OEL').value);
+
+            // 計算 λ
+            const lambdas = calcLambda(beta, Q, V_N, V_F);
+            const lambda1 = lambdas.lambda1;
+            const lambda2 = lambdas.lambda2;
+
+            let df = [];
+            let TWA_N = 0;
+            let STEL_N = 0;
+            let formulaInfo = "";
+
+            if (func === 'time') {
+                // 時間濃度解
+                formulaInfo = "近場濃度: 公式6-3 (排放階段), 公式6-8 (衰減階段)\n遠場濃度: 公式6-4 (排放階段), 公式6-9 (衰減階段)";
+                
+                // 排放階段
+                for (let t = 0; t <= t_decay_start; t++) {
+                    const C_N = calcCNTime(t, G, beta, Q, V_N, V_F, lambda1, lambda2);
+                    const C_F = calcCFTime(t, G, beta, Q, V_N, V_F, lambda1, lambda2);
+                    df.push({ Time: t, C_N, C_F, Phase: '排放階段' });
+                }
+
+                // 衰減階段
+                const C_N0 = df[df.length - 1].C_N;
+                const C_F0 = df[df.length - 1].C_F;
+                
+                for (let t = t_decay_start + 1; t <= t_total; t++) {
+                    const decayTime = t - t_decay_start;
+                    const C_N = calcCNDecay(decayTime, C_N0, C_F0, beta, V_N, lambda1, lambda2);
+                    const C_F = calcCFDecay(decayTime, C_N0, C_F0, beta, Q, V_N, V_F, lambda1, lambda2);
+                    df.push({ Time: t, C_N, C_F, Phase: '衰減階段' });
+                }
+
+                // 計算暴露指標
+                const emissionData = df.filter(d => d.Phase === '排放階段');
+                const C_N_emission = emissionData.map(d => d.C_N);
+                TWA_N = math.mean(C_N_emission) * Math.min(t_decay_start, 480) / 480;
+                
+                if (C_N_emission.length > 14) {
+                    let stelValues = [];
+                    for (let i = 0; i <= C_N_emission.length - 15; i++) {
+                        stelValues.push(math.mean(C_N_emission.slice(i, i + 15)));
+                    }
+                    STEL_N = math.max(stelValues);
+                } else {
+                    STEL_N = math.mean(C_N_emission);
+                }
+
+            } else if (func === 'steady') {
+                // 穩態濃度
+                formulaInfo = "近場濃度: 公式6-5\n遠場濃度: 公式6-6";
+                
+                const C_N = calcCNSteady(G, beta, Q);
+                const C_F = calcCFSteady(G, Q);
+                df.push({ Time: 0, C_N, C_F, Phase: '穩態' });
+                
+                TWA_N = C_N;
+                STEL_N = C_N;
+
+            } else if (func === 'decay') {
+                // 濃度衰減
+                formulaInfo = "近場濃度: 公式6-8\n遠場濃度: 公式6-9";
+                
+                const C_N0 = calcCNSteady(G, beta, Q);
+                const C_F0 = calcCFSteady(G, Q);
+                
+                for (let t = t_decay_start; t <= t_total; t++) {
+                    const decayTime = t - t_decay_start;
+                    const C_N = calcCNDecay(decayTime, C_N0, C_F0, beta, V_N, lambda1, lambda2);
+                    const C_F = calcCFDecay(decayTime, C_N0, C_F0, beta, Q, V_N, V_F, lambda1, lambda2);
+                    df.push({ Time: t, C_N, C_F, Phase: '衰減階段' });
+                }
+
+                const C_N_data = df.map(d => d.C_N);
+                TWA_N = math.mean(C_N_data) * (t_total - t_decay_start) / 480;
+                
+                if (C_N_data.length > 14) {
+                    let stelValues = [];
+                    for (let i = 0; i <= C_N_data.length - 15; i++) {
+                        stelValues.push(math.mean(C_N_data.slice(i, i + 15)));
+                    }
+                    STEL_N = math.max(stelValues);
+                } else {
+                    STEL_N = math.mean(C_N_data);
+                }
+            }
+
+            // 計算風險
+            const risk = calcRisk(TWA_N, STEL_N, TWA_lim, STEL_lim, IDLH_lim, OEL_lim);
+
+            // 顯示結果
+            displayResults(df, TWA_N, STEL_N, risk, formulaInfo, t_decay_start, t_total);
+            updateRiskTable(TWA_N, STEL_N, TWA_lim, STEL_lim, IDLH_lim, OEL_lim);
+            drawChart(df, t_decay_start);
+        }
+
+        function displayResults(df, TWA_N, STEL_N, risk, formulaInfo, t_decay_start, t_total) {
+            const resultText = `=== 計算結果 ===
+近場 TWA 濃度 (8hr): ${TWA_N.toFixed(2)} mg/m³
+近場 STEL 濃度 (15min): ${STEL_N.toFixed(2)} mg/m³
+
+=== 風險評估 ===
+短期暴露風險: ${risk.short}
+長期暴露風險: ${risk.long}
+
+=== 使用公式 ===
+${formulaInfo}
+衰減開始時間: ${t_decay_start} 分鐘
+總模擬時間: ${t_total} 分鐘`;
+
+            document.getElementById('resultText').textContent = resultText;
+            document.getElementById('formulaInfo').textContent = formulaInfo;
+        }
+
+        function updateRiskTable(TWA_N, STEL_N, TWA_lim, STEL_lim, IDLH_lim, OEL_lim) {
+            const tableBody = document.querySelector('#riskTable tbody');
+            tableBody.innerHTML = '';
+
+            const risks = [
+                { type: 'IDLH', limit: IDLH_lim, value: STEL_N },
+                { type: 'STEL', limit: STEL_lim, value: STEL_N },
+                { type: 'TWA', limit: TWA_lim, value: TWA_N },
+                { type: 'OEL', limit: OEL_lim, value: TWA_N }
+            ];
+
+            risks.forEach(risk => {
+                const riskLevel = risk.value > risk.limit ? '等級4' : 
+                                risk.value > risk.limit * 0.5 ? '等級3' : '安全';
+                
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = risk.type;
+                row.insertCell(1).textContent = risk.limit.toFixed(2);
+                row.insertCell(2).textContent = risk.value.toFixed(2);
+                row.insertCell(3).textContent = riskLevel;
+            });
+        }
+
+        function drawChart(data, t_decay_start) {
+            const ctx = document.getElementById('concentrationChart').getContext('2d');
+            
+            if (chart) {
+                chart.destroy();
+            }
+
+            const times = data.map(d => d.Time);
+            const c_n = data.map(d => d.C_N);
+            const c_f = data.map(d => d.C_F);
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: times,
+                    datasets: [
+                        {
+                            label: '近場濃度',
+                            data: c_n,
+                            borderColor: 'red',
+                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                            borderWidth: 2,
+                            fill: false
+                        },
+                        {
+                            label: '遠場濃度',
+                            data: c_f,
+                            borderColor: 'blue',
+                            backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                            borderWidth: 2,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '時間 (分鐘)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '濃度 (mg/m³)'
+                            },
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    mode: 'vertical',
+                                    scaleID: 'x',
+                                    value: t_decay_start,
+                                    borderColor: 'red',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    label: {
+                                        enabled: true,
+                                        content: `衰減開始: ${t_decay_start}分鐘`,
+                                        position: 'start'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 初始化計算
+        calculate();
+    </script>
+</body>
+</html>

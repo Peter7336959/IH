@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>暴露空間模式計算與風險評估</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: "Microsoft JhengHei", sans-serif; margin: 20px; }
+    .container { display: flex; }
+    .input-panel { width: 65%; padding-right: 20px; }
+    .output-panel { width: 35%; }
+    .form-group { margin-bottom: 10px; }
+    label { display: inline-block; width: 180px; }
+    input, select { width: 120px; }
+    .btn { margin-top: 10px; padding: 5px 15px; }
+    table { border-collapse: collapse; margin-top: 10px; width: 100%; }
+    th, td { border: 1px solid #000; padding: 8px; text-align: center; }
+    .risk-level { font-weight: bold; }
+    .risk-4 { color: red; background-color: #FFEEEE; }
+    .risk-3 { color: orange; background-color: #FFF5EE; }
+    .risk-2 { color: blue; background-color: #EEF5FF; }
+    .risk-1 { color: green; background-color: #F0FFF0; }
+    .risk-table th { background-color: #f2f2f2; }
+    .control-measures { margin-top: 20px; }
+    .control-table th { background-color: #f0f0f0; text-align: left; }
+    .control-table td { text-align: left; }
+  </style>
+</head>
+<body>
+
+<h2>暴露空間模式計算與風險評估</h2>
+
+<div class="container">
+  <div class="input-panel">
+    <form id="calcForm">
+      <div class="form-group">
+        <label>計算功能選擇：</label>
+        <select id="function" onchange="toggleInputs()">
+          <option value="time_concentration">時間濃度</option>
+          <option value="steady_state">穩態濃度</option>
+          <option value="decay">衰減濃度</option>
+          <option value="avg_exposure">平均暴露濃度</option>
+        </select>
+      </div>
+
+      <div id="commonInputs">
+        <div class="form-group">
+          <label>房間體積 V (m³)：</label>
+          <input type="number" id="V" value="60" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>通風率 Q (m³/min)：</label>
+          <input type="number" id="Q" value="6.0" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>初始濃度 C₀ (mg/m³)：</label>
+          <input type="number" id="C0" value="10.0" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>進氣濃度 C_in (mg/m³)：</label>
+          <input type="number" id="Cin" value="10.0" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>生成率 G (mg/min)：</label>
+          <input type="number" id="G" value="3000.0" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>實際暴露時間 (分鐘)：</label>
+          <input type="number" id="exposureTime" value="20" step="1">
+        </div>
+        <div class="form-group">
+          <label>計算時間 t (分鐘)：</label>
+          <input type="number" id="t" value="20" step="1">
+        </div>
+      </div>
+
+      <div id="decayInputs" style="display:none;">
+        <div class="form-group">
+          <label>衰減起始時間 (分鐘)：</label>
+          <input type="number" id="decayStartTime" value="0" step="1">
+        </div>
+        <div class="form-group">
+          <label>衰減計算時間 (分鐘)：</label>
+          <input type="number" id="decayDuration" value="60" step="1">
+        </div>
+      </div>
+
+      <h3>暴露限值設定</h3>
+      <table>
+        <tr>
+          <th>限值類型</th>
+          <th>限值數值</th>
+          <th>單位</th>
+        </tr>
+        <tr>
+          <td>TWA (8小時)</td>
+          <td><input type="number" id="TWA_value" value="100" step="0.1"></td>
+          <td>
+            <select id="TWA_unit">
+              <option value="mg_m3">mg/m³</option>
+              <option value="ppm">ppm</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>STEL (15分鐘)</td>
+          <td><input type="number" id="STEL_value" value="150" step="0.1"></td>
+          <td>
+            <select id="STEL_unit">
+              <option value="mg_m3">mg/m³</option>
+              <option value="ppm">ppm</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>IDLH</td>
+          <td><input type="number" id="IDLH_value" value="500" step="0.1"></td>
+          <td>
+            <select id="IDLH_unit">
+              <option value="mg_m3">mg/m³</option>
+              <option value="ppm">ppm</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>OEL (自訂)</td>
+          <td><input type="number" id="OEL_value" value="80" step="0.1"></td>
+          <td>
+            <select id="OEL_unit">
+              <option value="mg_m3">mg/m³</option>
+              <option value="ppm">ppm</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+
+      <div class="form-group">
+        <label>分子量 (g/mol)：</label>
+        <input type="number" id="MW" value="92.14" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>溫度 T (K)：</label>
+        <input type="number" id="temp" value="298.15" step="0.1">
+      </div>
+      <div class="form-group">
+        <label>壓力 P (mmHg)：</label>
+        <input type="number" id="pressure" value="760" step="1">
+      </div>
+
+      <button type="button" class="btn" onclick="calculate()">計算</button>
+  <button type="button" class="btn" onclick="window.print()">列印</button>
+    </form>
+
+    <div id="formulaDisplay" style="margin-top:20px; padding:10px; background:#f5f5f5;">
+      <strong>使用公式：</strong>
+      <div id="formulaText"></div>
+    </div>
+
+    <div id="result" style="margin-top:20px;"></div>
+  </div>
+
+  <div class="output-panel">
+    <img src="images/BOX.png" alt="暴露空間模式示意圖" style="max-width:100%;">
+    <canvas id="concentrationChart" width="400" height="300"></canvas>
+  </div>
+</div>
+
+<script>
+function toggleInputs() {
+  const func = document.getElementById("function").value;
+  document.getElementById("decayInputs").style.display = 
+    (func === "decay") ? "block" : "none";
+  updateFormulaDisplay();
+}
+
+function updateFormulaDisplay() {
+  const func = document.getElementById("function").value;
+  let formulaText = "";
+  switch(func) {
+    case "time_concentration":
+      formulaText = "C(t) = [C₀ - (G/Q + C_in)] * exp(-Q*t/V) + (G/Q + C_in) (公式4-9)";
+      break;
+    case "steady_state":
+      formulaText = "C_ss = C_in + G/Q (公式4-13)";
+      break;
+    case "decay":
+      formulaText = "C(t) = (C₀ - C_in) * exp(-Q*t/V) + C_in (公式4-16)";
+      break;
+    case "avg_exposure":
+      formulaText = "C_avg = C_in + G/Q + (V/(Q*t)) * (C₀ - C_in - G/Q) * (1 - exp(-Q*t/V)) (公式4-20)";
+      break;
+  }
+  document.getElementById("formulaText").innerHTML = formulaText;
+}
+
+function calculateConcentration(func, V, Q, C0, Cin, G, t_min, decayStartTime = 0) {
+  let concentration = 0;
+  
+  if (func === "decay" && t_min >= decayStartTime) {
+    // 衰減階段：G = 0
+    const decayTime = t_min - decayStartTime;
+    const C_at_decay_start = (C0 - (G/Q + Cin)) * Math.exp(-Q * decayStartTime / V) + (G/Q + Cin);
+    concentration = (C_at_decay_start - Cin) * Math.exp(-Q * decayTime / V) + Cin;
+  } else {
+    // 正常生成階段
+    switch(func) {
+      case "time_concentration":
+        concentration = (C0 - (G/Q + Cin)) * Math.exp(-Q * t_min / V) + (G/Q + Cin);
+        break;
+      case "steady_state":
+        concentration = Cin + G/Q;
+        break;
+      case "decay":
+        concentration = (C0 - (G/Q + Cin)) * Math.exp(-Q * t_min / V) + (G/Q + Cin);
+        break;
+      case "avg_exposure":
+        if(t_min > 0) {
+          const term = (C0 - Cin - G/Q) * (1 - Math.exp(-Q * t_min / V));
+          concentration = Cin + G/Q + (V/(Q * t_min)) * term;
+        } else {
+          concentration = C0;
+        }
+        break;
+    }
+  }
+  
+  return concentration;
+}
+
+function calculateRiskLevel(exposure, limitValue, limitType) {
+  if (exposure > limitValue) {
+    return { level: 4, text: `超過${limitType}` };
+  } else if (exposure < limitValue * 0.1) {
+    return { level: 1, text: `低於1/10 ${limitType}` };
+  } else if (exposure < limitValue * 0.5) {
+    return { level: 2, text: `低於1/2 ${limitType}` };
+  } else {
+    return { level: 3, text: `低於${limitType}` };
+  }
+}
+
+function convertConcentration(concentration, unit, MW, temp, pressure) {
+  if(unit === "ppm") {
+    return (concentration * 24.45 * (760/pressure) * (temp/298.15)) / MW;
+  }
+  return concentration;
+}
+
+function calculateTWA(concentrations, exposureTime, totalWorkTime = 480) {
+  // TWA = (暴露期間濃度總和 + 未暴露期間0濃度) / 總作業時間
+  let sum = 0;
+  
+  // 暴露期間的濃度總和
+  for (let i = 0; i < Math.min(exposureTime, concentrations.length); i++) {
+    sum += concentrations[i];
+  }
+  
+  // 未暴露期間濃度為0，所以不需要加任何東西
+  return sum / totalWorkTime;
+}
+
+function calculateSTEL(concentrations, exposureTime) {
+  // STEL = 連續15分鐘內的平均值，取最大值（只在暴露期間計算）
+  let maxSTEL = 0;
+  const windowSize = 15;
+  const effectiveLength = Math.min(exposureTime, concentrations.length);
+  
+  for (let i = 0; i <= effectiveLength - windowSize; i++) {
+    const windowConcentrations = concentrations.slice(i, i + windowSize);
+    const avg = windowConcentrations.reduce((acc, val) => acc + val, 0) / windowSize;
+    if (avg > maxSTEL) {
+      maxSTEL = avg;
+    }
+  }
+  
+  // 如果數據點少於15個，計算所有暴露數據的平均值
+  if (effectiveLength < windowSize) {
+    maxSTEL = concentrations.slice(0, effectiveLength).reduce((acc, val) => acc + val, 0) / effectiveLength;
+  }
+  
+  return maxSTEL;
+}
+
+function calculateMaxConcentration(concentrations, exposureTime) {
+  // 計算暴露期間的最大濃度值（用於IDLH評估）
+  const effectiveLength = Math.min(exposureTime, concentrations.length);
+  if (effectiveLength === 0) return 0;
+  
+  return Math.max(...concentrations.slice(0, effectiveLength));
+}
+
+function getControlMeasures(maxRiskLevel, riskAssessments) {
+  const controls = [];
+  
+  // 風險控制階層表格
+  if (maxRiskLevel === 4) {
+    controls.push({ category: "消除危害", measure: "停止使用該化學物質或尋找無危害替代品" });
+    controls.push({ category: "工程控制", measure: "安裝局部排氣通風系統" });
+    controls.push({ category: "工程控制", measure: "改善整體通風效率" });
+    controls.push({ category: "工程控制", measure: "設置隔離操作區或負壓環境" });
+    controls.push({ category: "管理控制", measure: "立即停止高風險作業" });
+    controls.push({ category: "管理控制", measure: "嚴格限制暴露時間" });
+    controls.push({ category: "管理控制", measure: "實施作業許可制度" });
+    controls.push({ category: "個人防護裝備", measure: "配戴適當的呼吸防護具" });
+    controls.push({ category: "個人防護裝備", measure: "穿著化學防護衣" });
+    controls.push({ category: "個人防護裝備", measure: "使用防護手套和護目鏡" });
+  } else if (maxRiskLevel === 3) {
+    controls.push({ category: "工程控制", measure: "改善通風系統效率" });
+    controls.push({ category: "工程控制", measure: "設置局部排氣裝置" });
+    controls.push({ category: "工程控制", measure: "定期維護通風設備" });
+    controls.push({ category: "管理控制", measure: "限制單次暴露時間" });
+    controls.push({ category: "管理控制", measure: "實施輪班作業制度" });
+    controls.push({ category: "管理控制", measure: "加強作業環境監測" });
+    controls.push({ category: "個人防護裝備", measure: "配戴適當的呼吸防護具" });
+    controls.push({ category: "個人防護裝備", measure: "使用防護手套" });
+  } else if (maxRiskLevel === 2) {
+    controls.push({ category: "管理控制", measure: "定期進行環境監測" });
+    controls.push({ category: "管理控制", measure: "實施安全教育訓練" });
+    controls.push({ category: "管理控制", measure: "建立標準作業程序" });
+    controls.push({ category: "個人防護裝備", measure: "配戴基本防護口罩" });
+    controls.push({ category: "個人防護裝備", measure: "使用適當的防護手套" });
+  } else {
+    controls.push({ category: "管理控制", measure: "維持現有控制措施" });
+    controls.push({ category: "管理控制", measure: "定期檢討作業程序" });
+    controls.push({ category: "管理控制", measure: "持續監測環境濃度" });
+    controls.push({ category: "個人防護裝備", measure: "依需要配戴基本防護裝備" });
+  }
+  
+  // 針對特定風險類型的額外建議
+  if (riskAssessments.IDLH && riskAssessments.IDLH.level === 4) {
+    controls.push({ category: "緊急應變措施", measure: "立即啟動緊急疏散程序" });
+    controls.push({ category: "緊急應變措施", measure: "設置緊急洗眼站和淋浴設備" });
+    controls.push({ category: "緊急應變措施", measure: "備妥緊急應變器材" });
+  }
+  
+  if (riskAssessments.STEL && riskAssessments.STEL.level === 4) {
+    controls.push({ category: "短期暴露控制", measure: "嚴格控制單次作業時間" });
+    controls.push({ category: "短期暴露控制", measure: "實施作業前風險評估" });
+    controls.push({ category: "短期暴露控制", measure: "加強現場監督管理" });
+  }
+  
+  return controls;
+}
+
+function calculate() {
+  const func = document.getElementById("function").value;
+  const V = parseFloat(document.getElementById("V").value);
+  const Q = parseFloat(document.getElementById("Q").value);
+  const C0 = parseFloat(document.getElementById("C0").value);
+  const Cin = parseFloat(document.getElementById("Cin").value);
+  const G = parseFloat(document.getElementById("G").value);
+  const exposureTime = parseFloat(document.getElementById("exposureTime").value);
+  const t_min = parseFloat(document.getElementById("t").value);
+  const decayStartTime = parseFloat(document.getElementById("decayStartTime").value);
+  const decayDuration = parseFloat(document.getElementById("decayDuration").value);
+  const MW = parseFloat(document.getElementById("MW").value);
+  const temp = parseFloat(document.getElementById("temp").value);
+  const pressure = parseFloat(document.getElementById("pressure").value);
+  
+  // 獲取所有暴露限值
+  const limits = {
+    TWA: { value: parseFloat(document.getElementById("TWA_value").value), unit: document.getElementById("TWA_unit").value },
+    STEL: { value: parseFloat(document.getElementById("STEL_value").value), unit: document.getElementById("STEL_unit").value },
+    IDLH: { value: parseFloat(document.getElementById("IDLH_value").value), unit: document.getElementById("IDLH_unit").value },
+    OEL: { value: parseFloat(document.getElementById("OEL_value").value), unit: document.getElementById("OEL_unit").value }
+  };
+  
+  // 計算所有時間點的濃度（每分鐘一個數據點）
+  const concentrations = [];
+  const totalTime = func === "decay" ? Math.max(t_min, decayStartTime + decayDuration) : t_min;
+  
+  for(let time = 0; time <= totalTime; time++) {
+    const concentration = calculateConcentration(func, V, Q, C0, Cin, G, time, decayStartTime);
+    concentrations.push(concentration);
+  }
+  
+  // 當前暴露濃度 = 最後一個時間點的濃度
+  const currentConcentration = concentrations[concentrations.length - 1];
+  
+  // 計算各種暴露量
+  const TWA_exposure = calculateTWA(concentrations, exposureTime, 480);
+  const STEL_exposure = calculateSTEL(concentrations, exposureTime);
+  const maxConcentration = calculateMaxConcentration(concentrations, exposureTime);
+  
+  // 轉換單位（mg/m³轉ppm）
+  const currentConcentration_ppm = convertConcentration(currentConcentration, "ppm", MW, temp, pressure);
+  const TWA_exposure_ppm = convertConcentration(TWA_exposure, "ppm", MW, temp, pressure);
+  const STEL_exposure_ppm = convertConcentration(STEL_exposure, "ppm", MW, temp, pressure);
+  const maxConcentration_ppm = convertConcentration(maxConcentration, "ppm", MW, temp, pressure);
+  
+  // 計算風險等級（使用正確的暴露濃度進行評估）
+  const riskAssessments = {};
+  
+  // TWA風險評估
+  const TWA_displayValue = limits.TWA.unit === "ppm" ? Math.round(TWA_exposure_ppm) : Math.round(TWA_exposure);
+  const TWA_risk = calculateRiskLevel(TWA_displayValue, limits.TWA.value, "TWA");
+  riskAssessments.TWA = {
+    exposure: TWA_displayValue,
+    level: TWA_risk.level,
+    text: TWA_risk.text,
+    unit: limits.TWA.unit
+  };
+  
+  // STEL風險評估
+  const STEL_displayValue = limits.STEL.unit === "ppm" ? Math.round(STEL_exposure_ppm) : Math.round(STEL_exposure);
+  const STEL_risk = calculateRiskLevel(STEL_displayValue, limits.STEL.value, "STEL");
+  riskAssessments.STEL = {
+    exposure: STEL_displayValue,
+    level: STEL_risk.level,
+    text: STEL_risk.text,
+    unit: limits.STEL.unit
+  };
+  
+  // IDLH風險評估（使用最大濃度）
+  const IDLH_displayValue = limits.IDLH.unit === "ppm" ? Math.round(maxConcentration_ppm) : Math.round(maxConcentration);
+  const IDLH_risk = calculateRiskLevel(IDLH_displayValue, limits.IDLH.value, "IDLH");
+  riskAssessments.IDLH = {
+    exposure: IDLH_displayValue,
+    level: IDLH_risk.level,
+    text: IDLH_risk.text,
+    unit: limits.IDLH.unit
+  };
+  
+  // OEL風險評估（使用TWA，因為OEL通常是8小時平均限值）
+  const OEL_displayValue = limits.OEL.unit === "ppm" ? Math.round(TWA_exposure_ppm) : Math.round(TWA_exposure);
+  const OEL_risk = calculateRiskLevel(OEL_displayValue, limits.OEL.value, "OEL");
+  riskAssessments.OEL = {
+    exposure: OEL_displayValue,
+    level: OEL_risk.level,
+    text: OEL_risk.text,
+    unit: limits.OEL.unit
+  };
+  
+  // 顯示結果（取整數）
+  let resultHTML = `
+    <h3>計算結果</h3>
+    <p>經過 ${Math.round(t_min)} 分鐘後的空間濃度：${Math.round(currentConcentration)} mg/m³</p>
+    <p>TWA暴露量（${Math.round(exposureTime)}分鐘暴露 + ${480 - Math.round(exposureTime)}分鐘未暴露）：${Math.round(TWA_exposure)} mg/m³</p>
+    <p>STEL暴露量（最大15分鐘平均值）：${Math.round(STEL_exposure)} mg/m³</p>
+    <p>暴露期間最大濃度：${Math.round(maxConcentration)} mg/m³</p>
+    
+    <h4>暴露濃度與風險評估</h4>
+    <table class="risk-table">
+      <tr>
+        <th>限值類型</th>
+        <th>限值數值</th>
+        <th>計算暴露濃度</th>
+        <th>風險等級</th>
+        <th>評估說明</th>
+      </tr>
+  `;
+  
+  Object.keys(riskAssessments).forEach(limitType => {
+    const risk = riskAssessments[limitType];
+    const unitSymbol = risk.unit === "ppm" ? "ppm" : "mg/m³";
+    const limitValue = limits[limitType].value;
+    
+    resultHTML += `
+      <tr class="risk-${risk.level}">
+        <td>${limitType}</td>
+        <td>${Math.round(limitValue)} ${unitSymbol}</td>
+        <td>${risk.exposure} ${unitSymbol}</td>
+        <td>${risk.level}</td>
+        <td>${risk.text}</td>
+      </tr>
+    `;
+  });
+  
+  resultHTML += `</table>`;
+  
+  // 建議控制措施（使用表格顯示）
+  const allRiskLevels = Object.values(riskAssessments).map(r => r.level);
+  const maxRiskLevel = Math.max(...allRiskLevels);
+  const controlMeasures = getControlMeasures(maxRiskLevel, riskAssessments);
+  
+  // 按類別分組控制措施
+  const groupedControls = {};
+  controlMeasures.forEach(control => {
+    if (!groupedControls[control.category]) {
+      groupedControls[control.category] = [];
+    }
+    groupedControls[control.category].push(control.measure);
+  });
+  
+  let controlTableHTML = `
+    <div class="control-measures">
+      <h4>建議控制措施（風險控制階層）</h4>
+      <table class="control-table">
+        <tr>
+          <th>控制類別</th>
+          <th>具體措施</th>
+        </tr>
+  `;
+  
+  Object.keys(groupedControls).forEach(category => {
+    const measures = groupedControls[category];
+    controlTableHTML += `
+      <tr>
+        <td><strong>${category}</strong></td>
+        <td>${measures.join('<br>')}</td>
+      </tr>
+    `;
+  });
+  
+  controlTableHTML += `</table></div>`;
+  
+  resultHTML += controlTableHTML;
+  document.getElementById("result").innerHTML = resultHTML;
+  
+  // 繪製濃度趨勢圖
+  drawChart(func, V, Q, C0, Cin, G, totalTime, decayStartTime);
+}
+
+function drawChart(func, V, Q, C0, Cin, G, totalTime, decayStartTime = 0) {
+  const ctx = document.getElementById('concentrationChart').getContext('2d');
+  
+  // 清除舊的圖表
+  if(window.concentrationChartInstance) {
+    window.concentrationChartInstance.destroy();
+  }
+  
+  const data = [];
+  const labels = [];
+  
+  for(let t_min = 0; t_min <= totalTime; t_min += 1) {
+    const concentration = calculateConcentration(func, V, Q, C0, Cin, G, t_min, decayStartTime);
+    
+    data.push(concentration);
+    labels.push(t_min);
+  }
+  
+  window.concentrationChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '濃度 (mg/m³)',
+        data: data,
+        borderColor: 'blue',
+        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+        fill: true,
+        tension: 0.1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: { 
+          title: { 
+            display: true, 
+            text: '時間 (分鐘)' 
+          } 
+        },
+        y: { 
+          title: { 
+            display: true, 
+            text: '濃度 (mg/m³)' 
+          },
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+// 初始化
+toggleInputs();
+</script>
+
+</body>
+</html>
