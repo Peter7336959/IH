@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相似暴露族群(SEG)先期暴露風險評估資訊圖</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #F0F4F8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 450px;
+        }
+        .flowchart-step {
+            position: relative;
+            z-index: 1;
+        }
+        .flowchart-arrow {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translate(-50%, -50%);
+            width: 4rem;
+            height: 2px;
+            background-color: #087E8B;
+            z-index: 0;
+        }
+        .flowchart-arrow::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            top: -5px;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-left: 8px solid #087E8B;
+        }
+        .tier-funnel > div {
+            clip-path: polygon(15% 0, 85% 0, 100% 100%, 0% 100%);
+        }
+         @media (max-width: 1023px) {
+            .flowchart-arrow {
+                top: 100%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(90deg);
+                transform-origin: center;
+            }
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #087E8B;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-[#0B3954]">
+
+    <!-- Page 1: Title -->
+    <header class="bg-[#0B3954] text-white p-8 text-center rounded-b-2xl shadow-lg min-h-screen flex flex-col justify-center">
+        <h1 class="text-3xl md:text-6xl font-bold mb-4">相似暴露族群(SEG)之<br>先期暴露風險評估</h1>
+        <p class="text-2xl text-[#BFD7EA]">一份為職業衛生專業人員設計的系統性評估技術手冊</p>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <!-- Page 2: Introduction & Purpose -->
+        <section id="intro" class="my-16 py-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#087E8B] mb-4">核心挑戰：在未知與有限之間尋求平衡</h2>
+            <p class="max-w-3xl mx-auto text-lg text-center mb-12">在<span class="font-bold text-[#C81D25]">「資源有限」與「風險未知」</span>的兩難中，先期暴露風險評估提供了一套科學化的解決方案，讓我們能以最具成本效益的方式，精準識別並管理關鍵的職場暴露風險，實現主動預防，保障勞工健康。</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="text-5xl font-bold text-[#087E8B] mb-2">優化</div>
+                    <h3 class="text-xl font-semibold">資源配置</h3>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="text-5xl font-bold text-[#087E8B] mb-2">預測</div>
+                    <h3 class="text-xl font-semibold">前瞻性風險</h3>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="text-5xl font-bold text-[#087E8B] mb-2">符合</div>
+                    <h3 class="text-xl font-semibold">法規要求</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page 3: The 4-Step Process -->
+        <section id="process" class="my-16 py-12 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#087E8B] mb-12 px-4">系統性評估的四大核心步驟</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-12 lg:gap-8 relative px-6">
+                <div class="bg-gray-50 p-6 rounded-xl shadow-inner border-l-4 border-[#087E8B] flowchart-step">
+                    <div class="text-5xl font-bold text-[#BFD7EA] mb-2">1</div>
+                    <h3 class="text-xl font-bold mb-2">基本資料蒐集</h3>
+                    <p class="text-gray-600">建立完整的「暴露情境」，包含作業環境、危害因子、作業活動與歷史數據，這是所有評估的基石。</p>
+                    <div class="hidden lg:block flowchart-arrow"></div>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-xl shadow-inner border-l-4 border-[#087E8B] flowchart-step">
+                    <div class="text-5xl font-bold text-[#BFD7EA] mb-2">2</div>
+                    <h3 class="text-xl font-bold mb-2">建立SEG與評估</h3>
+                    <p class="text-gray-600">將具相似暴露特徵的勞工分組(SEG)，把評估焦點從「個人」轉向「群體」，實現高效管理。</p>
+                    <div class="hidden lg:block flowchart-arrow"></div>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-xl shadow-inner border-l-4 border-[#087E8B] flowchart-step">
+                    <div class="text-5xl font-bold text-[#BFD7EA] mb-2">3</div>
+                    <h3 class="text-xl font-bold mb-2">評估實施與分級</h3>
+                    <p class="text-gray-600">選用合適的評估方法，對各SEG的風險進行系統性衡量與分級，作為管理行動的決策基礎。</p>
+                    <div class="hidden lg:block flowchart-arrow"></div>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-xl shadow-inner border-l-4 border-[#087E8B] flowchart-step">
+                    <div class="text-5xl font-bold text-[#BFD7EA] mb-2">4</div>
+                    <h3 class="text-xl font-bold mb-2">結果應用與行動</h3>
+                    <p class="text-gray-600">將評估結果轉化為具體的改善計畫與監測策略，形成完整的管理循環 (Plan-Do-Check-Act)。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page 4: Qualitative vs. Semi-Quantitative -->
+        <section id="qual-semi-quant" class="my-16 py-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#087E8B] mb-6">評估技術光譜：從定性到半定量</h2>
+            <p class="text-center text-lg max-w-4xl mx-auto mb-12">在進行精確的定量分析之前，定性與半定量評估是不可或缺的初步篩選工具。它們各有優劣，適用於評估的不同階段。</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold text-[#087E8B] mb-4">定性評估 (Qualitative)</h3>
+                    <p>依賴<span class="font-bold">專家判斷</span>，透過觀察、訪談進行結構性判斷。其結論為方向性的指引，如「高/中/低」風險。</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold text-[#087E8B] mb-4">半定量評估 (Semi-Quantitative)</h3>
+                    <p>引入數值尺度，如<span class="font-bold">化學品分級管理(CCB)</span>。簡便快速，產出風險「等級」而非具體「濃度」。</p>
+                </div>
+                <div class="md:col-span-2 bg-white p-8 rounded-xl shadow-lg">
+                    <h4 class="text-xl font-bold text-center mb-4">特性比較</h4>
+                    <p class="text-center text-sm text-gray-500 mb-4">此圖表比較了兩種初步評估方法在速度、成本、精準度和客觀性上的相對表現。</p>
+                    <div class="chart-container h-80 md:h-96">
+                        <canvas id="qualSemiQuantChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Page 5: Quantitative Assessment Overview -->
+        <section id="quant-overview" class="my-16 py-12 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[darkred] mb-6">核心方法：定量暴露評估</h2>
+            <p class="text-center text-lg max-w-4xl mx-auto mb-12">定量評估是職業衛生暴露評估的最高層次，其核心在於運用科學方法，產出可與法規標準直接比較的具體<span class="font-bold text-[#C81D25]">濃度值</span>。這不僅是法規的要求，更是制定有效控制措施的科學依據。</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="p-6">
+                    <h3 class="text-2xl font-bold mb-4">定量評估工具箱</h3>
+                    <p class="mb-4">定量評估主要包含三類工具，其中傳統採樣分析是黃金標準，而直讀式儀器和推估模式則因其高效與前瞻性，在先期評估中扮演關鍵角色。</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><span class="font-bold">傳統採樣分析：</span>提供最可靠的數據。</li>
+                        <li><span class="font-bold text-[#087E8B]">直讀式儀器 (DRI)：</span>提供即時數據，用於峰值識別。</li>
+                        <li><span class="font-bold text-[#FF5A5F]">定量推估模式：</span>在數據缺乏時進行科學預測。</li>
+                    </ul>
+                </div>
+                <div class="p-6">
+                    <p class="text-center text-sm text-gray-500 mb-4">下圖顯示了在實務中，不同定量評估工具的應用佔比分佈。</p>
+                    <div class="chart-container h-80">
+                         <canvas id="quantMethodsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page 6: Deep Dive: DRIs -->
+        <section id="dris" class="my-16 py-12">
+             <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-3 bg-white p-8 rounded-xl shadow-lg">
+                    <h2 class="text-3xl font-bold text-[#087E8B] mb-4">深度剖析(一): 直讀式儀器(DRI)</h2>
+                    <p class="mb-4">DRI能產出高解析度的<span class="font-bold text-[#FF5A5F]">時間序列數據</span>，揭示平均值(TWA)下隱藏的短時間高濃度<span class="font-bold text-[#FF5A5F]">「峰值暴露」</span>事件，將靜態快照變為動態影片。</p>
+                    <p class="text-sm text-gray-500 mb-4">此圖表模擬了8小時日時量平均容許濃度(TWA)看似合格，但其中卻隱藏了數次遠超短時間容許濃度(STEL)的風險事件，這些事件是導致勞工不適的關鍵。</p>
+                    <div class="chart-container h-80">
+                        <canvas id="driChart"></canvas>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-bold">策略性應用</h3>
+                        <p class="text-gray-600 mt-2">控制措施成效驗證、非例行性作業評估、逸散源尋找。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-bold">關鍵考量</h3>
+                        <p class="text-gray-600 mt-2">儀器選擇、定期校正與功能測試至關重要。使用者需具備專業的數據詮釋能力。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page 7: Deep Dive: Estimation Models Foundation -->
+        <section id="models-foundation" class="my-16 py-12 bg-white rounded-2xl shadow-lg">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#087E8B] mb-6">深度剖析(二): 定量推估模式基礎</h2>
+            <p class="text-center text-lg max-w-4xl mx-auto mb-12">推估模式運用數學與物理化學原理，模擬污染物在作業場所的傳輸與分佈。其理論核心是<span class="font-bold">質量平衡 (Mass Balance)</span> 原理。</p>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4 text-center font-mono text-lg p-6 bg-gray-50 rounded-lg">
+                <div class="p-3 bg-green-100 text-green-800 rounded">生成量 (G)</div>
+                <div class="text-2xl">+</div>
+                <div class="p-3 bg-blue-100 text-blue-800 rounded">移入量 (Q*C_in)</div>
+                <div class="text-2xl">-</div>
+                <div class="p-3 bg-red-100 text-red-800 rounded">移除量 (Q*C_out)</div>
+                <div class="text-2xl">=</div>
+                <div class="p-3 bg-purple-100 text-purple-800 rounded">累積變化</div>
+            </div>
+            <p class="font-bold text-center text-red-600 my-8 text-2xl">關鍵原則: 垃圾進，垃圾出 (Garbage In, Garbage Out)</p>
+            <p class="text-center max-w-2xl mx-auto">模式的有效性，高度依賴於輸入參數的品質(如逸散率、通風率)與對模型假設的深刻理解。它提供的是科學預測，而非絕對真理。</p>
+        </section>
+
+        <!-- Page 8: Key Estimation Models Compared -->
+        <section id="model-comparison" class="my-16 py-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#087E8B] mb-6">關鍵推估模式比較</h2>
+            <p class="text-center text-lg max-w-4xl mx-auto mb-12">不同的推估模式適用於不同的情境，它們在真實性、保守性、複雜度等方面存在權衡。選擇合適的模型是評估成功的關鍵。</p>
+             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <p class="text-center text-sm text-gray-500 mb-4">此雷達圖比較了四種常用模式在五個維度上的特性，幫助使用者根據評估需求做出策略性選擇。</p>
+                    <div class="chart-container h-96">
+                        <canvas id="modelComparisonChart"></canvas>
+                    </div>
+                </div>
+                 <div class="space-y-4">
+                     <div class="bg-white p-4 rounded-lg shadow-md">
+                         <h4 class="font-bold text-lg">無通風/飽和蒸氣壓模式 (Tier I)</h4>
+                         <p class="text-sm">最保守、最簡單，用於最壞情境的快速篩選。</p>
+                     </div>
+                     <div class="bg-white p-4 rounded-lg shadow-md">
+                         <h4 class="font-bold text-lg">完全混合模式 (WMR, Tier II)</h4>
+                         <p class="text-sm">應用最廣，考慮通風稀釋，適用於評估全室平均濃度。</p>
+                     </div>
+                     <div class="bg-white p-4 rounded-lg shadow-md">
+                         <h4 class="font-bold text-lg">二暴露區模式 (Two-Zone, Tier II)</h4>
+                         <p class="text-sm">更真實，區分近場/遠場，適用於評估靠近污染源的勞工。</p>
+                     </div>
+                 </div>
+            </div>
+        </section>
+
+        <!-- Page 10: The Tiered Approach -->
+        <section id="tiered-approach" class="my-16 py-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#087E8B] mb-6">策略性選用：分層評估 (Tiered Approach)</h2>
+            <p class="text-center text-lg max-w-4xl mx-auto mb-12">這是一種從簡單、保守的方法開始，逐步升級至更複雜、精確模式的策略。它如同一個過濾器，確保資源被投入到最需要的風險評估中。</p>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="w-full md:w-1/3 flex flex-col items-center tier-funnel">
+                    <div class="w-full bg-[#FF5A5F] text-white p-4 text-center">
+                        <h3 class="font-bold text-xl">Tier I: 初步篩選</h3>
+                    </div>
+                     <div class="w-4/5 bg-[#087E8B] text-white p-4 text-center">
+                        <h3 class="font-bold text-xl">Tier II: 精緻化評估</h3>
+                    </div>
+                     <div class="w-3/5 bg-[#0B3954] text-white p-4 text-center">
+                        <h3 class="font-bold text-xl">Tier III: 機率性評估</h3>
+                    </div>
+                </div>
+                <div class="w-full md:w-2/3">
+                    <div class="overflow-x-auto">
+                         <table class="w-full text-left border-collapse">
+                            <thead class="bg-[#0B3954] text-white">
+                                <tr>
+                                    <th class="p-3 font-bold uppercase">層級</th>
+                                    <th class="p-3 font-bold uppercase">目的與功能</th>
+                                    <th class="p-3 font-bold uppercase">適用模式</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="p-3 font-bold text-[#FF5A5F]">Tier I</td>
+                                    <td class="p-3"><strong>初步篩選</strong>：快速、保守地篩選出低風險或需進一步關注的情境（最壞情境分析）。</td>
+                                    <td class="p-3">無通風模式、飽和蒸氣壓模式</td>
+                                </tr>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="p-3 font-bold text-[#087E8B]">Tier II</td>
+                                    <td class="p-3"><strong>精緻化評估</strong>：針對潛在風險情境，進行更貼近現實的暴露評估。</td>
+                                    <td class="p-3">完全混合模式、二暴露區模式</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-3 font-bold text-[#C81D25]">Tier III</td>
+                                    <td class="p-3"><strong>機率性風險評估</strong>：量化結果的不確定性，提供暴露濃度的機率分佈。</td>
+                                    <td class="p-3">統計推估模式、蒙地卡羅模擬</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Page 11: Conclusion -->
+    <footer class="bg-[#0B3954] text-white text-center p-8 mt-12 rounded-t-2xl shadow-inner min-h-[50vh] flex flex-col justify-center">
+        <h2 class="text-4xl font-bold mb-4">最終目標</h2>
+        <p class="max-w-3xl mx-auto text-xl text-[#BFD7EA]">🛡️ 透過科學的先期評估，精準識別風險、有效分配資源，最終建構一個更安全、更健康的工作環境。</p>
+    </footer>
+
+    <script>
+        const wrapLabel = (label) => {
+            if (typeof label !== 'string' || label.length <= 16) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + ' ' + word).trim().length > 16) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            });
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        };
+        
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        const chartColors = {
+            primary: '#087E8B',
+            secondary: '#BFD7EA',
+            accent: '#FF5A5F',
+            danger: '#C81D25',
+            dark: '#0B3954',
+        };
+
+        new Chart(document.getElementById('qualSemiQuantChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['速度', '低成本', '精準度', '客觀性'],
+                datasets: [
+                    {
+                        label: '定性評估',
+                        data: [9, 9, 2, 3],
+                        backgroundColor: chartColors.accent,
+                        borderColor: chartColors.danger,
+                        borderWidth: 1
+                    },
+                    {
+                        label: '半定量評估',
+                        data: [8, 8, 5, 6],
+                        backgroundColor: chartColors.primary,
+                        borderColor: chartColors.dark,
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { x: { beginAtZero: true, max: 10, title: { display: true, text: '相對評分 (0-10)' } } },
+                plugins: { tooltip: { callbacks: { title: tooltipTitleCallback } }, legend: { position: 'bottom' } }
+            }
+        });
+
+        new Chart(document.getElementById('quantMethodsChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['傳統採樣分析', '直讀式儀器(DRI)', '定量推估模式'],
+                datasets: [{
+                    label: '定量評估工具',
+                    data: [40, 30, 30],
+                    backgroundColor: [chartColors.dark, chartColors.primary, chartColors.accent],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { tooltip: { callbacks: { title: tooltipTitleCallback } }, legend: { position: 'bottom' }, title: {display: true, text: '定量評估工具應用佔比', font: {size: 16}} }
+            }
+        });
+        
+        new Chart(document.getElementById('driChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'],
+                datasets: [{
+                    label: '實際暴露濃度 (ppm)',
+                    data: [10, 15, 95, 20, 15, 120, 25, 10, 5],
+                    borderColor: chartColors.primary,
+                    backgroundColor: 'rgba(8, 126, 139, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                }, {
+                    label: '8小時平均濃度 (TWA)',
+                    data: Array(9).fill(35),
+                    borderColor: chartColors.accent,
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    fill: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: '濃度 (ppm)' } },
+                    x: { title: { display: true, text: '作業時間' } }
+                },
+                plugins: { tooltip: { callbacks: { title: tooltipTitleCallback } }, legend: { position: 'bottom' }, title: { display: true, text: 'DRI揭示的峰值暴露風險', font: { size: 16 } } }
+            }
+        });
+        
+        new Chart(document.getElementById('modelComparisonChart').getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: ['真實性', '保守性', '複雜度', '數據需求', '計算速度'],
+                datasets: [{
+                    label: '無通風/飽和蒸氣壓',
+                    data: [1, 10, 1, 2, 10],
+                    borderColor: chartColors.accent,
+                    backgroundColor: 'rgba(255, 90, 95, 0.2)'
+                }, {
+                    label: '完全混合模式',
+                    data: [5, 5, 5, 6, 7],
+                    borderColor: chartColors.primary,
+                    backgroundColor: 'rgba(8, 126, 139, 0.2)'
+                }, {
+                    label: '二暴露區模式',
+                    data: [8, 3, 8, 8, 5],
+                    borderColor: chartColors.dark,
+                    backgroundColor: 'rgba(11, 57, 84, 0.2)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { r: { beginAtZero: true, max: 10, pointLabels: { font: { size: 14 } } } },
+                plugins: { tooltip: { callbacks: { title: tooltipTitleCallback } }, legend: { position: 'bottom' } }
+            }
+        });
+
+        const generateAssessmentBtn = document.getElementById('generate-assessment-btn');
+        const scenarioInput = document.getElementById('scenario-input');
+        const loader = document.getElementById('loader');
+        const geminiOutput = document.getElementById('gemini-output');
+        const riskAnalysisOutput = document.getElementById('risk-analysis-output');
+        const controlMeasuresOutput = document.getElementById('control-measures-output');
+        const errorOutput = document.getElementById('error-output');
+
+        generateAssessmentBtn.addEventListener('click', async () => {
+            const scenario = scenarioInput.value.trim();
+            if (!scenario) {
+                errorOutput.textContent = '請先輸入工作場景描述。';
+                errorOutput.classList.remove('hidden');
+                return;
+            }
+
+            loader.classList.remove('hidden');
+            geminiOutput.classList.add('hidden');
+            errorOutput.classList.add('hidden');
+            generateAssessmentBtn.disabled = true;
+
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            const systemPrompt = `您是一位頂尖的職業衛生師與風險評估專家，精通台灣的職業安全衛生法規與實務。您的任務是分析使用者提供的工作場景，並提供簡潔、可行的風險評估與改善建議。`;
+
+            const userPrompt = `請分析以下工作場景，並提供兩部分的結構化回覆。請務必使用繁體中文回答。
+
+場景： "${scenario}"
+
+### 風險分析
+- **主要危害與暴露途徑**：識別主要的化學品危害及其可能的暴露途徑（如：吸入、皮膚接觸）。
+- **潛在暴露等級**：根據描述，評估潛在的暴露等級（低、中、高）。
+- **建議評估模式**：建議一種最適合用於進一步定量分析的推估模式（例如：完全混合模式、二暴露區模式），並簡要說明原因。
+
+### 控制措施
+- **控制層級法**：請依據控制層級法，提供一系列建議的控制措施。
+- **結構化清單**：請使用以下標題條列說明： 1. 消除 (Elimination), 2. 取代 (Substitution), 3. 工程控制 (Engineering Controls), 4. 行政管理控制 (Administrative Controls), 5. 個人防護具 (Personal Protective Equipment)。
+- **具體建議**：在每個層級下，提供至少一項與使用者場景相關的具體、實用的建議。若某層級不適用，請說明。
+`;
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API 請求失敗，狀態碼：${response.status}`);
+                }
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    const text = candidate.content.parts[0].text;
+                    const [analysisPart, controlsPart] = text.split('### 控制措施');
+                    const finalAnalysis = analysisPart.replace('### 風險分析', '').trim();
+                    const finalControls = controlsPart ? controlsPart.trim() : '無法解析控制措施建議。';
+
+                    riskAnalysisOutput.innerHTML = finalAnalysis.replace(/\n/g, '<br>');
+                    controlMeasuresOutput.innerHTML = finalControls.replace(/\n/g, '<br>');
+
+                    geminiOutput.classList.remove('hidden');
+                } else {
+                    throw new Error('從 API 收到的回應格式不正確。');
+                }
+
+            } catch (error) {
+                console.error('Gemini API 呼叫失敗:', error);
+                errorOutput.textContent = `評估生成失敗，請稍後再試。錯誤訊息：${error.message}`;
+                errorOutput.classList.remove('hidden');
+            } finally {
+                loader.classList.add('hidden');
+                generateAssessmentBtn.disabled = false;
+            }
+        });
+
+
+    </script>
+</body>
+</html>
+
