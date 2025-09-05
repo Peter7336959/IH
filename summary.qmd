@@ -2,4 +2,4 @@
 
 [先期暴露評估 - 資訊圖表 infographic](docs/briefing.html)
 
-[技術手冊s關聯性 - 資訊圖表 infographic](docs\TMs.Rhtml)
+[技術手冊s關聯性 - 資訊圖表 infographic](docs\TMs.html)
