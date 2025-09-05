@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<style type="text/css">
+.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+}
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.sng {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.def {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>職業衛生暴露評估策略資訊圖表</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc;
+            font-size: 1.1rem; /* Increased base font size */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Increased height for better visibility */
+            max-height: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .step-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 8px solid;
+            display: flex;
+            flex-direction: column;
+        }
+        .step-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto px-4 py-8 sm:px-6 lg:px-8 lg:py-16">
+
+        <header class="text-center mb-16">
+            <h1 class="text-5xl md:text-6xl font-black text-[#0D47A1] mb-4">系統性暴露評估策略</h1>
+            <p class="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto">一套從基礎建構到精準行動的動態管理循環，旨在科學化地保護勞工健康，並優化企業資源配置。</p>
+        </header>
+
+        <div id="page1" class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-2 text-[#1565C0]">第一單元</h2>
+            <h3 class="text-5xl font-extrabold text-center mb-12 text-[#1565C0]">策略的基石：基礎建構</h3>
+            <div class="flex justify-center">
+                <div class="step-card border-[#42A5F5] w-full max-w-4xl">
+                    <div class="p-8 flex-grow">
+                        <div class="flex items-center mb-4">
+                            <span class="bg-[#42A5F5] text-white rounded-full w-12 h-12 flex items-center justify-center text-3xl font-bold mr-4 shrink-0">1</span>
+                            <div>
+                                <h4 class="text-3xl font-bold text-[#1565C0]">基礎建構</h4>
+                                <p class="text-base font-medium text-gray-500">Foundation & Characterization</p>
+                                <p class="text-sm text-gray-500 mt-1">參考手冊：<strong class="font-bold text-black">政策與目標擬定、基本資料蒐集、人員組成與分工</strong></p>
+                            </div>
+                        </div>
+                        <p class="mb-6 text-lg">此為計畫的起點，旨在建立共識、整合資源，並全面蒐集背景資訊，確保後續評估的方向正確且高效。</p>
+                        <div class="space-y-4 text-lg">
+                            <div class="flex items-start"><span class="text-blue-500 text-3xl mr-3">🎯</span><div><strong class="text-gray-900">為何做 (Why):</strong> 擬定與企業ESG目標結合的監測政策，獲取管理階層支持。</div></div>
+                            <div class="flex items-start"><span class="text-blue-500 text-3xl mr-3">👥</span><div><strong class="text-gray-900">誰來做 (Who):</strong> 組建包含工程、管理及勞工代表的跨部門團隊，確保資訊完整。</div></div>
+                            <div class="flex items-start"><span class="text-blue-500 text-3xl mr-3">📋</span><div><strong class="text-gray-900">已知什麼 (What):</strong> 系統性蒐集SDS、製程、作業型態等資料，特別關注非例行性高風險作業。</div></div>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-b-2xl mt-auto">
+                        <p class="text-base font-semibold text-blue-800">產出 (Output):</p>
+                        <p class="text-2xl font-bold text-[#1565C0]">詳實的基礎資料庫</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page2" class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-2 text-[#1E88E5]">第二單元</h2>
+            <h3 class="text-5xl font-extrabold text-center mb-12 text-[#1E88E5]">聚焦評估：相似暴露群劃分</h3>
+            <div class="flex justify-center">
+                <div class="step-card border-[#1E88E5] w-full max-w-4xl">
+                    <div class="p-8 flex-grow">
+                        <div class="flex items-center mb-4">
+                             <span class="bg-[#1E88E5] text-white rounded-full w-12 h-12 flex items-center justify-center text-3xl font-bold mr-4 shrink-0">2</span>
+                            <div>
+                               <h4 class="text-3xl font-bold text-[#0D47A1]">相似暴露群劃分</h4>
+                               <p class="text-base font-medium text-gray-500">Grouping & SEG Definition</p>
+                               <p class="text-sm text-gray-500 mt-1">參考手冊：<strong class="font-bold text-black">相似暴露族群之劃分與檢定</strong></p>
+                            </div>
+                        </div>
+                        <p class="mb-4 text-lg">將複雜的工場環境簡化為可管理的評估單元 (SEG)，聚焦評估資源。主要由<strong class="text-blue-700">工作場所分佈</strong>、<strong class="text-blue-700">工作型態</strong>、<strong class="text-blue-700">潛在危害物</strong>三方面蒐集資料，並根據專業判斷或科學統計方法以有效的區分SEGs。</p>
+                        <p class="mb-6 text-lg">最終目標是以統計學方法推論族群的暴露實態。</p>
+                        <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                            <h5 class="font-bold text-xl mb-4 text-center text-[#0D47A1]">SEG 劃分與檢定結果範例</h5>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-base">
+                                    <thead class="bg-blue-100 text-blue-800">
+                                        <tr>
+                                            <th class="p-3">SEG 名稱</th>
+                                            <th class="p-3">主要危害</th>
+                                            <th class="p-3">劃分方法</th>
+                                            <th class="p-3">檢定結果</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b"><td class="p-3 font-medium">噴漆作業</td><td class="p-3">有機溶劑</td><td class="p-3">定性</td><td class="p-3 text-orange-600 font-semibold">待確認</td></tr>
+                                        <tr class="border-b"><td class="p-3 font-medium">電鍍作業</td><td class="p-3">重金屬</td><td class="p-3">定性</td><td class="p-3 text-orange-600 font-semibold">待確認</td></tr>
+                                        <tr class="border-b"><td class="p-3 font-medium">焊接作業</td><td class="p-3">金屬燻煙</td><td class="p-3">定性</td><td class="p-3 text-orange-600 font-semibold">待確認</td></tr>
+                                        <tr class="border-b"><td class="p-3 font-medium">物料搬運</td><td class="p-3">粉塵</td><td class="p-3">定量</td><td class="p-3 text-green-600 font-semibold">確認SEG</td></tr>
+                                        <tr><td class="p-3 font-medium">實驗室分析</td><td class="p-3">酸霧</td><td class="p-3">定量</td><td class="p-3 text-green-600 font-semibold">確認SEG</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                         <p class="text-center text-base text-gray-600 mt-4">透過列表方式，清晰呈現各SEG的初步評估狀態，為第三單元的風險分級提供直接依據。</p>
+                    </div>
+                     <div class="bg-blue-50 p-6 rounded-b-2xl mt-auto">
+                        <p class="text-base font-semibold text-blue-800">產出 (Output):</p>
+                        <p class="text-2xl font-bold text-[#0D47A1]">相似暴露族群(SEG)清單</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page3" class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-2 text-[#00838F]">第三單元</h2>
+            <h3 class="text-5xl font-extrabold text-center mb-12 text-[#00838F]">核心分析：先期暴露風險評估</h3>
+            
+            <div class="step-card border-[#00ACC1] w-full max-w-5xl mx-auto">
+                 <div class="p-8">
+                     <div class="flex items-center mb-4">
+                         <span class="bg-[#00ACC1] text-white rounded-full w-12 h-12 flex items-center justify-center text-3xl font-bold mr-4 shrink-0">3</span>
+                         <div>
+                            <h4 class="text-3xl font-bold text-[#006064]">先期暴露風險評估</h4>
+                            <p class="text-base font-medium text-gray-500">Qualitative Exposure Risk Assessment</p>
+                            <p class="text-sm text-gray-500 mt-1">參考手冊：<strong class="font-bold text-black">相似暴露族群之先期暴露風險評估</strong></p>
+                        </div>
+                    </div>
+                    <p class="mb-8 max-w-3xl text-lg">此為承先啟後的核心環節。在投入昂貴的量化監測前，對各SEG進行風險預判，以科學地決定資源投入的優先順序，確保資源集中在高風險的刀口上。</p>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h5 class="font-bold text-xl mb-4 text-[#00838F]">評估工具層次</h5>
+                            <div class="space-y-4 text-base">
+                                <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-cyan-300">
+                                    <h6 class="font-semibold">定性評估</h6>
+                                    <p class="text-gray-700">利用風險矩陣，快速篩選，適用於初步評估。</p>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-cyan-400">
+                                    <h6 class="font-semibold">半定量評估</h6>
+                                    <p class="text-gray-700">如控制分級(Control Banding)，提供更具體的控制建議。</p>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-cyan-500">
+                                    <h6 class="font-semibold">定量暴露模式</h6>
+                                    <p class="text-gray-700">利用數學模型估算濃度，適用於預測未來情境。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="chart-container">
+                                <canvas id="riskBarChart"></canvas>
+                            </div>
+                            <p class="text-center text-base text-gray-600 mt-2">此圖表將各SEG依風險分級(1-4級)排序，明確指出第四級風險的族群為第四單元監測的最高優先對象。</p>
+                        </div>
+                    </div>
+                 </div>
+                 <div class="bg-cyan-50 p-6 rounded-b-2xl mt-auto">
+                    <p class="text-base font-semibold text-cyan-800">產出 (Output):</p>
+                    <p class="text-2xl font-bold text-[#006064]">具優先級的SEG風險清單</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="page4" class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-2 text-[#2E7D32]">第四單元</h2>
+            <h3 class="text-5xl font-extrabold text-center mb-12 text-[#2E7D32]">精準行動：擬定採樣策略</h3>
+            <div class="flex justify-center">
+                <div class="step-card border-[#66BB6A] w-full max-w-4xl">
+                    <div class="p-8 flex-grow">
+                         <div class="flex items-center mb-4">
+                             <span class="bg-[#66BB6A] text-white rounded-full w-12 h-12 flex items-center justify-center text-3xl font-bold mr-4 shrink-0">4</span>
+                             <div>
+                                <h4 class="text-3xl font-bold text-[#1B5E20]">擬定採樣策略</h4>
+                                <p class="text-base font-medium text-gray-500">Action Plan & Sampling Strategy</p>
+                                <p class="text-sm text-gray-500 mt-1">參考手冊：<strong class="font-bold text-black">採樣策略擬定</strong></p>
+                            </div>
+                        </div>
+                        <p class="mb-6 text-lg">為高風險或不確定的SEG，量身打造科學、有效且具統計代表性的量化監測計畫，將前期評估轉化為具體數據收集行動。</p>
+                        <div class="chart-container">
+                           <canvas id="monitoringLineChart"></canvas>
+                        </div>
+                        <p class="text-center text-base text-gray-600 mt-2">此趨勢圖模擬對前三大高風險SEG進行長期監測的結果，以數據驗證其暴露實態，作為後續工程改善或行政管理的決策依據。</p>
+                    </div>
+                     <div class="bg-green-50 p-6 rounded-b-2xl mt-auto">
+                        <p class="text-base font-semibold text-green-800">產出 (Output):</p>
+                        <p class="text-2xl font-bold text-[#1B5E20]">詳細的作業環境監測計畫</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="page5" class="mb-16">
+            <h2 class="text-4xl font-bold text-center mb-2 text-[#388E3C]">第五單元</h2>
+            <h3 class="text-5xl font-extrabold text-center mb-12 text-[#388E3C]">持續改善：總結與回饋</h3>
+            <div class="flex justify-center">
+                 <div class="step-card border-[#388E3C] w-full max-w-4xl">
+                    <div class="p-8 flex-grow">
+                        <div class="flex items-center mb-4">
+                             <span class="bg-[#388E3C] text-white rounded-full w-12 h-12 flex items-center justify-center text-3xl font-bold mr-4 shrink-0">🔄</span>
+                            <div>
+                               <h4 class="text-3xl font-bold text-[#1B5E20]">總結與回饋</h4>
+                               <p class="text-base font-medium text-gray-500">The Feedback Loop & PDCA</p>
+                            </div>
+                        </div>
+                        <p class="mb-6 text-lg">評估流程並非線性終結，而是一個動態的管理循環。監測結果將回饋至系統，持續更新資料庫、驗證分群、並修正風險判斷。</p>
+                        
+                        <div class="w-full bg-gray-50 rounded-lg p-8">
+                            <div class="relative p-6 border-4 border-dashed border-green-500 rounded-xl">
+                                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 bg-gray-50 text-green-700 font-bold text-2xl">回饋 & 更新</div>
+                                <div class="grid grid-cols-2 grid-rows-2 gap-x-8 gap-y-12 aspect-square max-w-xl mx-auto pt-8">
+                                    <!-- Quadrants -->
+                                    <div class="bg-blue-200 rounded-lg p-4 flex items-center justify-center text-center shadow-lg">
+                                        <span class="text-blue-800 font-bold text-2xl leading-tight">1. 基礎資訊建構</span>
+                                    </div>
+                                    <div class="bg-yellow-200 rounded-lg p-4 flex items-center justify-center text-center shadow-lg">
+                                        <span class="text-yellow-800 font-bold text-2xl leading-tight">2. 劃分相似暴露群組</span>
+                                    </div>
+                                    <div class="bg-green-300 rounded-lg p-4 flex items-center justify-center text-center shadow-lg">
+                                        <span class="text-green-900 font-bold text-2xl leading-tight">4. 規劃精準採樣策略與實施</span>
+                                    </div>
+                                    <div class="bg-red-200 rounded-lg p-4 flex items-center justify-center text-center shadow-lg">
+                                        <span class="text-red-800 font-bold text-2xl leading-tight">3.量化暴露風險評估</span>
+                                    </div>
+                                    <!-- Arrows -->
+                                    <div class="absolute top-1/2 left-1/2 w-full h-full text-6xl text-gray-400 flex items-center justify-center">
+                                        <span class="transform rotate-45">↻</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="mt-6 text-center text-base text-gray-600">此流程原則上依序由1至4進行，但更是一個動態的循環系統。各單元資訊會彼此回饋（例如監測結果會回頭修正SEG劃分），體現了ISO 45001中「規劃-執行-檢查-行動」(PDCA)的精神，確保管理體系的持續改善。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center mt-12 mb-8">
+        <p class="text-base text-gray-600">prepared by 成大蔡朋枝教授團隊 114.09.05</p>
+    </footer>
+
+    <script>
+        const wrapLabel = (label, maxWidth) => {
+            const words = label.split(/\s+/);
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).length > maxWidth && currentLine.length > 0) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += (currentLine.length === 0 ? '' : ' ') + word;
+            }
+            if (currentLine.length > 0) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        };
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            } else {
+                return label;
+            }
+        };
+        
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    backgroundColor: '#333',
+                    titleFont: { size: 16, weight: 'bold' },
+                    bodyFont: { size: 14 },
+                    padding: 12,
+                    cornerRadius: 4
+                },
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            family: "'Noto Sans TC', sans-serif",
+                            size: 14,
+                        },
+                        color: '#4a5568',
+                        padding: 20
+                    }
+                }
+            },
+            animation: {
+                duration: 1000,
+                easing: 'easeInOutQuart'
+            }
+        };
+
+        const riskBarLabels = [
+            '噴漆作業 (有機溶劑)', 
+            '電鍍作業 (重金屬)', 
+            '焊接作業 (金屬燻煙)', 
+            '物料搬運 (粉塵)',
+            '實驗室分析 (酸霧)'
+        ];
+        const riskBarColors = ['#EF5350', '#FFA726', '#FFEE58', '#66BB6A', '#26C6DA'];
+        const riskLevels = [4, 3, 3, 2, 1]; // 4:>OEL, 3:<1 OEL, 2:<1/2 OEL, 1:<1/10 OEL
+
+        const riskBarCtx = document.getElementById('riskBarChart').getContext('2d');
+        new Chart(riskBarCtx, {
+            type: 'bar',
+            data: {
+                labels: riskBarLabels.map(label => wrapLabel(label, 16)),
+                datasets: [{
+                    label: '風險分級',
+                    data: riskLevels,
+                    backgroundColor: riskLevels.map(level => {
+                        if (level === 4) return '#EF5350'; // Red for >OEL
+                        if (level === 3) return '#FFA726'; // Orange for <1 OEL
+                        if (level === 2) return '#FFEE58'; // Yellow for <1/2 OEL
+                        return '#66BB6A'; // Green for <1/10 OEL
+                    }),
+                    borderRadius: 4,
+                }]
+            },
+            options: { 
+                ...commonChartOptions, 
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 4,
+                        ticks: {
+                            stepSize: 1,
+                            color: '#4a5568',
+                            font: { size: 14 },
+                            callback: function(value) {
+                                switch(value) {
+                                    case 1: return '1 (<0.1 OEL)';
+                                    case 2: return '2 (<0.5 OEL)';
+                                    case 3: return '3 (<1 OEL)';
+                                    case 4: return '4 (>1 OEL)';
+                                    default: return '';
+                                }
+                            }
+                        },
+                        grid: { color: '#e2e8f0' },
+                        title: { display: true, text: '風險分級 (愈高等級愈優先)', color: '#4a5568', font: { size: 16 } }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#4a5568', font: { size: 14 } }
+                    }
+                },
+                plugins: { ...commonChartOptions.plugins, legend: { display: false } }
+            }
+        });
+
+        const monitoringLineCtx = document.getElementById('monitoringLineChart').getContext('2d');
+        new Chart(monitoringLineCtx, {
+            type: 'line',
+            data: {
+                labels: ['第一季', '第二季', '第三季', '第四季', '次年第一季', '次年第二季'],
+                datasets: [{
+                    label: '噴漆作業 (有機溶劑)',
+                    data: [110, 115, 120, 118, 122, 125], // >100% OEL
+                    borderColor: '#EF5350',
+                    backgroundColor: 'rgba(239, 83, 80, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                },{
+                    label: '電鍍作業 (重金屬)',
+                    data: [70, 75, 72, 80, 78, 82], // <100% OEL
+                    borderColor: '#FFA726',
+                    backgroundColor: 'rgba(255, 167, 38, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                },{
+                    label: '焊接作業 (金屬燻煙)',
+                    data: [60, 65, 63, 68, 66, 70], // <100% OEL
+                    borderColor: '#FFEE58',
+                    backgroundColor: 'rgba(255, 238, 88, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                },{
+                    label: '容許暴露標準 (100% OEL)',
+                    data: [100, 100, 100, 100, 100, 100],
+                    borderColor: '#424242',
+                    borderDash: [5, 5],
+                    fill: false,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                ...commonChartOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#e2e8f0' },
+                        ticks: { color: '#4a5568', font: { size: 14 } },
+                        title: { display: true, text: '暴露濃度 (單位為 %OEL)', color: '#4a5568', font: { size: 16 } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#4a5568', font: { size: 14 } }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
