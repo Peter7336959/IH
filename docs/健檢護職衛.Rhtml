@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>守護職場健康：醫護人員關鍵法規指引(深度剖析版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 
+    Narrative Plan:
+    1. Introduction/Cover: A full-page, visually impactful cover setting the stage.
+    2. The Two Pillars (Expanded): A dedicated page detailing the comparison between pre-employment and in-service checks with more examples and legal context.
+    3. General Health Check Schedule: A new page visualizing the age-based schedule for general health checks using a timeline format.
+    4. Special Health Examinations (Focus: The 'Why'): A page dedicated to the mandatory nature of special checks, listing examples of the 32 hazardous job types.
+    5. Special Health Examinations (Focus: The 'How'): A detailed, step-by-step vertical flowchart of the 4-level health management process, emphasizing the physician's role.
+    6. Workplace Monitoring & Data Integration: This page explains the importance of environmental data for clinical judgment and visualizes monitoring frequencies with a more detailed chart.
+    7. Hazard Control Hierarchy (Expanded): A full page dedicated to the pyramid, with detailed explanations and practical examples for each level.
+    8. Physical Hazards in Focus: A page comparing Noise and Heat hazards, visualizing key thresholds (dBA) and the WBGT index for work/rest cycles. A new chart is introduced for WBGT.
+    9. Modern Workplace Health Challenges: This page expands on the three psycho-social prevention plans with more detail on employer responsibilities for each.
+    10. Medical Facility Responsibilities & Conclusion: A final summary page focusing on the specific duties of the medical institution (personnel, reporting, record-keeping) and a concluding message.
+
+    Color Palette Selection: "Brilliant Blues" (#003F5C, #365B7D, #6B7B9E, #A39DBF, #E0C2E1) is maintained for a professional and consistent look.
+
+    Visualization Selection & Justification (NO SVG / NO MERMAID JS):
+    - Comparison Cards (Page 2): Goal: Compare. Method: Styled HTML/CSS. Justification: Effective side-by-side comparison.
+    - Timeline (Page 3): Goal: Change/Organize. Method: Structured HTML/CSS with Tailwind. Justification: Clearly shows age-based event progression.
+    - Vertical Flowchart (Page 5): Goal: Organize. Method: Structured HTML divs with Tailwind CSS. Justification: Superior for detailing a multi-step process with explanations.
+    - Detailed Pyramid (Page 7): Goal: Organize. Method: Stacked, styled HTML divs with accompanying text blocks. Justification: Expands on the concept with necessary context for each level.
+    - Donut Chart (Page 8): Goal: Compare/Inform. Method: Chart.js (Canvas). Justification: Visually represents the components of the WBGT calculation.
+    - Bar Chart (Page 6): Goal: Compare. Method: Chart.js (Canvas). Justification: Compares monitoring frequencies across categories.
+    - Icon Cards (Page 9): Goal: Inform. Method: HTML/CSS with Unicode characters. Justification: Simple, effective visual cues.
+
+    Confirmation: NEITHER Mermaid JS NOR SVG were used in this file. All charts are rendered on Canvas via Chart.js, and all diagrams are constructed using structured HTML and styled with Tailwind CSS.
+    -->
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #F0F4F8;
+            color: #003F5C;
+        }
+        .page-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            border-bottom: 1px solid #A39DBF;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 450px;
+        }
+         .donut-chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 350px;
+        }
+        .nav-dot {
+            transition: all 0.3s ease;
+        }
+        .nav-dot.active {
+            transform: scale(1.5);
+            background-color: #003F5C;
+        }
+        .pyramid-level-deep {
+            position: relative;
+            background-color: var(--bg-color, #A39DBF);
+            color: white;
+            padding: 0.5rem 1rem;
+            margin: 0 auto;
+            clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="side-nav" class="fixed top-1/2 right-4 -translate-y-1/2 z-50 space-y-3 hidden md:flex flex-col">
+    </nav>
+
+    <div id="page1" class="page-section bg-white">
+        <header class="text-center">
+            <h1 class="text-5xl md:text-7xl font-bold text-[#003F5C] mb-4">守護職場健康</h1>
+            <p class="text-2xl md:text-3xl text-[#365B7D]">醫護人員關鍵法規指引</p>
+            <p class="mt-8 text-lg max-w-2xl mx-auto text-[#6B7B9E]">本指引將複雜的職業安全衛生法規，轉化為清晰的視覺化資訊，助您掌握核心概念、關鍵數據與法定職責，為守護勞工健康提供最堅實的專業支持。</p>
+            <div class="mt-12 text-[#A39DBF]">
+                <span class="text-2xl animate-bounce">↓</span>
+                <p>向下捲動以開始</p>
+            </div>
+        </header>
+    </div>
+
+    <div id="page2" class="page-section">
+        <h2 class="text-3xl font-bold text-center mb-10">第一章：勞工健檢的兩大支柱</h2>
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl">
+            <div class="bg-white p-8 rounded-lg shadow-xl border-l-8 border-[#6B7B9E]">
+                <h3 class="text-2xl font-bold mb-4">體格檢查 (新進勞工)</h3>
+                <p class="mb-4"><strong>法律目的：</strong><span class="font-bold text-[#003F5C]">適性配工</span>。依據職安法 §20，此為預防的第一道關卡，旨在評估勞工的身心狀態是否足以安全勝任特定工作，避免將不適合的勞工配置於高風險崗位。</p>
+                <ul class="list-disc list-inside space-y-2 text-[#365B7D]">
+                    <li><strong>實施時機：</strong>勞工實際從事作業**前**完成。</li>
+                    <li><strong>費用負擔：</strong>由勞資雙方**協商**決定。</li>
+                    <li><strong>給假性質：</strong>不適用公假，屬求職過程一環。</li>
+                    <li><strong>報告延用：</strong>一年內、項目符合且為認可機構開立之報告可延用。</li>
+                </ul>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-xl border-l-8 border-[#A39DBF]">
+                <h3 class="text-2xl font-bold mb-4">健康檢查 (在職勞工)</h3>
+                <p class="mb-4"><strong>法律目的：</strong><span class="font-bold text-[#003F5C]">早期發現與預防</span>。對在職勞工進行持續性的健康監測，及早發現任何與職業暴露相關的健康異常，以便即時介入與治療。</p>
+                <ul class="list-disc list-inside space-y-2 text-[#365B7D]">
+                    <li><strong>實施時機：</strong>依法定年齡與作業種類定期辦理。</li>
+                    <li><strong>費用負擔：</strong>由**雇主全額**負擔，不得轉嫁。</li>
+                    <li><strong>給假性質：</strong>雇主應給予**公假**。</li>
+                    <li><strong>紀錄保存：</strong>屬病歷資料，應依法保存。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div id="page3" class="page-section bg-white">
+        <h2 class="text-3xl font-bold text-center mb-10">第二章：一般健康檢查法定週期</h2>
+        <p class="text-center text-lg text-[#365B7D] max-w-3xl mx-auto mb-12">在職勞工的一般健康檢查頻率依年齡而異，旨在提供符合不同年齡層風險的基礎健康監測。</p>
+        <div class="w-full max-w-4xl">
+            <div class="relative wrap overflow-hidden h-full">
+                <div class="border-2-2 absolute border-opacity-20 border-gray-700 h-full border" style="left: 50%"></div>
+                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-[#6B7B9E] shadow-xl w-8 h-8 rounded-full">
+                        <h1 class="mx-auto font-semibold text-lg text-white">1</h1>
+                    </div>
+                    <div class="order-1 bg-[#E0C2E1] rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <h3 class="font-bold text-[#003F5C] text-xl">未滿 40 歲</h3>
+                        <p class="text-sm leading-snug tracking-wide text-[#365B7D]">每 5 年檢查 1 次</p>
+                    </div>
+                </div>
+                <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-[#6B7B9E] shadow-xl w-8 h-8 rounded-full">
+                        <h1 class="mx-auto text-white font-semibold text-lg">2</h1>
+                    </div>
+                    <div class="order-1 bg-[#A39DBF] rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <h3 class="font-bold text-white text-xl">40 歲至 65 歲</h3>
+                        <p class="text-sm font-medium leading-snug tracking-wide text-white">每 3 年檢查 1 次</p>
+                    </div>
+                </div>
+                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-[#6B7B9E] shadow-xl w-8 h-8 rounded-full">
+                        <h1 class="mx-auto font-semibold text-lg text-white">3</h1>
+                    </div>
+                    <div class="order-1 bg-[#6B7B9E] rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <h3 class="font-bold text-white text-xl">年滿 65 歲</h3>
+                        <p class="text-sm leading-snug tracking-wide text-white">每年檢查 1 次</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="page4" class="page-section">
+        <h2 class="text-3xl font-bold text-center mb-10">第三章：特殊健康檢查 (範疇與要件)</h2>
+        <p class="text-center text-lg text-[#365B7D] max-w-3xl mx-auto mb-12">針對從事「勞工健康保護規則」附表一所列之 32 項特別危害健康作業的勞工，雇主必須**每年**為其辦理特殊健檢。這是**強制性法定義務**。</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h4 class="font-bold text-lg mb-2 text-center text-[#003F5C]">物理性危害</h4>
+                <p class="text-sm text-[#365B7D]">高溫、噪音、游離輻射、異常氣壓等作業。</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h4 class="font-bold text-lg mb-2 text-center text-[#003F5C]">化學性危害</h4>
+                <p class="text-sm text-[#365B7D]">鉛、四烷基鉛、粉塵、有機溶劑、特定化學物質等32大類作業。</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h4 class="font-bold text-lg mb-2 text-center text-[#003F5C]">關鍵職責</h4>
+                 <ul class="list-none space-y-2 text-sm text-[#365B7D]">
+                    <li><span class="font-bold text-[#003F5C]">✔</span> 雇主：依法每年辦理。</li>
+                    <li><span class="font-bold text-[#003F5C]">✔</span> 醫療機構：60日內通報結果。</li>
+                    <li><span class="font-bold text-[#003F5C]">✔</span> 醫師：由職醫科醫師判讀分級。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div id="page5" class="page-section bg-white">
+        <h2 class="text-3xl font-bold text-center mb-10">第四章：特殊健檢之健康管理分級</h2>
+        <p class="text-center text-lg text-[#365B7D] max-w-3xl mx-auto mb-12">特殊健檢的核心在於後續的健康管理。職業醫學科專科醫師需依檢查結果將勞工分為四級，並提供雇主明確的處理建議。</p>
+        <div class="w-full max-w-md mx-auto">
+            <div class="space-y-4">
+                <div class="p-6 bg-green-100 rounded-xl shadow-md border-l-4 border-green-500">
+                    <h3 class="font-bold text-green-800">第一級管理</h3>
+                    <p class="text-sm text-green-700">檢查結果無異常，可回復原作業。</p>
+                </div>
+                <div class="text-center text-3xl text-[#A39DBF]">↓</div>
+                <div class="p-6 bg-yellow-100 rounded-xl shadow-md border-l-4 border-yellow-500">
+                    <h3 class="font-bold text-yellow-800">第二級管理</h3>
+                    <p class="text-sm text-yellow-700">發現異常，但可能與職業無關。應提供勞工一般健康指導。</p>
+                </div>
+                <div class="text-center text-3xl text-[#A39DBF]">↓</div>
+                <div class="p-6 bg-orange-100 rounded-xl shadow-md border-l-4 border-orange-500">
+                    <h3 class="font-bold text-orange-800">第三級管理</h3>
+                    <p class="text-sm text-orange-700">異常**無法排除**與職業相關。雇主應提供**公假**，由職醫科醫師實施健康追蹤檢查，並評估調換工作。</p>
+                </div>
+                <div class="text-center text-3xl text-[#A39DBF]">↓</div>
+                <div class="p-6 bg-red-100 rounded-xl shadow-md border-l-4 border-red-500">
+                    <h3 class="font-bold text-red-800">第四級管理</h3>
+                    <p class="text-sm text-red-700">異常**高度懷疑**與職業相關。應立即請職醫科醫師**至現場評估**，找出危害根源並改善，費用由雇主負擔。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page6" class="page-section">
+        <h2 class="text-3xl font-bold text-center mb-10">第五章：作業環境監測與數據整合</h2>
+        <p class="text-center text-lg text-[#365B7D] max-w-3xl mx-auto mb-12">健康檢查結果的判讀，不能脫離勞工的實際暴露狀況。作業環境監測提供了客觀、量化的暴露數據，是醫師進行職業相關性判斷的重要依據。</p>
+        <div class="w-full max-w-4xl bg-white p-8 rounded-lg shadow-xl">
+            <h3 class="text-xl font-bold mb-4 text-center">法定監測頻率</h3>
+            <div class="chart-container">
+                <canvas id="monitoringFrequencyChart"></canvas>
+            </div>
+            <p class="text-center mt-4 text-sm text-[#6B7B9E]">註：巡迴特殊健檢時，雇主有義務提供最新監測紀錄給醫療機構。</p>
+        </div>
+    </div>
+    
+    <div id="page7" class="page-section bg-white">
+        <h2 class="text-3xl font-bold text-center mb-10">第六章：危害預防的黃金法則：控制層級</h2>
+        <p class="text-center text-lg text-[#365B7D] max-w-3xl mx-auto mb-12">預防職業危害應依循最有效的層級順序。從源頭消除或取代危害，遠比提供個人防護具更為有效。PPE 是最後的防線，而非首選。</p>
+        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="order-2 md:order-1 space-y-4">
+                <div class="p-4 rounded-lg" style="background-color: #002c40; color: white;"><strong>1. 消除 (Elimination):</strong> 從根本上移除危害源。例如：停止使用石綿建材。</div>
+                <div class="p-4 rounded-lg" style="background-color: #003F5C; color: white;"><strong>2. 取代 (Substitution):</strong> 使用危害性較低的物質或製程替代。例如：以水性漆取代有機溶劑漆。</div>
+                <div class="p-4 rounded-lg" style="background-color: #365B7D; color: white;"><strong>3. 工程控制 (Engineering Controls):</strong> 透過物理隔離或設備改善來降低暴露。例如：為噪音設備加裝隔音罩。</div>
+                <div class="p-4 rounded-lg" style="background-color: #6B7B9E; color: white;"><strong>4. 行政管理 (Administrative Controls):</strong> 改變工作方式或流程。例如：實施工作輪調，減少高噪音區暴露時間。</div>
+                <div class="p-4 rounded-lg" style="background-color: #A39DBF; color: white;"><strong>5. 個人防護具 (PPE):</strong> 提供防護裝備給勞工穿戴。例如：提供防音耳塞、安全帽。</div>
+            </div>
+            <div class="order-1 md:order-2 w-full max-w-xs mx-auto h-96 flex flex-col-reverse">
+                <div class="flex-grow w-full pyramid-level-deep" style="--bg-color: #A39DBF;">5. PPE</div>
+                <div class="flex-grow w-[85%] pyramid-level-deep" style="--bg-color: #6B7B9E;">4. 行政管理</div>
+                <div class="flex-grow w-[70%] pyramid-level-deep" style="--bg-color: #365B7D;">3. 工程控制</div>
+                <div class="flex-grow w-[55%] pyramid-level-deep" style="--bg-color: #003F5C;">2. 取代</div>
+                <div class="flex-grow w-[40%] pyramid-level-deep" style="--bg-color: #002c40;">1. 消除</div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="page8" class="page-section">
+        <h2 class="text-3xl font-bold text-center mb-10">第七章：物理性危害焦點：噪音與高溫</h2>
+        <div class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl">
+            <div class="bg-white p-8 rounded-lg shadow-xl">
+                 <h3 class="text-2xl font-bold mb-4 text-center">噪音暴露關鍵值</h3>
+                 <p class="text-center text-[#365B7D] mb-6">噪音是職場最常見的物理性危害，醫護人員應了解其健康管理啟動標準。</p>
+                 <div class="space-y-6">
+                    <div class="bg-blue-100 p-6 rounded-lg text-center border-l-4 border-blue-500">
+                        <p class="text-xl font-semibold text-[#003F5C]">行動基準</p>
+                        <p class="text-4xl font-bold text-[#365B7D]">85 <span class="text-xl">dBA</span></p>
+                        <p class="text-md text-[#6B7B9E]">雇主必須啟動「聽力保護計畫」</p>
+                    </div>
+                    <div class="bg-red-100 p-6 rounded-lg text-center border-l-4 border-red-500">
+                        <p class="text-xl font-semibold text-red-800">容許暴露標準</p>
+                        <p class="text-4xl font-bold text-red-600">90 <span class="text-lg">dBA</span></p>
+                        <p class="text-md text-red-700">應優先採取「工程控制」改善</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-xl">
+                <h3 class="text-2xl font-bold mb-4 text-center">高溫作業作息標準</h3>
+                <p class="text-center text-[#365B7D] mb-6">依「綜合溫度熱指數(WBGT)」與工作強度，規定勞工每小時的休息時間比例。</p>
+                <div class="donut-chart-container">
+                    <canvas id="wbgtChart"></canvas>
+                </div>
+                <p class="text-center mt-4 text-sm text-[#6B7B9E]">註：雇主需對新進高溫作業勞工規劃「熱適應」期。</p>
+            </div>
+        </div>
+    </div>
+    
+     <div id="page9" class="page-section bg-white">
+        <h2 class="text-3xl font-bold text-center mb-10">第八章：現代職場健康新挑戰</h2>
+        <p class="text-center text-lg text-[#365B7D] max-w-3xl mx-auto mb-12">職安法已將心理與人因危害納入保護範疇，要求雇主針對以下三大議題訂定並執行預防計畫，並留下紀錄備查。</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl">
+            <div class="bg-white p-8 rounded-lg shadow-lg text-center border-t-4 border-[#6B7B9E]">
+                <div class="text-5xl mb-4">🤸</div>
+                <h3 class="text-2xl font-bold mb-3">人因性危害預防</h3>
+                <p class="text-[#365B7D] text-left">預防因重複性動作、不當姿勢與過度施力造成的肌肉骨骼疾病。雇主應分析作業流程、評估危害因子、選定並執行改善方法。</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-lg text-center border-t-4 border-[#A39DBF]">
+                <div class="text-5xl mb-4">⏱️</div>
+                <h3 class="text-2xl font-bold mb-3">異常工作負荷預防</h3>
+                <p class="text-[#365B7D] text-left">針對輪班、夜間、長時間工作者，辨識高風險群、安排醫師面談、實施健康管理與促進，預防「過勞」相關之心血管疾病。</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-lg text-center border-t-4 border-[#E0C2E1]">
+                <div class="text-5xl mb-4">🛡️</div>
+                <h3 class="text-2xl font-bold mb-3">職場不法侵害預防</h3>
+                <p class="text-[#365B7D] text-left">預防執行職務時，因他人（客戶、同事等）的肢體或言語暴力所致的身心傷害。雇主需建構行為規範並建立事件處理程序。</p>
+            </div>
+        </div>
+    </div>
+    
+     <div id="page10" class="page-section">
+        <h2 class="text-3xl font-bold text-center mb-10">第九章：醫療機構的責任與規範</h2>
+        <p class="text-center text-lg text-[#365B7D] max-w-3xl mx-auto mb-12">作為勞動部認可的醫療機構，除了執行檢查，更肩負著確保品質、通報與個資保護的重責大任。</p>
+        <div class="w-full max-w-4xl bg-white p-8 rounded-lg shadow-xl space-y-6">
+            <div>
+                <h3 class="text-xl font-bold text-[#003F5C]">人員資格與執業登記</h3>
+                <p class="text-[#365B7D]">執行健檢的醫事人員（除職醫科醫師與聽力師可支援報備外）皆需為機構所**聘僱且執業登記**於該機構者，以確保權責分明。</p>
+            </div>
+            <hr>
+            <div>
+                <h3 class="text-xl font-bold text-[#003F5C]">報告內容與格式</h3>
+                <p class="text-[#365B7D]">報告**格式**可彈性設計，但**內容項目**必須符合法規要求，且必須包含醫師明確的「**應處理及注意事項**」與健康管理分級建議。</p>
+            </div>
+            <hr>
+            <div>
+                <h3 class="text-xl font-bold text-[#003F5C]">紀錄保存年限</h3>
+                <p class="text-[#365B7D]">健檢紀錄視同**病歷**。特別是針對石綿、苯、氯乙烯等特定化學物質暴露者，其健檢紀錄應至少保存**三十年**。</p>
+            </div>
+        </div>
+        <footer class="text-center mt-12 pt-8">
+            <p class="text-xl text-[#365B7D]">身為醫護專業人員，您的每一次判讀與建議，都是守護勞動者健康的第一道防線。</p>
+            <p class="text-md text-[#6B7B9E] mt-2">本資訊圖表依據職業安全衛生相關法規彙整，僅供教育訓練參考。</p>
+        </footer>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sections = document.querySelectorAll('.page-section');
+            const navContainer = document.getElementById('side-nav');
+            
+            sections.forEach((section, index) => {
+                const dot = document.createElement('a');
+                dot.href = `#${section.id}`;
+                dot.classList.add('nav-dot', 'w-3', 'h-3', 'bg-[#A39DBF]', 'rounded-full', 'block');
+                dot.dataset.sectionId = section.id;
+                navContainer.appendChild(dot);
+            });
+
+            const navDots = document.querySelectorAll('.nav-dot');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navDots.forEach(dot => {
+                            dot.classList.remove('active');
+                            if (dot.dataset.sectionId === entry.target.id) {
+                                dot.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+
+        function wrapLabel(label) {
+            const maxLength = 16;
+            if (typeof label !== 'string' || label.length <= maxLength) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + ' ' + word).trim().length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            });
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        }
+
+        const monitoringCtx = document.getElementById('monitoringFrequencyChart').getContext('2d');
+        const originalLabels = ['噪音', '高溫作業', '特定粉塵作業', '有機溶劑', '特定化學物質', '鉛作業'];
+        const wrappedLabels = originalLabels.map(wrapLabel);
+        
+        new Chart(monitoringCtx, {
+            type: 'bar',
+            data: {
+                labels: wrappedLabels,
+                datasets: [{
+                    label: '監測頻率 (次/年)',
+                    data: [2, 4, 2, 2, 2, 1],
+                    backgroundColor: [
+                        '#365B7D',
+                        '#E0C2E1',
+                        '#6B7B9E',
+                        '#6B7B9E',
+                        '#6B7B9E',
+                        '#A39DBF'
+                    ],
+                    borderColor: '#003F5C',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            callback: function(value) {
+                                return value + ' 次';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const wbgtCtx = document.getElementById('wbgtChart').getContext('2d');
+        new Chart(wbgtCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['自然濕球溫度 (70%)', '黑球溫度 (20%)', '乾球溫度 (10%)'],
+                datasets: [{
+                    label: 'WBGT 組成 (戶外有日曬)',
+                    data: [70, 20, 10],
+                    backgroundColor: [
+                        '#365B7D',
+                        '#003F5C',
+                        '#A39DBF',
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                     title: {
+                        display: true,
+                        text: 'WBGT 組成 (戶外有日曬)',
+                        font: { size: 16 }
+                    },
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

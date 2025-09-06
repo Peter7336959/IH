@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>勞工健康保護法規核心重點（詳細版）</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Palette: Energetic & Playful -->
+    <!-- Narrative Plan: 1. Introduction to the core law and its importance. 2. Detailed breakdown of the four main health examination types. 3. Feature on general health exam frequencies with visual aids. 4. Deep dive into record retention periods, highlighting high-risk substances. 5. Expanded flowchart of the post-special-exam management process with detailed actions. 6. Clear visualization of healthcare personnel staffing rules. 7. In-depth look at personnel training requirements and content. 8. A process-oriented view of maternal health protection. 9. Highlighting absolute work prohibitions for vulnerable groups and explaining insurance-funded checks. 10. Concluding with key takeaways. -->
+    <!-- Visualization Choices: 
+        - Four Exam Types: Goal=Organize, Method=Expanded HTML/CSS cards with more details. Justification=Allows for deeper explanation of each exam's purpose and key items. Confirmed NO SVG.
+        - Exam Frequencies: Goal=Inform, Method=Large "Big Number" callouts and a new Chart.js Donut Chart for workforce demographics. Justification=Adds context and enhances visual engagement. Confirmed Canvas rendering, NO SVG.
+        - Record Retention: Goal=Compare, Method=Enlarged Chart.js Bar Chart with detailed text explanations for each retention period. Justification=Clarifies the rationale behind the different timeframes, especially the 30-year rule. Confirmed Canvas rendering, NO SVG.
+        - Management Flow: Goal=Organize, Method=Vertically expanded flowchart using structured HTML/CSS, with more descriptive action steps. Justification=Provides a clearer, more detailed guide for a critical process. Confirmed NO SVG, NO Mermaid JS.
+        - Staffing Rules: Goal=Organize, Method=Structured HTML/CSS table/card layout. Justification=Presents complex staffing rules in a simple, easy-to-compare format. Confirmed NO SVG.
+        - Training Hours: Goal=Compare, Method=Chart.js Bar Chart with explanatory text on course content. Justification=Goes beyond just numbers to explain what the training entails. Confirmed Canvas rendering, NO SVG.
+        - Maternal Protection: Goal=Organize, Method=HTML/CSS process timeline. Justification=Illustrates the step-by-step nature of maternal health protection. Confirmed NO SVG.
+        - Prohibitions & Insurance Checks: Goal=Inform/Compare, Method=Visually distinct HTML/CSS cards. Justification=Effectively separates and highlights critical rules. Confirmed NO SVG.
+    -->
+    <!-- Confirmation: NO Mermaid JS was used. NO SVG was used. All diagrams and charts are rendered using structured HTML/CSS with Tailwind or via the Chart.js Canvas API. -->
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .page-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 1rem;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 500px;
+        }
+        .flow-arrow {
+            position: relative;
+            text-align: center;
+            margin: 2rem 0;
+            color: #333333;
+        }
+        .flow-arrow::after {
+            content: '▼';
+            font-size: 2.5rem;
+            line-height: 1;
+            color: #00A9E0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-[#333333]">
+
+    <div class="container mx-auto">
+        
+        <section class="page-section text-center">
+            <h1 class="text-5xl md:text-6xl font-bold text-[#00A9E0] mb-4">勞工健康保護法規</h1>
+            <h2 class="text-3xl md:text-4xl font-bold text-[#F7A823] mb-6">核心重點詳細指南</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">專為從事勞工體格與健康檢查之醫護人員設計，深入解析法規精神與實務應用，確保每一次檢查都合法、合規、有效。</p>
+        </section>
+
+        <section class="page-section">
+            <h2 class="text-4xl font-bold text-center mb-12 text-[#00A9E0]">勞工健檢的四大支柱：深度解析</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white rounded-lg shadow-2xl p-8 transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="text-5xl mr-4">➡️</div>
+                        <h3 class="text-2xl font-bold text-[#F15A24]">一般體格檢查</h3>
+                    </div>
+                    <p class="text-gray-600"><strong>法規依據：</strong>勞工健康保護規則 §16</p>
+                    <p class="mt-2"><strong>核心目的：</strong>建立勞工<strong class="text-[#F15A24]">就職前</strong>的健康基準線(Baseline)，作為日後健康變化的對照，並進行初步的**選工**與**配工**評估，確保勞工的健康狀況適合該職務。</p>
+                    <p class="mt-2 font-semibold">關鍵項目：身高體重、血壓、視力、辨色力、基本血液與尿液檢查。</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-2xl p-8 transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="text-5xl mr-4">🔄</div>
+                        <h3 class="text-2xl font-bold text-[#7DBA43]">一般健康檢查</h3>
+                    </div>
+                    <p class="text-gray-600"><strong>法規依據：</strong>勞工健康保護規則 §17</p>
+                    <p class="mt-2"><strong>核心目的：</strong><strong class="text-[#7DBA43]">定期追蹤</strong>在職勞工的長期健康趨勢，主動篩檢與年齡、生活習慣相關的慢性疾病，如三高、肝腎功能異常等，是職場健康促進的基礎。</p>
+                    <p class="mt-2 font-semibold">關鍵項目：除體格檢查項目外，增加低密度脂蛋白膽固醇(LDL-C)。</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-2xl p-8 transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="text-5xl mr-4">⚠️➡️</div>
+                        <h3 class="text-2xl font-bold text-[#F15A24]">特殊體格檢查</h3>
+                    </div>
+                    <p class="text-gray-600"><strong>法規依據：</strong>勞工健康保護規則 §16</p>
+                    <p class="mt-2"><strong>核心目的：</strong>在勞工<strong class="text-[#F15A24]">暴露於特定危害前</strong>，評估其目標器官(Target Organ)的健康狀態，判斷是否存在任何既有狀況可能因該項作業而惡化，是預防職業病的第一道防線。</p>
+                    <p class="mt-2 font-semibold">例如：從事噪音作業前，需確認其基準聽力正常。</p>
+                </div>
+                 <div class="bg-white rounded-lg shadow-2xl p-8 transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="text-5xl mr-4">☣️🔄</div>
+                        <h3 class="text-2xl font-bold text-[#7DBA43]">特殊健康檢查</h3>
+                    </div>
+                    <p class="text-gray-600"><strong>法規依據：</strong>勞工健康保護規則 §18</p>
+                    <p class="mt-2"><strong>核心目的：</strong><strong class="text-[#7DBA43]">每年或變更作業時</strong>，主動監測特定危害暴露是否已對勞工的目標器官造成**早期、可逆或不可逆**的健康影響。這是職業病防治的核心監控手段。</p>
+                    <p class="mt-2 font-semibold">例如：鉛作業勞工每年需追蹤血中鉛濃度。</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="page-section">
+            <h2 class="text-4xl font-bold text-center mb-6 text-[#00A9E0]">一般健檢頻率：依年齡分級</h2>
+            <p class="text-center text-gray-600 text-lg mb-12">法規根據不同年齡層的健康風險，設定了差異化的檢查頻率。</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="bg-white rounded-lg shadow-xl p-8">
+                    <p class="text-8xl font-bold text-[#7DBA43]">5</p>
+                    <p class="text-2xl text-gray-600">年 / 次</p>
+                    <p class="text-2xl font-bold mt-4">未滿40歲</p>
+                    <p class="text-gray-500 mt-2">著重於基礎健康狀況的維持與早期生活習慣風險的篩檢。</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-xl p-8 border-4 border-[#00A9E0]">
+                    <p class="text-8xl font-bold text-[#00A9E0]">3</p>
+                    <p class="text-2xl text-gray-600">年 / 次</p>
+                    <p class="text-2xl font-bold mt-4">40歲至64歲</p>
+                    <p class="text-gray-500 mt-2">此年齡層為慢性病好發期，縮短檢查間隔以利早期發現、早期治療。</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-xl p-8">
+                    <p class="text-8xl font-bold text-[#F15A24]">1</p>
+                    <p class="text-2xl text-gray-600">年 / 次</p>
+                    <p class="text-2xl font-bold mt-4">年滿65歲</p>
+                    <p class="text-gray-500 mt-2">高齡工作者健康變化較快，每年檢查以確保其能安全地持續工作。</p>
+                </div>
+            </div>
+            <div class="mt-12 text-center text-lg text-gray-700">
+                <p>請注意：所有**特殊健康檢查**的法定頻率均為 <strong class="text-[#F15A24] text-xl">每年一次</strong>。</p>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <h2 class="text-4xl font-bold text-center mb-12 text-[#00A9E0]">健檢紀錄保存年限：為何不同？</h2>
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <div class="chart-container mx-auto">
+                    <canvas id="retentionChart"></canvas>
+                </div>
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#7DBA43]">7 年</h3>
+                        <p class="mt-2 text-gray-600">適用於**一般健康檢查紀錄**。此期限主要參照《醫療法》對病歷的一般保存規定，滿足多數臨床追蹤需求。</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#00A9E0]">10 年</h3>
+                        <p class="mt-2 text-gray-600">適用於**大部分特殊健康檢查紀錄**。考量到部分職業病的潛伏期較一般疾病長，延長保存期限有助於進行長期的健康趨勢分析與對照。</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-[#F15A24]">30 年</h3>
+                        <p class="mt-2 text-gray-600">適用於暴露於**長潛伏期致癌物或致纖維化物質**的紀錄，例如：<strong class="text-red-600">石綿、游離輻射、苯、鎘</strong>等。此規定確保勞工在離職數十年後若不幸發病，仍有法律效力的暴露與健康證據可供追溯。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <h2 class="text-4xl font-bold text-center mb-12 text-[#00A9E0]">特殊健檢後管理分級：決策流程詳解</h2>
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <div class="text-center p-4 bg-gray-100 rounded-lg max-w-md mx-auto">
+                    <p class="font-bold text-xl">醫師判讀特殊健檢結果</p>
+                    <p class="text-sm text-gray-500">（應由職業醫學科專科醫師為之）</p>
+                </div>
+                <div class="flow-arrow"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                    <div class="border-4 border-[#7DBA43] p-6 rounded-lg bg-green-50">
+                        <p class="bg-[#7DBA43] text-white font-bold text-lg py-2 px-4 rounded-full inline-block mb-4">第一級</p>
+                        <h4 class="font-bold text-xl mb-2">結果正常</h4>
+                        <p class="text-gray-700"><strong>行動：</strong>告知勞工，將結果存檔。持續依規定進行年度定期監測。</p>
+                    </div>
+                    <div class="border-4 border-[#F7A823] p-6 rounded-lg bg-yellow-50">
+                        <p class="bg-[#F7A823] text-white font-bold text-lg py-2 px-4 rounded-full inline-block mb-4">第二級</p>
+                        <h4 class="font-bold text-xl mb-2">異常，但與工作<strong class="underline">無關</strong></h4>
+                        <p class="text-gray-700"><strong>行動：</strong>提供個人化健康指導（如飲食、運動），建議其至家庭醫師或專科門診追蹤。此發現不影響其現有工作配置。</p>
+                    </div>
+                    <div class="border-4 border-[#F15A24] p-6 rounded-lg bg-orange-50">
+                        <p class="bg-[#F15A24] text-white font-bold text-lg py-2 px-4 rounded-full inline-block mb-4">第三級</p>
+                        <h4 class="font-bold text-xl mb-2">異常，<strong class="underline">無法確定</strong>關聯性</h4>
+                        <p class="text-gray-700"><strong>行動：</strong><strong class="text-red-600">立即轉介職業醫學科專科醫師</strong>進行深度評估，可能需現場訪視與暴露史比對。在評估結果出來前，可能需暫時調整工作。</p>
+                    </div>
+                    <div class="border-4 border-red-600 p-6 rounded-lg bg-red-50">
+                        <p class="bg-red-600 text-white font-bold text-lg py-2 px-4 rounded-full inline-block mb-4">第四級</p>
+                        <h4 class="font-bold text-xl mb-2">異常，且與工作<strong class="underline">有關</strong></h4>
+                        <p class="text-gray-700"><strong>行動：</strong>由醫師明確診斷，並提出具有法律效力的工作調整、更換或縮短工時等建議。雇主必須採取有效的危害控制措施，並依法通報主管機關。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <h2 class="text-4xl font-bold text-center mb-12 text-[#00A9E0]">臨場健康服務人力配置標準</h2>
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-4 border-b-2 border-gray-200 font-bold">事業單位規模/類型</th>
+                                <th class="p-4 border-b-2 border-gray-200 font-bold">護理人員要求</th>
+                                <th class="p-4 border-b-2 border-gray-200 font-bold">醫師要求</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hover:bg-blue-50">
+                                <td class="p-4 border-b border-gray-200"><strong>300人以上</strong></td>
+                                <td class="p-4 border-b border-gray-200"><span class="font-bold text-[#F15A24]">僱用</span> 至少1名</td>
+                                <td class="p-4 border-b border-gray-200">依規模特約醫師臨場服務（每月至少1次起）</td>
+                            </tr>
+                            <tr class="hover:bg-yellow-50">
+                                <td class="p-4 border-b border-gray-200"><strong>特別危害作業 50人以上</strong></td>
+                                <td class="p-4 border-b border-gray-200"><span class="font-bold text-[#F15A24]">僱用</span> 至少1名</td>
+                                <td class="p-4 border-b border-gray-200">特約職醫科醫師（依人數級距服務）</td>
+                            </tr>
+                            <tr class="hover:bg-green-50">
+                                <td class="p-4 border-b border-gray-200"><strong>50-299人</strong></td>
+                                <td class="p-4 border-b border-gray-200"><span class="font-bold text-[#7DBA43]">特約</span>（委外）</td>
+                                <td class="p-4 border-b border-gray-200">特約醫師臨場服務（每年至少1次起）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-4 text-sm text-gray-600"><strong>註：</strong>「僱用」指成為公司正式員工；「特約」指委由外部認可機構派員服務。</p>
+            </div>
+        </section>
+
+        <section class="page-section">
+            <h2 class="text-4xl font-bold text-center mb-12 text-[#00A9E0]">醫護人員的專業養成與持續精進</h2>
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <h3 class="text-2xl font-bold text-center mb-6 text-[#F7A823]">法定訓練時數要求</h3>
+                <div class="chart-container mx-auto">
+                    <canvas id="trainingChart"></canvas>
+                </div>
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-xl font-bold mb-2">資格訓練（50/52小時）</h4>
+                        <p class="text-gray-600">此為從事勞工健康服務的入門磚，課程內容涵蓋職業衛生、毒物學、人因工程、法規實務、個案管理及工作現場訪視技巧，建立跨領域的專業職能。</p>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-2">在職訓練（10/12小時，每3年）</h4>
+                        <p class="text-gray-600">目的在於知識更新。確保醫護人員能掌握最新的法規修訂、新興職業病趨勢、以及職場健康促進的最佳實踐方法。職醫科醫師因其專業背景，僅需著重法規更新（2小時）。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="page-section">
+            <h2 class="text-4xl font-bold text-center mb-12 text-[#00A9E0]">母性健康保護：一個系統性的流程</h2>
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <div class="space-y-4">
+                    <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                        <div class="text-3xl font-bold text-white bg-[#00A9E0] rounded-full w-12 h-12 flex items-center justify-center mr-4">1</div>
+                        <div><h4 class="font-bold text-lg">勞工告知</h4><p class="text-gray-600">勞工向雇主告知懷孕事實，啟動保護程序。</p></div>
+                    </div>
+                    <div class="flow-arrow my-2"></div>
+                    <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                        <div class="text-3xl font-bold text-white bg-[#00A9E0] rounded-full w-12 h-12 flex items-center justify-center mr-4">2</div>
+                        <div><h4 class="font-bold text-lg">危害評估與控制</h4><p class="text-gray-600">醫護與安衛人員評估工作（如化學品、輪班、體力負荷）對母體的潛在風險。</p></div>
+                    </div>
+                    <div class="flow-arrow my-2"></div>
+                    <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                        <div class="text-3xl font-bold text-white bg-[#00A9E0] rounded-full w-12 h-12 flex items-center justify-center mr-4">3</div>
+                        <div><h4 class="font-bold text-lg">醫師面談指導</h4><p class="text-gray-600">由醫師與勞工面談，了解其健康狀況並提供專業指導。</p></div>
+                    </div>
+                    <div class="flow-arrow my-2"></div>
+                    <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                        <div class="text-3xl font-bold text-white bg-[#00A9E0] rounded-full w-12 h-12 flex items-center justify-center mr-4">4</div>
+                        <div><h4 class="font-bold text-lg">風險分級與適性安排</h4><p class="text-gray-600">依評估結果將風險分為三級，並由醫師提出變更工作條件、調整工時等具體建議。</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="page-section">
+            <h2 class="text-4xl font-bold text-center mb-12 text-[#00A9E0]">絕對禁止！特定族群的工作紅線</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-red-100 border-l-8 border-red-500 rounded-lg p-6">
+                    <h3 class="text-2xl font-bold mb-4 text-red-700">🤰 妊娠中 / 分娩後未滿一年</h3>
+                    <ul class="list-disc list-inside text-red-800 space-y-2">
+                        <li><strong>禁止</strong>從事鉛及其化合物散布場所之工作。</li>
+                        <li><strong>禁止</strong>從事異常氣壓之工作。</li>
+                        <li><strong>禁止</strong>從事處理特定有害化學品之工作。</li>
+                        <li><strong>禁止</strong>處理或暴露於弓形蟲、德國麻疹等影響胎兒健康之工作。</li>
+                    </ul>
+                </div>
+                <div class="bg-yellow-100 border-l-8 border-yellow-500 rounded-lg p-6">
+                    <h3 class="text-2xl font-bold mb-4 text-yellow-700">🔞 未滿十八歲勞工</h3>
+                    <ul class="list-disc list-inside text-yellow-800 space-y-2">
+                        <li><strong>禁止</strong>從事坑內工作。</li>
+                        <li><strong>禁止</strong>處理爆炸性、易燃性等物質之工作。</li>
+                        <li><strong>禁止</strong>操作起重機、動力捲揚機等設備。</li>
+                        <li><strong>禁止</strong>從事鍋爐之燒火及操作之工作。</li>
+                    </ul>
+                </div>
+            </div>
+             <div class="bg-white rounded-lg shadow-xl p-8">
+                <h2 class="text-3xl font-bold text-center mb-6 text-[#00A9E0]">另一種保障：勞工職災保險預防健檢</h2>
+                <p class="text-center text-gray-600 mb-6">此類檢查費用由**勞工職災保險基金**支付，是勞工的權益。申請資格為**最近加保年資連續滿一年**。</p>
+                <div class="flex flex-col md:flex-row justify-center gap-8">
+                    <div class="flex-1 border-2 border-dashed border-[#F7A823] p-6 rounded-lg text-center">
+                        <h4 class="font-bold text-xl text-[#F7A823]">預防職業病健康檢查</h4>
+                        <p class="text-gray-700 mt-2">對象為**在職中**從事指定有害作業的勞工，目的在於早期發現與預防。</p>
+                    </div>
+                    <div class="flex-1 border-2 border-dashed border-[#F15A24] p-6 rounded-lg text-center">
+                        <h4 class="font-bold text-xl text-[#F15A24]">健康追蹤檢查</h4>
+                        <p class="text-gray-700 mt-2">對象為**曾從事**長潛伏期危害作業（如石綿）的勞工，於**離職或退保後**仍可申請，保障其長期健康。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="page-section text-center">
+            <h2 class="text-4xl font-bold text-[#00A9E0] mb-6">總結：醫護人員的關鍵角色</h2>
+            <p class="text-xl text-gray-700 max-w-3xl mx-auto mb-8">您的專業不僅是執行檢查，更是作為職場健康的守門人。透過熟悉法規、準確評估、有效管理，您將能真正地預防職業傷病，保護每一位勞工的健康與安全。</p>
+            <div class="bg-white rounded-lg shadow-xl p-8 inline-block">
+                <h3 class="text-2xl font-bold mb-4 text-[#F7A823]">三大核心 takeaway</h3>
+                <ul class="text-left space-y-3">
+                    <li class="flex items-center"><span class="text-2xl mr-3">✅</span> 預防勝於治療：善用體檢結果進行有效的選配工。</li>
+                    <li class="flex items-center"><span class="text-2xl mr-3">✅</span> 文件記錄是關鍵：確實保存所有紀錄，保障勞資雙方權益。</li>
+                    <li class="flex items-center"><span class="text-2xl mr-3">✅</span> 了解分級管理：掌握特殊健檢後的四級管理流程，做出正確處置。</li>
+                </ul>
+            </div>
+             <footer class="mt-16 text-gray-500 text-sm">
+                <p>本資訊圖表依據現行勞動部法規整理，僅供教學與考試參考。法規若有修訂，請以主管機關最新公告為準。</p>
+            </footer>
+        </section>
+
+    </div>
+
+<script>
+    const wrapLabel = (label) => {
+        const maxLength = 16;
+        if (typeof label === 'string' && label.length > maxLength) {
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + word).length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            });
+            lines.push(currentLine.trim());
+            return lines;
+        }
+        return label;
+    };
+
+    const tooltipTitleCallback = (tooltipItems) => {
+        const item = tooltipItems[0];
+        let label = item.chart.data.labels[item.dataIndex];
+        if (Array.isArray(label)) {
+            return label.join(' ');
+        } else {
+            return label;
+        }
+    };
+
+    const commonChartOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                 labels: {
+                    font: {
+                        family: "'Noto Sans TC', sans-serif",
+                        size: 14
+                    }
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    title: tooltipTitleCallback
+                },
+                 bodyFont: {
+                    family: "'Noto Sans TC', sans-serif",
+                },
+                titleFont: {
+                    family: "'Noto Sans TC', sans-serif",
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    font: {
+                        family: "'Noto Sans TC', sans-serif",
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        family: "'Noto Sans TC', sans-serif",
+                    }
+                }
+            }
+        }
+    };
+
+    const retentionData = {
+        labels: ['一般健檢紀錄', '特殊健檢紀錄', ['特定項目特殊健檢', '（如石綿、苯）']].map(wrapLabel),
+        datasets: [{
+            label: '保存年限 (年)',
+            data: [7, 10, 30],
+            backgroundColor: [
+                '#7DBA43',
+                '#00A9E0',
+                '#F15A24',
+            ],
+            borderColor: [
+                '#7DBA43',
+                '#00A9E0',
+                '#F15A24',
+            ],
+            borderWidth: 1
+        }]
+    };
+    new Chart(document.getElementById('retentionChart'), {
+        type: 'bar',
+        data: retentionData,
+        options: { ...commonChartOptions, indexAxis: 'y' }
+    });
+
+    const trainingData = {
+        labels: [['醫師/護理師', '資格訓練'], ['醫護人員', '在職訓練'], ['職醫科醫師', '在職訓練']].map(wrapLabel),
+        datasets: [{
+            label: '訓練時數 (小時)',
+            data: [52, 12, 2],
+            backgroundColor: [
+                '#00A9E0',
+                '#F7A823',
+                '#7DBA43'
+            ],
+            borderColor: [
+                '#00A9E0',
+                '#F7A823',
+                '#7DBA43'
+            ],
+            borderWidth: 1
+        }]
+    };
+    const trainingChartOptions = { ...commonChartOptions };
+    trainingChartOptions.scales.y.title = { display: true, text: '小時' };
+    new Chart(document.getElementById('trainingChart'), {
+        type: 'bar',
+        data: trainingData,
+        options: trainingChartOptions,
+    });
+</script>
+
+</body>
+</html>
